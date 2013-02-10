@@ -342,7 +342,7 @@ T_void MainUIInit (T_void)
 	FormLoadFromFile ("MAINUI.FRM");
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (MainUIControl);
+	FormSetCallbackRoutine (MainUIControl);
 
     /* set up windows */
 

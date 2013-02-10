@@ -26,6 +26,7 @@
 #define OBJMOVE_FLAG_IGNORE_Z_UPDATES      0x2000   /* --1----- -------- */
 #define OBJMOVE_FLAG_DOES_NOT_FLOW         0x4000   /* -1------ -------- */
 #define OBJMOVE_FLAG_LOW_GRAVITY           0x8000   /* 1------- -------- */
+#define OBJMOVE_FLAG_FAST_MOVEMENT			0x0000 // not used
 
 typedef struct
 {

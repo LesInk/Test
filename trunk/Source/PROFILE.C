@@ -12,14 +12,17 @@
 *            Copyright (c) 1993-95,  HMI, Inc.  All Rights Reserved            *
 ****************************************************************************/
 
+#include <standard.h>
 #include <stdlib.h>
 #include <stdio.h>
+#if defined(DOS32)
 #include <dos.h>
-#include <fcntl.h> 
 #include <bios.h>
+#include <conio.h>
+#endif
+#include <fcntl.h>
 #include <io.h>
 #include <malloc.h>
-#include <conio.h>
 #include <ctype.h>
 #include <string.h>
 #include "sos.h"

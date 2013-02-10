@@ -155,7 +155,7 @@ T_void TxtboxCursSetRow (T_txtboxID txtboxID, T_word16 row);
 
 T_void TxtboxCursMoveTo (T_txtboxID txtboxID, T_word16 x, T_word16 y);
 
-T_void TxtboxAppendKey (T_txtboxID txtboxID, T_byte8 scankey);
+T_void TxtboxAppendKey (T_txtboxID txtboxID, T_word16 scankey);
 T_void TxtboxAppendString (T_txtboxID txtboxID, T_byte8 *data);
 T_void TxtboxSetData (T_txtboxID txtboxID, T_byte8 *data);
 T_void TxtboxSetNData (T_txtboxID txtboxID, T_byte8 *data, T_word32 len);
@@ -171,7 +171,7 @@ T_void TxtboxSetColor (T_txtboxID txtboxID,
                        T_byte8 bordclr2);
 T_void TxtboxBackSpace (T_txtboxID txtboxID);
 
-T_void TxtboxKeyControl (E_keyboardEvent event, T_byte8 scankey);
+T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey);
 T_void TxtboxMouseControl (E_mouseEvent event, T_word16 x, T_word16 y, T_buttonClick button);
 T_void TxtboxRepaginate (T_txtboxID txtboxID);
 T_void TxtboxRepaginateAll (T_txtboxID txtboxID);

@@ -11,8 +11,8 @@
 
 /* The calling stack is a list of pointers to routine names defined
    else where. */
-static T_byte8 *G_CallStack[DEBUG_MAX_STACK_DEPTH] ;
-static T_byte8 *G_CallStackFile[DEBUG_MAX_STACK_DEPTH] ;
+static const char *G_CallStack[DEBUG_MAX_STACK_DEPTH] ;
+static const char *G_CallStackFile[DEBUG_MAX_STACK_DEPTH] ;
 static T_word16 G_CallStackLine[DEBUG_MAX_STACK_DEPTH] ;
 static T_word32 G_CallStackTime[DEBUG_MAX_STACK_DEPTH] ;
 static T_word16 G_CallStackTimeSlot[DEBUG_MAX_STACK_DEPTH] ;
@@ -85,9 +85,9 @@ T_void IDebugReportTimeSlots(T_void) ;
 /****************************************************************************/
 
 T_void DebugAddRoutine(
-           T_byte8 *p_routineName,
-           T_byte8 *p_filename,
-           T_word16 lineNum)
+           const char *p_routineName,
+           const char *p_filename,
+           long lineNum)
 {
     /* We will place the routine's name on the call stack. */
     DebugCheck(p_routineName != NULL) ;
@@ -162,13 +162,9 @@ T_void DebugAddRoutine(
 /*                                                                          */
 /****************************************************************************/
 
-T_void DebugFail(T_byte8 *p_msg, T_byte8 *p_file, T_word16 line)
+T_void DebugFail(const char *p_msg, const char *p_file, long line)
 {
-    union REGS regs ;
     FILE *fp ;
-
-    regs.x.eax = 0x0003 ;
-    int386(0x10, &regs, &regs) ;
 
     /* Open a file for the error log. */
     fp = fopen("error.log", "a") ;
@@ -418,23 +414,23 @@ T_void DebugCompareCheck(T_byte8 *str, T_byte8 *p_file, T_word16 line)
     }
 }
 
-T_void DebugGetCaller(T_byte8 **filename, T_word16 *line)
+T_void DebugGetCaller(const char **filename, long *line)
 {
     *filename = G_CallStack[G_StackPosition-2] ;
     *line = G_CallStackLine[G_StackPosition-2] ;
 }
 
-T_byte8 *DebugGetCallerName(T_void)
+const char *DebugGetCallerName(T_void)
 {
     return G_CallStack[G_StackPosition-2] ;
 }
 
-T_byte8 *DebugGetCallerFile(T_void)
+const char *DebugGetCallerFile(T_void)
 {
     return G_CallStackFile[G_StackPosition-2] ;
 }
 
-T_byte8 *DebugGetLastCalled(T_void)
+const char *DebugGetLastCalled(T_void)
 {
     return G_CallStack[G_StackPosition] ;
 }

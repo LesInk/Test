@@ -327,7 +327,7 @@ T_void ButtonCleanUp (T_void)
 /*    JDA  07/05/95  Created                                                */
 /*                                                                          */
 /****************************************************************************/
-T_void ButtonKeyControl (E_keyboardEvent event, T_byte8 scankey)
+T_void ButtonKeyControl (E_keyboardEvent event, T_word16 scankey)
 {
 	T_word16 keyscan;
 	T_word16 i;

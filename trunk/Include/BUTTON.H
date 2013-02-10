@@ -50,7 +50,7 @@ T_void ButtonSetSelectPic (T_buttonID buttonID, T_byte8 *picname);
 T_void ButtonDelete (T_buttonID buttonID);
 T_void ButtonCleanUp (T_void);
 
-T_void ButtonKeyControl   (E_keyboardEvent event, T_byte8 scankey);
+T_void ButtonKeyControl   (E_keyboardEvent event, T_word16 scankey);
 T_void ButtonMouseControl (E_mouseEvent event,
 									T_word16 x,
 									T_word16 y,

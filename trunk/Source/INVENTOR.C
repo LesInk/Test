@@ -308,7 +308,7 @@ T_void InventoryFindInventoryItemPage (E_inventoryType which, T_inventoryItemStr
     T_inventoryItemStruct *p_inv;
     T_doubleLinkListElement element;
     DebugRoutine ("InventoryFindInventoryItemPage");
-    DebugCheck (p_inv != NULL);
+    DebugCheck (thisitem != NULL);
 
     /* iterate through inventory list looking for first occurance of this item */
     element=DoubleLinkListGetFirst(G_inventories[which].itemslist);

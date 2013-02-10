@@ -554,7 +554,7 @@ T_void ISetupViewTable(T_void)
 /*                                                                          */
 /****************************************************************************/
 
-T_word16 MathArcTangent(T_sword16 y, T_sword16 x)
+T_word16 MathArcTangent(T_sword32 y, T_sword32 x)
 {
     /* Now both x and y must be less than 128 for table lookup. */
     while ((x > 127) || (x < -127) || (y > 127) || (y < -127))  {

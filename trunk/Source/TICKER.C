@@ -102,8 +102,9 @@ T_void TickerOn(T_void)
     _disable() ;
 
     /* First get the old timer we used to use. */
+#if defined(DOS32)
     IOldTickerInterrupt = _dos_getvect(TICKER_INTERRUPT_NUMBER);
-
+#endif
     /* Since we are piggy-backing the timer used by the sound system, */
     /* we need to know if there is sound on already.  If there is, */
     /* we'll use the timing of that timer already.  If the sound is */
@@ -116,7 +117,9 @@ T_void TickerOn(T_void)
 #endif
         /* Now declare our new interrupt to the timer. */
 //puts("Turning on timer.") ;
+#if defined(DOS32)
         _dos_setvect(TICKER_INTERRUPT_NUMBER, ITickerInterrupt);
+#endif
 
         /* Speed up the timer chip so that it is about 3 times as fast: */
 //       timerSpeed = ((T_word16)0xFFFF)/TICKER_SPEED_UP_RATE ;

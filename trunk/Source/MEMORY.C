@@ -121,8 +121,8 @@ T_void *MemAlloc(T_word32 size)
     E_Boolean memFound ;
     T_word16 heapStatus ;
     T_word16 next ;
-T_byte8 *p_name ;
-T_word16 line ;
+    const char *p_name ;
+    long line ;
 
     DebugRoutine("MemAlloc") ;
 
@@ -1167,7 +1167,8 @@ T_word32 FreeMemory(T_void)
 #else
 T_word32 FreeMemory(T_void)
 {
-    T_word32 memInfo[12] ;
+#if defined(DOS32)
+	T_word32 memInfo[12] ;
 
     union REGS regs ;
     struct SREGS sregs ;
@@ -1179,6 +1180,9 @@ T_word32 FreeMemory(T_void)
     int386x(0x31, &regs, &regs, &sregs) ;
 
     return (memInfo[0] + _memavl()) ;
+#else
+    return 100000000; // TODO: don't really know
+#endif
 }
 
 #endif

@@ -123,7 +123,7 @@ T_void MailMainUIInit (T_void)
 	FormLoadFromFile ("MAILMAIN.FRM");
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (MailMainUIControl);
+	FormSetCallbackRoutine (MailMainUIControl);
 	/* make sure that the color cycling will work */
     /* double buffer drawing */
 
@@ -198,7 +198,7 @@ T_void MailWriteUIInit (T_void)
 	FormLoadFromFile ("MAILWRIT.FRM");
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (MailWriteUIControl);
+	FormSetCallbackRoutine (MailWriteUIControl);
 	/* make sure that the color cycling will work */
     /* double buffer drawing */
 
@@ -269,7 +269,7 @@ T_void MailReadUIInit (T_void)
 	FormLoadFromFile ("MAILREAD.FRM");
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (MailReadUIControl);
+	FormSetCallbackRoutine (MailReadUIControl);
 	/* make sure that the color cycling will work */
     /* double buffer drawing */
 

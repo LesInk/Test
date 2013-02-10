@@ -174,7 +174,7 @@ printf("Compressed from %ld to %ld\n", size, compressedSize) ;
 #ifdef TARGET_NT
     CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 140, 0, NULL);
 #else
-    CmdQSendPacket (&packet, 140, 0, NULL);
+    CmdQSendPacket ((T_packetEitherShortOrLong *)&packet, 140, 0, NULL);
 #endif
 
     DebugEnd() ;
@@ -653,7 +653,7 @@ if (!p_data)
 #ifdef TARGET_NT
         CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 140, 0, NULL);
 #else
-        CmdQSendPacket(&packet, 140, 0, NULL);
+        CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 140, 0, NULL);
 #endif
     }
 

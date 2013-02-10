@@ -74,7 +74,7 @@ E_commBaudRate CommGetBaudRate(T_void) ;
 
 T_word32 CommConvertBaudTo32(E_commBaudRate baud) ;
 
-E_commType CommGetPortType() ;
+E_commType CommGetPortType(void) ;
 
 T_void CommClearPort(T_void) ;
 

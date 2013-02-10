@@ -11,7 +11,7 @@ T_void  ColorSetGlobal (T_byte8 red, T_byte8 green, T_byte8 blue);
 T_void  ColorAddFilt (T_sbyte8 red, T_sbyte8 green, T_sbyte8 blue);
 T_void  ColorSetFilt (T_byte8 red, T_byte8 green, T_byte8 blue);
 T_void  ColorResetFilt (T_void);
-T_void  ColorUpdate (T_byte8 delta);
+T_void  ColorUpdate (T_word16 delta);
 T_void  ColorGlowUpdate (T_void);
 T_void  ColorSetColor (T_byte8 colornum, T_byte8 red, T_byte8 green, T_byte8 blue);
 T_void  ColorRestore (T_void);

@@ -973,7 +973,7 @@ T_word32 TxtboxScanRow (T_txtboxID txtboxID, T_word16 rowinc, T_word16 ox)
 /****************************************************************************/
 
 
-T_void TxtboxAppendKey (T_txtboxID txtboxID, T_byte8 scankey)
+T_void TxtboxAppendKey (T_txtboxID txtboxID, T_word16 scankey)
 {
     T_txtboxStruct *p_txtbox;
     T_byte8 *newdata;
@@ -1448,7 +1448,7 @@ E_Boolean TxtboxIsAt (T_txtboxID txtboxID, T_word16 x, T_word16 y)
 /*                                                                          */
 /****************************************************************************/
 
-T_void TxtboxKeyControl (E_keyboardEvent event, T_byte8 scankey)
+T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
 {
 
     T_txtboxStruct *p_txtbox;

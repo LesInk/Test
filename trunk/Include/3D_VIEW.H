@@ -67,7 +67,7 @@ T_3dObject *View3dAllocateObject(T_void) ;
 
 T_void View3dFreeObject(T_3dObject *p_obj) ;
 
-T_void View3dSetHeight(T_sword16 height) ;
+T_void View3dSetHeight(T_sword32 height) ;
 
 T_word16 View3dGetObjectAtColumn(
              T_word16 objPos,

@@ -22,7 +22,8 @@ T_void SMClientConnectSelectServer(
            T_word32 extraData) ;
 T_void SMClientConnectServerSelected(
            T_stateMachineHandle handle,
-           T_word32 extraData) ;
+           T_word32 extraData,
+           E_Boolean isDestroyed) ;
 T_void SMClientConnectSelectServerIdle(
            T_stateMachineHandle handle,
            T_word32 extraData) ;
@@ -32,7 +33,8 @@ T_void SMClientConnectConnectToServer(
            T_word32 extraData) ;
 T_void SMClientConnectConnectionResolved(
            T_stateMachineHandle handle,
-           T_word32 extraData) ;
+           T_word32 extraData,
+           E_Boolean isDestroyed) ;
 
 T_void SMClientConnectBusyMessage(
            T_stateMachineHandle handle,
@@ -575,7 +577,8 @@ T_void SMClientConnectSelectServerIdle(
 
 T_void SMClientConnectServerSelected(
            T_stateMachineHandle handle,
-           T_word32 extraData)
+           T_word32 extraData,
+           E_Boolean isDestroyed)
 {
     T_smClientData *p_data ;
 
@@ -747,7 +750,8 @@ T_void SMClientConnectConnectToServer(
 
 T_void SMClientConnectConnectionResolved(
            T_stateMachineHandle handle,
-           T_word32 extraData)
+           T_word32 extraData,
+           E_Boolean isDestroyed)
 {
     T_smClientData *p_data ;
 

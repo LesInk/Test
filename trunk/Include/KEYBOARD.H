@@ -17,7 +17,7 @@ typedef enum {
 } E_keyboardEvent ;
 
 typedef T_void (*T_keyboardEventHandler)(E_keyboardEvent event,
-                                         T_byte8 scankey) ;
+                                         T_word16 scankey) ;
 
 /* Standard keyboard functions: */
 

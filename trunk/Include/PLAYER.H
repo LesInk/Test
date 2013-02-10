@@ -31,7 +31,7 @@ T_void PlayerUpdatePosInfo(T_void) ;
 
 E_Boolean PlayerIsAboveGround(T_void) ;
 
-T_void PlayerJump(T_sword16 jumpPower) ;
+T_void PlayerJump(T_word16 jumpPower) ;
 T_void PlayerSetMaxVelocity(T_sword32 maxVelocity) ;
 T_word16 PlayerGetTravelDistance(T_void) ;
 T_void PlayerStopMoving(T_void) ;

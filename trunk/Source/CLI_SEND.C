@@ -122,7 +122,7 @@ T_void ClientSendRequestServerIDPacket(T_void)
 
     /* Send the packet. */
     CmdQSetActivePortNum(0) ;
-    CmdQSendPacket(&packet, 280, 0, NULL) ;
+    CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
 
     DebugEnd() ;
 }
@@ -180,7 +180,7 @@ T_void ClientSendRequestEnterPacket(T_void)
 
     /* Send the packet. */
     CmdQSetActivePortNum(0) ;
-    CmdQSendPacket(&packet, 280, 0, NULL) ;
+    CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
 
     DebugEnd() ;
 }
@@ -242,7 +242,7 @@ T_void ClientSendRequestCharacterListing(T_void)
 
         /* Send the packet. */
         CmdQSetActivePortNum(0) ;
-        CmdQSendPacket(&packet, 280, 0, NULL) ;
+        CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
     } else {
         /* Get the saved character listing. */
         p_charArray = StatsGetSavedCharacterList() ;
@@ -313,7 +313,7 @@ T_void ClientSendLoadCharacter(T_byte8 slot, T_word32 checksum)
         /* Send the packet. */
         CmdQSetActivePortNum(0) ;
 
-        CmdQSendPacket(&packet, 280, 0, NULL) ;
+        CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
     } else {
         /* Always make it OK to load the character. */
         ClientSetLoadCharacterStatus(LOAD_CHARACTER_STATUS_CORRECT) ;
@@ -380,7 +380,7 @@ T_void ClientSendCreateCharacter(
 
         /* Send the packet. */
         CmdQSetActivePortNum(0) ;
-        CmdQSendPacket(&packet, 280, 0, NULL) ;
+        CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
     } else {
         /* Always make it ok to create a character. */
         ClientSetCreateCharacterStatus(CREATE_CHARACTER_STATUS_OK) ;
@@ -439,7 +439,7 @@ T_void ClientSendDeleteCharacter(T_byte8 slot)
 
         /* Send the packet. */
         CmdQSetActivePortNum(0) ;
-        CmdQSendPacket(&packet, 280, 0, NULL) ;
+        CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
     } else {
         /* It is always OK to delete a character. */
         ClientSetDeleteCharacterStatus(DELETE_CHARACTER_STATUS_OK) ;
@@ -505,7 +505,7 @@ T_void ClientSendCheckPassword(
 
         /* Send the packet. */
         CmdQSetActivePortNum(0) ;
-        CmdQSendPacket(&packet, 280, 0, NULL) ;
+        CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
     } else {
         /* Password is always ok for now. */
         ClientSetCheckPasswordStatus(CHECK_PASSWORD_STATUS_OK) ;
@@ -576,7 +576,7 @@ T_void ClientSendChangePassword(
 
         /* Send the packet. */
         CmdQSetActivePortNum(0) ;
-        CmdQSendPacket(&packet, 280, 0, NULL) ;
+        CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
     } else {
         ClientSetChangePasswordStatus(CHANGE_PASSWORD_STATUS_OK) ;
     }
@@ -642,7 +642,7 @@ T_void ClientRequestDataBlock(
 
     /* Send the packet. */
     CmdQSetActivePortNum(0) ;
-    CmdQSendPacket(&packet, 280, 0, NULL) ;
+    CmdQSendPacket((T_packetEitherShortOrLong *)&packet, 280, 0, NULL) ;
 
     DebugEnd() ;
 }

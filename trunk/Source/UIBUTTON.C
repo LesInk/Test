@@ -3,6 +3,8 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include <ui.h>
+#include <uibutton.h>
 
 #define UI_BUTTON_STATE_FOCUSED    0x01    /* -------1 */
 #define UI_BUTTON_STATE_PRESSED     0x02    /* ------1- */

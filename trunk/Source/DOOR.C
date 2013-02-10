@@ -46,11 +46,11 @@ static E_Boolean G_doorInit = FALSE ;
 /* Internal prototypes: */
 static T_void IDoorUnload(T_void) ;
 static T_door *IFindDoor(T_word16 sector) ;
-static E_Boolean IHandleDoorOpening(
+static T_sliderResponse IHandleDoorOpening(
            T_word32 sliderId,
            T_sword32 value,
            E_Boolean isDone) ;
-static E_Boolean IHandleDoorClosing(
+static T_sliderResponse IHandleDoorClosing(
            T_word32 sliderId,
            T_sword32 value,
            E_Boolean isDone) ;
@@ -849,7 +849,7 @@ static T_door *IFindDoor(T_word16 sector)
 /*                                                                          */
 /****************************************************************************/
 
-static E_Boolean IHandleDoorOpening(
+static T_sliderResponse IHandleDoorOpening(
            T_word32 sliderId,
            T_sword32 value,
            E_Boolean isDone)

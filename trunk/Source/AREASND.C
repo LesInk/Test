@@ -374,7 +374,7 @@ T_areaSound AreaSoundCreate(
                 T_word16 length,
                 T_areaSound p_groupLeader,
                 T_areaSoundFinishCallback p_callback,
-                T_word16 data,
+                T_word32 data,
                 T_word16 soundNum)
 {
     T_areaSoundStruct *p_sound ;

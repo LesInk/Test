@@ -3,6 +3,10 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include <ui.h>
+#include <uibutton.h>
+#include <uitext.h>
+#include <txtfld.h>
 
 typedef struct {
     T_word16 index ;

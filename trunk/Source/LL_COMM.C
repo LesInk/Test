@@ -1,5 +1,7 @@
 #include "standard.h"
 
+#if defined(DOS32)
+
 #define ON 1
 #define OFF 0
 #define TRUE 1
@@ -394,4 +396,6 @@ T_void ioSetControl(int address, int control)
 {
     outp(Registers[LCR], control&0x7F) ;
 }
+
+#endif
 

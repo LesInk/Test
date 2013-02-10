@@ -219,7 +219,7 @@ puts("Loading connect form") ;  fflush(stdout) ;
         fclose (fp);
     }
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (ConnMainUIControl);
+	FormSetCallbackRoutine (ConnMainUIControl);
 
     /* update the display */
     ConnUIUpdate();

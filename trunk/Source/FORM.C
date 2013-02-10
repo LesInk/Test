@@ -810,7 +810,7 @@ T_void FormHandleMouse (E_mouseEvent event,
 }
 
 
-T_void FormHandleKey (E_keyboardEvent event, T_byte8 scankey)
+T_void FormHandleKey (E_keyboardEvent event, T_word16 scankey)
 {
 	T_formObjectStruct *p_object;
 	T_word16 i;
@@ -836,7 +836,7 @@ T_void FormHandleKey (E_keyboardEvent event, T_byte8 scankey)
 
 T_void FormSetCallbackRoutine (T_formCallBackRoutine newcallback)
 {
-	DebugRoutine ("FormSetCallBackRoutine");
+	DebugRoutine ("FormSetCallbackRoutine");
 
 //	DebugCheck (newcallback!=NULL);
 	formcallback=newcallback;

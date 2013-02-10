@@ -52,7 +52,7 @@ T_void MathInitializeInvDistTable(T_word32 screenWidth) ;
 
 T_void MathInitialize(T_word32 screenWidth) ;
 
-T_void MathFinish() ;
+T_void MathFinish(void) ;
 
 T_sword32 MathInvCosine(T_word16 angle) ;
 
@@ -68,7 +68,7 @@ T_sword16 MathXTimesSinAngle(
               T_sword16 x,
               T_word16 angle) ;
 
-T_word16 MathArcTangent(T_sword16 y, T_sword16 x) ;
+T_word16 MathArcTangent(T_sword32 y, T_sword32 x) ;
 
 T_word16 MathArcTangent32(T_sword32 y, T_sword32 x) ;
 

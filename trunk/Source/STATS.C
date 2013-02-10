@@ -1880,7 +1880,7 @@ T_void StatsCreateCharacterUIInit(T_void)
     G_statsLCSuccess=FALSE;
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (StatsCreateCharacterControl);
+	FormSetCallbackRoutine (StatsCreateCharacterControl);
 	/* make sure that the color cycling will work */
     /* double buffer drawing */
     /* set up description fields */
@@ -3233,7 +3233,7 @@ T_void StatsLoadCharacterUIInit (T_void)
     G_statsLCSuccess=FALSE;
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (StatsLoadCharacterControl);
+	FormSetCallbackRoutine (StatsLoadCharacterControl);
 	/* make sure that the color cycling will work */
     /* double buffer drawing */
 

@@ -227,7 +227,8 @@ E_Boolean Effect(E_effectType effecttype,
             DebugCheck(ObjectIsValid(p_inv->object)) ;
 
             /* make sure it's a weapon */
-            if (ObjectGetScriptHandle(p_inv->object)<100 && (data2!=0) && (G_effectSoundOn==TRUE))
+            // TODO: Does this OjbectGetScriptHandle work correctly?
+            if (((T_word32)ObjectGetScriptHandle(p_inv->object))<100 && (data2!=0) && (G_effectSoundOn==TRUE))
             {
                 switch (p_inv->itemdesc.subtype)
                 {

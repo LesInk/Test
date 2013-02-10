@@ -4,6 +4,7 @@
 
 #include "standard.h"
 
+#if defined(DOS32)
 /* Flag that determines if the mouse module has been initialized. */
 static T_byte8 F_MouseIsInitialized = FALSE ;
 
@@ -1925,7 +1926,7 @@ T_void MousePushEventHandler(T_mouseEventHandler mouseEventHandler)
 
     DebugEnd() ;
 }
-
+#endif
 
 /****************************************************************************/
 /*    END OF FILE:  MOUSEMOD.C                                              */

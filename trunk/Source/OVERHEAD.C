@@ -936,7 +936,7 @@ T_void OverheadSetCenterPoint(T_sword32 x, T_sword32 y)
 /*                                                                          */
 /****************************************************************************/
 
-T_void OverheadSetZoomFactor(T_sword32 zoom)
+T_void OverheadSetZoomFactor(T_word32 zoom)
 {
     DebugRoutine("OverheadSetZoomFactor") ;
     DebugCheck(zoom >= OVERHEAD_ZOOM_MAX) ;

@@ -5406,7 +5406,7 @@ T_void CreaturesCheck(T_void)
 T_void CreatureGoSplat(
            T_3dObject *p_obj,
            T_word16 amount,
-           E_effectDamageType damageType)
+           T_word16 damageType)
 {
     T_doubleLinkListElement element ;
     T_creatureState *p_creature ;

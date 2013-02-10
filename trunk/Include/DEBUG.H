@@ -8,10 +8,10 @@
 #  define DEBUG_MAX_STACK_DEPTH 60
 
 T_void DebugAddRoutine(
-           T_byte8 *p_routineName,
-           T_byte8 *p_filename,
-           T_word16 lineNum) ;
-T_void DebugFail(T_byte8 *p_msg, T_byte8 *p_file, T_word16 line) ;
+           const char *p_routineName,
+           const char *p_filename,
+           long lineNum) ;
+T_void DebugFail(const char *p_msg, const char *p_file, long line) ;
 T_void DebugRemoveRoutine(T_void) ;
 
 #  ifdef NDEBUG
@@ -43,10 +43,10 @@ T_void DebugRemoveRoutine(T_void) ;
 #        define DebugEnd()         DebugRemoveRoutine()
 #    endif
 
-     T_void DebugGetCaller(T_byte8 **filename, T_word16 *line) ;
-     T_byte8 *DebugGetCallerName(T_void) ;
-     T_byte8 *DebugGetCallerFile(T_void) ;
-     T_byte8 *DebugGetLastCalled(T_void) ;
+     T_void DebugGetCaller(const char **filename, long *line) ;
+     const char *DebugGetCallerName(T_void) ;
+     const char *DebugGetCallerFile(T_void) ;
+     const char *DebugGetLastCalled(T_void) ;
      T_void DebugHeapOn(T_void) ;
      T_void DebugHeapOff(T_void) ;
      T_void DebugCompareCheck(T_byte8 *str, T_byte8 *p_file, T_word16 line) ;

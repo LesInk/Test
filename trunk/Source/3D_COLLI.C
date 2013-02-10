@@ -107,7 +107,7 @@ T_sword16 IMoveToXYWithStep(
               T_sword32 newx,
               T_sword32 newy,
               T_sword32 radius,
-              T_sword16 step,
+              T_sword32 step,
               T_sword32 foot,
               T_sword32 head,
               T_sword16 height,
@@ -350,7 +350,7 @@ if (sector >= G_Num3dSectors)  {
   printf("Illegal sector: %d\n", sector) ;
   fflush(stdout) ;
 }
-DebugCheck(sector < G_Num3dSectors) ;
+DebugCheck((sector < G_Num3dSectors)) ;
 #endif
 
     if (G_numSurroundingSectors == 10)
@@ -719,7 +719,6 @@ T_sword16 Collide3dCheckSegmentHitBox(
     T_sword32 lesserX, greaterX, lesserY, greaterY ;
     T_sword32 interX, interY ;
     T_sword32 deltaX, deltaY ;
-    T_word16 side = 0 ;
 
     /* Get the coordinates of the line. */
 
@@ -1354,8 +1353,8 @@ T_void ILineHitInBlock(
 {
     T_word16 i ;
     T_sword32 segX1, segX2, segY1, segY2 ;
-    T_sword16 dx, dy ;
-    T_sword16 swap ;
+    T_sword32 dx, dy ;
+    T_sword32 swap ;
 
     if (index == -1)
         return ;
@@ -1698,13 +1697,8 @@ E_Boolean View3dObjectHitFast(
               T_sword16 height,
               T_3dObject *p_movingObject)
 {
-    T_sword32 distance ;
-    T_word16 j ;
-    E_Boolean status ;
-    T_word16 sector ;
     T_word16 halfwidth ;
     T_3dObject *p_obj ;
-    T_word16 num ;
     T_sword16 objX, objY ;
     T_sword16 dx, dy ;
     T_sword16 objBottom, objTop ;
@@ -2271,6 +2265,7 @@ E_Boolean CheckLineCanStepThrough(T_word16 i, T_3dObject *p_obj)
 /*    LES  05/12/95  Created.  Most of code came from View3dMoveTo          */
 /*                                                                          */
 /****************************************************************************/
+extern T_byte8 IOnRightOfLine(T_sword16 x, T_sword16 y, T_word16 line) ;
 
 T_sword16 IMoveToXYWithStep(
               T_sword32 *oldX,
@@ -2278,7 +2273,7 @@ T_sword16 IMoveToXYWithStep(
               T_sword32 newX,
               T_sword32 newY,
               T_sword32 radius,
-              T_sword16 step,
+              T_sword32 step,
               T_sword32 foot,
               T_sword32 head,
               T_sword16 height,
@@ -2286,15 +2281,14 @@ T_sword16 IMoveToXYWithStep(
 {
     T_sword16 code = 0 ;
     T_sword32 offX, offY ;
-    T_sword16 aX, aY ;
     T_word16 i ;
     T_word16 j ;
     T_word16 count = 0 ;
     T_word16 angle, angle2 ;
     T_sword32 mag ;
     T_sword32 velX, velY ;
-    T_sword16 leftX, rightX, topY, bottomY ;
-    T_word16 vertexNum, vertexNum2 ;
+    T_sword32 leftX, rightX, topY, bottomY ;
+    T_word16 vertexNum ;
     T_sword16 vertexX, vertexY ;
     T_word16 otherI, otherJ ;
     T_word16 angleI, angleJ, angleF, angleDistI, angleDistJ ;
@@ -2302,7 +2296,6 @@ T_sword16 IMoveToXYWithStep(
     T_sword16 origX, origY ;
     E_Boolean hitStepThrough[MAX_LINE_HITS] ;
     E_Boolean anyNonStep ;
-    extern T_byte8 IOnRightOfLine(T_sword16 x, T_sword16 y, T_word16 line) ;
 
     origX = (*oldX>>16) ;
     origY = (*oldY>>16) ;
@@ -2948,10 +2941,6 @@ T_sword16 View3dMoveToFast(
 {
     T_sword16 code = 0 ;
     T_sword32 newX, newY ;
-    T_sword32 bestOffX, bestOffY ;
-    T_sword32 offX, offY ;
-    T_sword32 fractX, fractY ;
-    T_word16 i ;
 
     G_currentHeight = foot>>16 ;
 
@@ -3042,8 +3031,7 @@ E_Boolean MoveToFast(
          T_sword16 height,
          T_3dObject *p_movingObject)
 {
-    T_word16 i ;
-    T_sword16 left, right, top, bottom ;
+    T_sword32 left, right, top, bottom ;
     T_word16 surroundingSectors[20] ;
     T_word16 numSurroundingSectors ;
 
@@ -4624,7 +4612,7 @@ T_sword16 Collide3dCheckSegmentHitsSegment(
     T_sword16 lx1, lx2, ly1, ly2 ;
     T_sword16 left, right, top, bottom ;
     T_sword32 ox1, ox2, oy1, oy2 ;
-    T_sword32 rx1, rx2, ry1, ry2 ;
+    T_sword32 ry1, ry2 ;
     T_sword16 t ;
     T_sword32 x ;
     T_byte8 a, b ;

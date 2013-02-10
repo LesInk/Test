@@ -486,7 +486,7 @@ T_void ClientShootFireball(T_void)
 
     /** Now we just send the packet. **/
     packet.header.packetLength = sizeof(T_projectileAddPacket) ;
-    CmdQSendPacket (&packet, 140, 0, ClientShootFireballAck);
+    CmdQSendPacket ((T_packetEitherShortOrLong *)&packet, 140, 0, ClientShootFireballAck);
 
     DebugEnd ();
 
@@ -716,7 +716,7 @@ static E_Boolean IClientGainExperienceIfHit(
 
     /* Does this thing have a script? */
     if (!ObjectIsPassable(p_obj))
-        if ((ObjectGetScript(p_obj) != NULL) ||
+        if ((ObjectGetScript(p_obj) != 0) ||
                 (ObjectIsPiecewise(p_obj)))
         {
             /* Make sure there is nothing blocking the hit */
@@ -1968,7 +1968,7 @@ extern E_Boolean G_serverActive ;
 
 static T_word16 G_escCount = 0 ;
 
-T_void ClientHandleKeyboard(E_keyboardEvent event, T_byte8 scankey)
+T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
 {
     T_byte8 buffer[80] ;
     T_sword16 x, y ;
@@ -2204,6 +2204,10 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_byte8 scankey)
                             T_word32 memInfo[12] ;
                             T_byte8 buf[50];
 
+#if (WIN32)
+                            sprintf (buf, "Free memory = <unknown for windows>") ;
+                            MessageAdd (buf);
+#else
                             union REGS regs ;
                             struct SREGS sregs ;
 
@@ -2215,6 +2219,7 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_byte8 scankey)
 
                             sprintf (buf, "Free memory = %lu", memInfo[0] + _memavl()) ;
                             MessageAdd (buf);
+#endif
                         }
                         else /** Only ClientSendMessage if not interpreted **/
                         {

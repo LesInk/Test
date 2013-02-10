@@ -3,6 +3,7 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include <ui.h>
 
 #define MAX_UI_OBJECTS_IN_GROUP 20
 

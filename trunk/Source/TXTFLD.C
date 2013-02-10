@@ -614,7 +614,7 @@ T_void TxtfldTextDrawCallBack (T_graphicID graphicID, T_word16 index)
 //								  235);
 		}
 		/* make sure we are not at the end of the data line */
-		if ((p_Txtfld->data[i]!=NULL) && (p_Txtfld->data[i]!='\0'))
+		if ((p_Txtfld->data[i]!=0) && (p_Txtfld->data[i]!='\0'))
 		{
 			curwidth+=GrGetCharacterWidth(p_Txtfld->data[i]);
 			/* if we haven't reached the end of the line, draw the character and */
@@ -701,7 +701,7 @@ T_byte8 *TxtfldGetLine (T_TxtfldID TxtfldID)
 	p_Txtfld=(T_TxtfldStruct*)TxtfldID;
 
 	DebugEnd();
-	return (&p_Txtfld->data);
+	return ((T_byte8 *)&p_Txtfld->data);
 }
 
 

@@ -228,7 +228,7 @@ T_void GrDrawCompressedBitmapAndClipAndColorAndCenterAndResize(
            T_word16 roomWidth,
            T_word16 roomHeight) ;
 
-#ifndef TARGET_UNIX
+#if (!defined(TARGET_UNIX) && !defined(WIN32))
 T_void DrawTranslucentAsm(
            T_byte8 *p_source,
            T_byte8 *p_destination,

@@ -111,8 +111,8 @@ T_void FormHandleMouse (E_mouseEvent event,
 								T_word16 x,
 								T_word16 y,
 								E_Boolean button);
-T_void FormHandleKey (E_keyboardEvent event, T_byte8 scankey);
-T_void FormSetCallBackRoutine (T_formCallBackRoutine newcallback);
+T_void FormHandleKey (E_keyboardEvent event, T_word16 scankey);
+T_void FormSetCallbackRoutine (T_formCallBackRoutine newcallback);
 
 T_formObjectID FormGetObjID (T_word32 numID);
 T_void FormGenericControl (E_Boolean *exitflag);

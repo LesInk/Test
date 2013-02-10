@@ -104,9 +104,13 @@ T_void ColorInit (T_void)
 
 T_void ColorStoreDefaultPalette (T_void)
 {
+    T_byte8 p[256][3];
 	DebugRoutine ("ColorStoreDefaultPalette");
 
-	GrGetPalette (0,256,&G_colorvals);
+	GrGetPalette (0, 256, p);
+
+    memcpy(&G_colorvals, p, sizeof(T_palette));
+//    *((T_palette *)&G_colorvals) = *p;
 
 	DebugEnd();
 }
@@ -199,7 +203,7 @@ T_void ColorAddGlobal (T_sword16 red, T_sword16 green, T_sword16 blue)
 /*                                                                          */
 /****************************************************************************/
 
-T_void ColorSetGlobal (T_sbyte8 red, T_sbyte8 green, T_sbyte8 blue)
+T_void ColorSetGlobal (T_byte8 red, T_byte8 green, T_byte8 blue)
 {
 	DebugRoutine ("ColorSetGlobal");
 
@@ -304,7 +308,7 @@ T_void ColorAddFilt (T_sbyte8 red, T_sbyte8 green, T_sbyte8 blue)
 /*    JDA  06/06/95  Created                                                */
 /*                                                                          */
 /****************************************************************************/
-T_void ColorSetFilt (T_sbyte8 red, T_sbyte8 green, T_sbyte8 blue)
+T_void ColorSetFilt (T_byte8 red, T_byte8 green, T_byte8 blue)
 {
 	DebugRoutine ("ColorSetFilt");
 
@@ -403,6 +407,7 @@ T_void ColorResetFilt (T_void)
 T_void ColorUpdate (T_word16 delta)
 {
 	T_byte8 tempcolors[768];
+	T_palette p;
 	T_word16 i;
 	T_sword16 tempr,tempg,tempb;
 	static T_sword32 glowupdatetime=0;
@@ -486,7 +491,7 @@ T_void ColorUpdate (T_word16 delta)
     INDICATOR_LIGHT(936, INDICATOR_RED) ;
     INDICATOR_LIGHT(939, INDICATOR_GREEN) ;
 
-	GrSetPalette (0,256,&tempcolors);
+	GrSetPalette (0,256, (T_palette *)&tempcolors);
 
     INDICATOR_LIGHT(939, INDICATOR_RED) ;
 
@@ -748,7 +753,7 @@ T_void ColorRestore (T_void)
 {
     DebugRoutine ("ColorRestore");
 
-	GrSetPalette (0,256,&G_colorvals);
+	GrSetPalette (0, 256, (T_palette *)&G_colorvals);
 
     DebugEnd();
 }
@@ -779,7 +784,7 @@ T_void  ColorFadeTo (T_byte8 red, T_byte8 green, T_byte8 blue)
                 else if (G_colorvals[j+2]>blue) G_colorvals[j+2]--;
             }
         }
-	    GrSetPalette (0,256,&G_colorvals);
+	    GrSetPalette (0,256, (T_palette *)&G_colorvals);
         delay (2);
     }
 

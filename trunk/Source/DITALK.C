@@ -49,6 +49,8 @@ static T_directTalkDisconnectCallback G_disconnectCallback = NULL ;
 static T_directTalkStruct *G_talk ;
 
 #ifndef COMPILE_OPTION_DIRECT_TALK_IS_DOS32
+#elif defined(WIN32)
+#else
 static void interrupt (*G_oldVector)(__CPPARGS) = NULL ;
 static E_Boolean G_interruptInstalled = FALSE ;
 static void interrupt IDirectTalkISR(T_void) ;
@@ -116,6 +118,7 @@ T_directTalkHandle DirectTalkInit(
 
     /* Init is successful. */
     newHandle = handle ;
+#elif defined(WIN32)
 #else
     DebugCheck(p_callRecv != NULL) ;
     DebugCheck(p_callSend != NULL) ;
@@ -292,6 +295,8 @@ T_void DirectTalkDisconnect(T_void)
 #endif
 
 #ifndef COMPILE_OPTION_DIRECT_TALK_IS_DOS32
+#elif defined(WIN32)
+#else
 static void interrupt IDirectTalkISR(T_void)
 {
     /* Just received a request to do something. */

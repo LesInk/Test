@@ -4,7 +4,9 @@
 
 #include "standard.h"
 
+#if (defined(WATCOM))
 #pragma aux  ColorizeMemAsm parm	[ESI] [EDI] [ECX] [EBX]
+#endif
 T_void ColorizeMemAsm(
           T_byte8 *p_source,
           T_byte8 *p_destination,

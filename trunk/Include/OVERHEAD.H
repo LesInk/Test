@@ -77,7 +77,7 @@ T_void OverheadRemoveFeatures(F_overheadFeature flags) ;
 
 T_void OverheadSetZoomFactor(T_word32 zoom) ;
 
-T_word32 OverheadGetZoomFactor() ;
+T_word32 OverheadGetZoomFactor(void) ;
 
 T_void OverheadSetNumPages(T_byte8 numPages) ;
 

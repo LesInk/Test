@@ -3,6 +3,7 @@
 /****************************************************************************/
 
 #include "standard.h"
+#if defined(DOS32)
 #include <bios.h>
 
 #define KEYBOARD_INTERRUPT_NUMBER 9
@@ -1334,6 +1335,7 @@ E_Boolean KeyboardBufferReady(T_void)
     else
         return FALSE ;
 }
+#endif
 
 /****************************************************************************/
 /*    END OF FILE:  UIBUTTON.C                                              */

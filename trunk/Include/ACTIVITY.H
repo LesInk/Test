@@ -10,7 +10,7 @@ typedef T_void *T_activitiesHandle ;
 
 T_activitiesHandle ActivitiesLoad(T_word32 number) ;
 
-T_void ActivitiesUnload() ;
+T_void ActivitiesUnload(void) ;
 
 T_void ActivitiesRun(T_word16 numberOfActivity) ;
 

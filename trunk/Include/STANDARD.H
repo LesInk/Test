@@ -28,13 +28,17 @@
 #  include <stdlib.h>
 #  include <string.h>
 
+#ifdef WIN32
+/** DOS includes **/
+#  include <math.h>
+#else
 /** DOS includes **/
 #  include <mem.h>
 #  include <i86.h>
 #  include <dos.h>
 #  include <conio.h>
 #  include <math.h>
-
+#endif
 
 /** General includes from our own custom libraries. **/
 #  include "general.h"
@@ -45,7 +49,16 @@
 #  include "memory.h"
 #  include "file.h"
 #  include "comm.h"
-#define COMPILE_OPTION_DIRECT_TALK_IS_DOS32
+#ifdef WIN32
+	#define far
+	#define near
+	#define huge
+	#define __interrupt
+	#define __far
+	#define __near
+#else
+	#define COMPILE_OPTION_DIRECT_TALK_IS_DOS32
+#endif
 #  include "ditalk.h"
 
 #define GAME_GROUP_ID_BAD            0
@@ -216,6 +229,10 @@ typedef T_directTalkUniqueAddress T_gameGroupID ;
 #define SPECIAL_OBJECTS_END   1999
 
 #define RandomNumber() SyncTimeGet()
+
+#ifndef NULL
+#define NULL 0
+#endif
 
 #endif
 

@@ -87,7 +87,7 @@ T_void ScriptFormStart(T_word32 uiFormNumber)
         FormLoadFromFile (formName);
 
         /* set the form callback routine to MainUIControl */
-        FormSetCallBackRoutine (ScriptFormCallback);
+        FormSetCallbackRoutine (ScriptFormCallback);
 
         /* double buffer drawing */
         GraphicUpdateAllGraphicsBuffered ();

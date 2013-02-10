@@ -28,7 +28,11 @@ typedef struct {
 } T_PortInfo ;
 
 /* Define a easy to use pointer to interrupt type. */
+#if defined(WATCOM)
 typedef void (__interrupt __far *TP_Interrupt)() ;
+#elif defined(WIN32)
+typedef void (void *TP_Interrupt)(void) ;
+#endif
 
 #define COM_PORT_IN_USE        0x8000
 #define COM_PORT_FLAGS_ENABLED 0x4000
@@ -57,6 +61,7 @@ typedef void (__interrupt __far *TP_Interrupt)() ;
 T_void ActivateInterrupt(T_byte8 ioInterrupt, T_word16 ioAddress) ;
 T_void DeactivateInterrupt(T_byte8 ioInterrupt, T_word16 ioAddress) ;
 T_void HandleInterrupt(T_byte8 ioInterrupt) ;
+#if defined(WATCOM)
 void __interrupt __far COMIO_Interrupt0() ;
 void __interrupt __far COMIO_Interrupt1() ;
 void __interrupt __far COMIO_Interrupt2() ;
@@ -65,6 +70,7 @@ void __interrupt __far COMIO_Interrupt4() ;
 void __interrupt __far COMIO_Interrupt5() ;
 void __interrupt __far COMIO_Interrupt6() ;
 void __interrupt __far COMIO_Interrupt7() ;
+#endif
 
 /* List of where interrupts start, a value of 0xFFFF represents none. */
 static T_word16 G_InterruptPortStart[COM_NUMBER_INTERRUPTS] ;
@@ -87,6 +93,7 @@ static T_COMPort G_FirstPort = 0 ;
 /* Flag to tell if we are initialized or not. */
 static E_Boolean F_Initialized = FALSE ;
 
+#if defined(WATCOM)
 /* Here is a reference list of the interrupt functions: */
 static TP_Interrupt G_ListInterrupts[8] = {
     COMIO_Interrupt0,
@@ -98,6 +105,8 @@ static TP_Interrupt G_ListInterrupts[8] = {
     COMIO_Interrupt6,
     COMIO_Interrupt7
 } ;
+#else
+#endif
 
 
 /****************************************************************************/
@@ -1415,6 +1424,7 @@ T_void COMIO_ClearSendBuffer(T_COMPort port)
 /*                                                                          */
 /****************************************************************************/
 
+#if defined(WATCOM)
 T_void __interrupt __far COMIO_Interrupt0()
 {
     HandleInterrupt(0) ;
@@ -1462,6 +1472,7 @@ T_void __interrupt __far COMIO_Interrupt7()
     HandleInterrupt(7) ;
     _chain_intr(G_Interrupts[7]) ;
 }
+#endif
 
 /****************************************************************************/
 /*  Routine:  HandleInterrupt                                               */

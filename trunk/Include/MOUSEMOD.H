@@ -79,7 +79,7 @@ T_void MouseSetDefaultBitmap(
           T_word16 hot_spot_y,
           T_bitmap *p_bitmap) ;
 
-T_void MouseUseDefaultBitmap() ;
+T_void MouseUseDefaultBitmap(void) ;
 
 T_void MouseSetPicture(
           T_word16 hot_spot_x,

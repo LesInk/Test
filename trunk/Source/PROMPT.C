@@ -143,7 +143,7 @@ T_void    PromptStatusBarUpdate (T_word16 current)
 
     /* draw bar graphic on background screen */
     GraphicDrawToCurrentScreen();
-    DebugCheck (bargraphic != NULL);
+    DebugCheck (G_bargraphic != NULL);
     GraphicDrawAt (G_bargraphic,39,105);
     GraphicDrawToActualScreen();
 
@@ -260,7 +260,7 @@ E_Boolean PromptForBoolean (T_byte8 *prompt, E_Boolean defaultvalue)
     if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     GraphicUpdateAllGraphicsBuffered();
 
@@ -335,7 +335,7 @@ T_void PromptNotify (T_byte8 *prompt)
     if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     GraphicUpdateAllGraphicsBuffered();
 
@@ -415,7 +415,7 @@ T_word16 PromptForInteger  (T_byte8 *prompt,
     TxtboxSetNumericOnlyFlag (txtboxID,TRUE);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     GraphicUpdateAllGraphicsBuffered();
 
@@ -544,7 +544,7 @@ T_void PromptDisplayMessage (T_byte8 *prompt)
     if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     GraphicUpdateAllGraphicsBuffered();
 
@@ -583,7 +583,7 @@ T_void PromptDisplayBulletin (T_byte8 *prompt)
     if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     GraphicUpdateAllGraphicsBuffered();
 
@@ -621,7 +621,7 @@ E_Boolean PromptDisplayDialogue (T_byte8 *prompt)
     if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     GraphicUpdateAllGraphicsBuffered();
 
@@ -663,7 +663,7 @@ E_Boolean PromptDisplayContinue (T_byte8 *prompt)
     if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     GraphicUpdateAllGraphicsBuffered();
 
@@ -758,7 +758,7 @@ E_Boolean PromptForString  (T_byte8 *prompt,
     TxtboxSetMaxLength (txtboxID,maxlen);
 
 	/* set the form callback routine to MainUIControl */
-	FormSetCallBackRoutine (PromptControl);
+	FormSetCallbackRoutine (PromptControl);
 
     /* go into generic control loop */
     FormGenericControl (&G_exit);

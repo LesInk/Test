@@ -6,7 +6,9 @@
 
 #define MAX_PAGES 4
 
+#if defined(WATCOM)
 #pragma aux  ShadeMemAsm parm	[ESI] [EDI] [ECX] [EBX]
+#endif
 T_void ShadeMemAsm(
           T_byte8 *p_source,
           T_byte8 *p_destination,
@@ -18,10 +20,12 @@ T_sword32 ColorChangeFastAsm(
             T_word16 port,
             T_byte8 *p_source,
             T_word32 number) ;
+#if defined(WATCOM)
 #pragma aux ColorChangeFastAsm = \
                 "rep outsb" \
                 parm [dx] [esi] [ecx] \
                 modify [dx esi ecx] ;
+#endif
 
 /* Keep track of the state of the graphics system. */
 static E_Boolean G_GraphicsIsOn = FALSE ;
@@ -44,7 +48,9 @@ T_void GraphicsMode13X(T_void) ;
 
 
 /* Vertical retrace interrupt information: */
+#if defined(WATCOM)
 static T_void (__interrupt __far *IOldRetraceInterrupt)();
+#endif
 static T_word32 G_verticalCount = 0 ;
 static E_Boolean G_paletteChanged = FALSE ;
 //static T_palette G_palette ;
@@ -52,7 +58,9 @@ static T_byte8 G_palette[768] ;
 
 static T_void IInstallVerticalInterrupt(T_void) ;
 static T_void IUninstallVerticalInterrupt(T_void) ;
+#if defined(WATCOM)
 static T_void __interrupt __far IVerticalRetrace(T_void) ;
+#endif
 
 static T_void ICheckPaletteChange(T_void) ;
 static T_void ITransferPalette(T_void) ;
@@ -969,7 +977,8 @@ T_void GrTransferRectangle(
 
 T_void GrGraphicsOn(T_void)
 {
-    union REGS regs ;
+#if defined(DOS32)
+	union REGS regs ;
 
     DebugRoutine("GrGraphicsOn") ;
     DebugCheck(G_GraphicsIsOn == FALSE) ;
@@ -996,6 +1005,12 @@ T_void GrGraphicsOn(T_void)
     IResetLeftsAndRights() ;
 
     DebugEnd() ;
+#elif defined(WIN32)
+    DebugRoutine("GrGraphicsOn") ;
+    DebugCheck(G_GraphicsIsOn == FALSE) ;
+    G_GraphicsIsOn = TRUE ;
+    DebugEnd() ;
+#endif
 }
 
 /****************************************************************************/
@@ -1038,7 +1053,8 @@ T_void GrGraphicsOn(T_void)
 
 T_void GrGraphicsOff(T_void)
 {
-    union REGS regs ;
+#if defined(DOS32)
+	union REGS regs ;
 
     DebugRoutine("GrGraphicsOff") ;
     DebugCheck(G_GraphicsIsOn == TRUE) ;
@@ -1066,6 +1082,8 @@ GrScreenFree(GRAPHICS_ACTUAL_SCREEN) ;
     G_screenStack = DOUBLE_LINK_LIST_BAD ;
 
     DebugEnd() ;
+#else
+#endif
 }
 
 /****************************************************************************/
@@ -1436,7 +1454,7 @@ static T_void ITransferScreen(T_void)
 T_void GrSetPalette(
            T_color start_color,
            T_word16 number_colors,
-           T_palette p_palette)
+           T_palette *p_palette)
 {
     T_byte8 *p_color ;
     T_word16 i ;
@@ -3170,6 +3188,7 @@ T_void GrDrawCompressedBitmapAndClipAndColor(
 
 static T_void IInstallVerticalInterrupt(T_void)
 {
+#if defined(DOS32)
 outp(0x3D4, 0x11) ;
 printf("currently %02X\n", inp(0x3D5)) ;
     _disable() ;
@@ -3198,10 +3217,14 @@ outp(0x3D5, inp(0x3D5) & 0x7F) ;
 outp(0x3D4, 0x11) ;
 printf("currently %02X\n", inp(0x3D5)) ;
 fprintf(stderr, "vertical on") ;
+#elif defined(WIN32)
+// TODO:
+#endif
 }
 
 static T_void IUninstallVerticalInterrupt(T_void)
 {
+#if defined(DOS32)
     _disable() ;
     _dos_setvect(RETRACE_INTERRUPT_NUMBER, IOldRetraceInterrupt);
 
@@ -3211,9 +3234,15 @@ static T_void IUninstallVerticalInterrupt(T_void)
     outp(0x21, (inp(0x21) | 0x04)) ;
     _enable() ;
 fprintf(stderr, "vertical off") ;
+#elif defined(WIN32)
+#endif
 }
 
+#if defined(WATCOM)
 static T_void __interrupt __far IVerticalRetrace(T_void)
+#elif defined(WIN32)
+static T_void IVerticalRetrace(T_void)
+#endif
 {
     T_word16 i ;
     T_byte8 *p_color ;
@@ -3738,7 +3767,7 @@ T_void GrDrawCompressedBitmapAndClipAndColorAndCenterAndResize(
     x = 0 ;
     /* Clip to the left. */
     if (x_left < 0)  {
-        p_entry -= x_left ;
+        //TODO: p_entry -= x_left ;
         x = -x_left ;
     }
 

@@ -437,6 +437,15 @@ printf("!A 1 file_r_%s\n", DebugGetCallerName()) ;
 T_word32 FileGetSize(T_byte8 *p_filename)
 {
     T_word32 size ;
+#if defined(WIN32)
+    FILE *fp;
+
+    DebugRoutine("FileGetSize");
+    fp = fopen(p_filename, "rb");
+    size = filelength(fileno(fp));
+    fclose(fp);
+    DebugEnd() ;
+#else
     struct find_t fileinfo ;
 
     DebugRoutine("FileGetSize") ;
@@ -451,6 +460,7 @@ T_word32 FileGetSize(T_byte8 *p_filename)
     }
 
     DebugEnd() ;
+#endif
 
     return size ;
 }
