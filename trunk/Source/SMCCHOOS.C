@@ -1920,7 +1920,7 @@ T_void SMCChooseDisplayStatsExit(
            E_Boolean isDestroyed)
 {
     T_SMCChooseData *p_data ;
-    T_txtboxID passwordID ;
+    T_TxtboxID passwordID ;
     T_byte8 *p_password ;
 
     DebugRoutine("SMCChooseDisplayStatsExit") ;

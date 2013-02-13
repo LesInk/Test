@@ -29,7 +29,7 @@ T_void MailMainUIControl (E_formObjectType objtype,
 					  T_word16 objstatus,
 					  T_word32 objID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 selectnum;
 
     DebugRoutine ("MailMainUIControl");
@@ -92,16 +92,16 @@ T_void MailMainUIControl (E_formObjectType objtype,
         if (objID>=500 && objID <=502)
         {
             /* mail listing row selected */
-            txtboxID=FormGetObjID(objID);
-            selectnum=TxtboxGetSelectionNumber (txtboxID);
+            TxtboxID=FormGetObjID(objID);
+            selectnum=TxtboxGetSelectionNumber (TxtboxID);
 
             /* set highlights to same column on all */
-            txtboxID=FormGetObjID(500);
-            TxtboxCursSetRow(txtboxID,selectnum);
-            txtboxID=FormGetObjID(501);
-            TxtboxCursSetRow(txtboxID,selectnum);
-            txtboxID=FormGetObjID(502);
-            TxtboxCursSetRow(txtboxID,selectnum);
+            TxtboxID=FormGetObjID(500);
+            TxtboxCursSetRow(TxtboxID,selectnum);
+            TxtboxID=FormGetObjID(501);
+            TxtboxCursSetRow(TxtboxID,selectnum);
+            TxtboxID=FormGetObjID(502);
+            TxtboxCursSetRow(TxtboxID,selectnum);
         }
     }
 
@@ -112,7 +112,7 @@ T_void MailMainUIControl (E_formObjectType objtype,
 
 T_void MailMainUIInit (T_void)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 *data;
     T_word16 i;
     T_screen tempscreen;
@@ -157,7 +157,7 @@ T_void MailWriteUIControl (E_formObjectType objtype,
 					  T_word16 objstatus,
 					  T_word32 objID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 selectnum;
 
     DebugRoutine ("MailWriteUIControl");
@@ -187,7 +187,7 @@ T_void MailWriteUIControl (E_formObjectType objtype,
 
 T_void MailWriteUIInit (T_void)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 *data;
     T_word16 i;
     T_screen tempscreen;
@@ -232,7 +232,7 @@ T_void MailReadUIControl (E_formObjectType objtype,
 					  T_word16 objstatus,
 					  T_word32 objID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 selectnum;
 
     DebugRoutine ("MailReadUIControl");
@@ -258,7 +258,7 @@ T_void MailReadUIControl (E_formObjectType objtype,
 
 T_void MailReadUIInit (T_void)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 *data;
     T_word16 i;
     T_screen tempscreen;

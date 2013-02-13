@@ -4,6 +4,10 @@
 
 #include "standard.h"
 
+#ifdef DOS32
+#define ALLOW_DOS_DITALK
+#endif
+
 #define DIRECT_TALK_MAX_SIZE_BUFFER      256
 
 /* Range of allowable vectors. */
@@ -49,8 +53,6 @@ static T_directTalkDisconnectCallback G_disconnectCallback = NULL ;
 static T_directTalkStruct *G_talk ;
 
 #ifndef COMPILE_OPTION_DIRECT_TALK_IS_DOS32
-#elif defined(WIN32)
-#else
 static void interrupt (*G_oldVector)(__CPPARGS) = NULL ;
 static E_Boolean G_interruptInstalled = FALSE ;
 static void interrupt IDirectTalkISR(T_void) ;
@@ -59,6 +61,17 @@ static void IDirectTalkUndoISR(T_void) ;
 
 static T_directTalkUniqueAddress G_blankAddress ;
 
+#ifndef ALLOW_DOS_DITALK
+#define DITALK_MAX_PACKETS  10
+typedef struct {
+    void *p_data ;
+    T_word16 size ;
+} T_ditalkRecording ;
+static T_ditalkRecording G_packets[DITALK_MAX_PACKETS] ;
+static T_word16 G_numPackets = 0 ;
+#endif
+
+
 T_directTalkHandle DirectTalkInit(
            T_directTalkReceiveCallback p_callRecv,
            T_directTalkSendCallback p_callSend,
@@ -66,6 +79,7 @@ T_directTalkHandle DirectTalkInit(
            T_directTalkDisconnectCallback p_callDisconnect,
            T_directTalkHandle handle)
 {
+#ifdef ALLOW_DOS_DITALK
     T_directTalkStruct *p_talk ;
     T_directTalkHandle newHandle = DIRECT_TALK_HANDLE_BAD ;
     T_word16 vector ;
@@ -118,7 +132,6 @@ T_directTalkHandle DirectTalkInit(
 
     /* Init is successful. */
     newHandle = handle ;
-#elif defined(WIN32)
 #else
     DebugCheck(p_callRecv != NULL) ;
     DebugCheck(p_callSend != NULL) ;
@@ -178,10 +191,22 @@ T_directTalkHandle DirectTalkInit(
     DebugEnd() ;
 
     return newHandle ;
+#else  /* not ALLOW_DOS_DITALK */
+    /* Record the send and receive callbacks. */
+    G_receiveCallback = p_callRecv ;
+    G_sendCallback = p_callSend ;
+    G_connectCallback = p_callConnect ;
+    G_disconnectCallback = p_callDisconnect ;
+    G_numPackets = 0 ;
+
+    /* Just return any ol' handle, just not 0 */
+    return (T_directTalkHandle)1 ;
+#endif
 }
 
 T_void DirectTalkFinish(T_directTalkHandle handle)
 {
+#ifdef ALLOW_DOS_DITALK
     DebugRoutine("DirectTalkFinish") ;
 #ifdef COMPILE_OPTION_DIRECT_TALK_IS_DOS32
     DebugCheck(handle == G_talk->handle) ;
@@ -199,11 +224,20 @@ T_void DirectTalkFinish(T_directTalkHandle handle)
 #endif
 
     DebugEnd() ;
+#else
+    T_word16 i ;
+
+    for (i=0; i<G_numPackets; i++)
+        MemFree(G_packets[i].p_data) ;
+
+    G_numPackets = 0 ;
+#endif
 }
 
 #ifdef COMPILE_OPTION_DIRECT_TALK_IS_DOS32
 T_void DirectTalkSendData(T_void *p_data, T_byte8 size)
 {
+#ifdef ALLOW_DOS_DITALK
     const union REGS regs ;
 
     DebugRoutine("DirectTalkSendData") ;
@@ -222,10 +256,22 @@ T_void DirectTalkSendData(T_void *p_data, T_byte8 size)
         &regs) ;
 
     DebugEnd() ;
+#else /* not ALLOW_DOS_DITALK */
+    T_void *p_storeddata ;
+
+    if (G_numPackets < DITALK_MAX_PACKETS)  {
+        p_storeddata = MemAlloc(size) ;
+        memcpy(p_storeddata, p_data, size) ;
+        G_packets[G_numPackets].p_data = p_storeddata ;
+        G_packets[G_numPackets].size = size ;
+        G_numPackets++ ;
+    }
+#endif
 }
 
 T_void DirectTalkPollData(T_void)
 {
+#ifdef ALLOW_DOS_DITALK
     const union REGS regs ;
 
     DebugRoutine("DirectTalkPollData") ;
@@ -248,10 +294,24 @@ T_void DirectTalkPollData(T_void)
     }
 
     DebugEnd() ;
+#else /* not ALLOW_DOS_DITALK */
+    if (G_numPackets)  {
+        G_receiveCallback(
+            G_packets[0].p_data,
+            G_packets[0].size) ;
+        if (G_numPackets > 1)
+            memmove(
+                &G_packets[0], 
+                &G_packets[1], 
+                (G_numPackets-1)*sizeof(G_packets[0])) ;
+        G_numPackets-- ;
+    }
+#endif
 }
 
 T_void DirectTalkConnect(T_byte8 *p_address)
 {
+#ifdef ALLOW_DOS_DITALK
     const union REGS regs ;
 
     DebugRoutine("DirectTalkConnect") ;
@@ -270,10 +330,13 @@ T_void DirectTalkConnect(T_byte8 *p_address)
         &regs) ;
 
     DebugEnd() ;
+#else /* not ALLOW_DOS_DITALK */
+#endif
 }
 
 T_void DirectTalkDisconnect(T_void)
 {
+#ifdef ALLOW_DOS_DITALK
     const union REGS regs ;
 
     DebugRoutine("DirectTalkDisconnect") ;
@@ -290,13 +353,14 @@ T_void DirectTalkDisconnect(T_void)
         &regs) ;
 
     DebugEnd() ;
+#else /* not ALLOW_DOS_DITALK */
+#endif
 }
 
 #endif
 
+#ifdef ALLOW_DOS_DITALK
 #ifndef COMPILE_OPTION_DIRECT_TALK_IS_DOS32
-#elif defined(WIN32)
-#else
 static void interrupt IDirectTalkISR(T_void)
 {
     /* Just received a request to do something. */
@@ -339,17 +403,24 @@ static void IDirectTalkUndoISR(T_void)
 }
 
 #endif
+#endif /* ALLOW_DOS_DITALK */
 
 E_directTalkLineStatus DirectTalkGetLineStatus(T_void)
 {
+#ifdef ALLOW_DOS_DITALK
     return G_talk->lineStatus ;
+#else
+    return DIRECT_TALK_LINE_STATUS_CONNECTED ;
+#endif
 }
 
 T_void DirectTalkSetLineStatus(E_directTalkLineStatus status)
 {
+#ifdef ALLOW_DOS_DITALK
 printf("line status: %d\n", status) ;
     DebugCheck(status < DIRECT_TALK_LINE_STATUS_UNKNOWN) ;
     G_talk->lineStatus = status ;
+#endif
 }
 
 /* Get the unique address associated with this talking connection */
@@ -360,16 +431,23 @@ T_void DirectTalkGetUniqueAddress(T_directTalkUniqueAddress *p_unique)
 {
     T_word16 i ;
 
+#ifdef ALLOW_DOS_DITALK
     for (i=0; i<sizeof(*p_unique); i++)
         p_unique->address[i] = G_talk->uniqueAddress[i] ;
+#else
+    /* Return all ones (can't use all zeros, that's a no address) */
+    memset(p_unique->address, 1, sizeof(p_unique->address)) ;
+#endif
 }
 
 T_void DirectTalkSetUniqueAddress(T_directTalkUniqueAddress *p_unique)
 {
     T_word16 i ;
 
-    for (i=0; i<sizeof(*p_unique); i++)
-        G_talk->uniqueAddress[i] = p_unique->address[i] ;
+#ifdef ALLOW_DOS_DITALK
+        for (i=0; i<sizeof(*p_unique); i++)
+            G_talk->uniqueAddress[i] = p_unique->address[i] ;
+#endif
 }
 
 T_directTalkUniqueAddress *DirectTalkGetNullBlankUniqueAddress(T_void)
@@ -390,29 +468,46 @@ T_void DirectTalkPrintAddress(FILE *fp, T_directTalkUniqueAddress *p_addr)
 
 E_directTalkServiceType DirectTalkGetServiceType(T_void)
 {
+#ifdef ALLOW_DOS_DITALK
     return G_talk->serviceType ;
+#else
+    /* No real server out there -- just make a self server */
+    return DIRECT_TALK_SELF_SERVER ;
+#endif
 }
 
 T_void DirectTalkSetServiceType(E_directTalkServiceType serviceType)
 {
+#ifdef ALLOW_DOS_DITALK
     G_talk->serviceType = serviceType ;
+#endif
 }
 
 T_void DirectTalkSetDestination(T_directTalkUniqueAddress *p_dest)
 {
+#ifdef ALLOW_DOS_DITALK
     /* Destination address */
-    memcpy(G_talk->destinationAddress, p_dest, 6) ;
+    if (G_talk)
+        memcpy(G_talk->destinationAddress, p_dest, 6) ;
+#endif
 }
 
 T_void DirectTalkSetDestinationAll(T_void)
 {
+#ifdef ALLOW_DOS_DITALK
     /* Broadcast message mode */
-    memset(G_talk->destinationAddress, 0xFF, 6) ;
+    if (G_talk)
+        memset(G_talk->destinationAddress, 0xFF, 6) ;
+#endif
 }
 
 T_byte8 *DirectTalkGetDestination(T_void)
 {
+#ifdef ALLOW_DOS_DITALK
     return G_talk->destinationAddress ;
+#else
+    return (T_byte8 *)DirectTalkGetNullBlankUniqueAddress() ;
+#endif
 }
 
 /****************************************************************************/

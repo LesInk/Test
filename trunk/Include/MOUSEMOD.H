@@ -18,7 +18,8 @@ typedef enum {
 typedef T_byte8 T_buttonClick ;
 #define MOUSE_BUTTON_LEFT 0x01       /* ---- ---1 */
 #define MOUSE_BUTTON_RIGHT 0x02      /* ---- --1- */
-#define MOUSE_BUTTON_UNKNOWN 0xFC    /* 1111 11-- */
+#define MOUSE_BUTTON_MIDDLE 0x04     /* ---- -1-- */
+#define MOUSE_BUTTON_UNKNOWN 0xF8    /* 1111 10-- */
 
 #define MOUSE_EVENT_OPTION_HANDLE_START      0x01    /* -------1 */
 #define MOUSE_EVENT_OPTION_HANDLE_END        0x02    /* ------1- */

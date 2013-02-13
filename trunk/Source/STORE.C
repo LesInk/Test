@@ -6,7 +6,7 @@
 
 static T_graphicID G_backgroundPic=NULL;
 static E_Boolean   G_houseMode=FALSE;
-static T_txtboxID  G_financeDisplays[4];
+static T_TxtboxID  G_financeDisplays[4];
 static E_Boolean   G_storeOpen=FALSE;
 
 static T_void StoreUIUpdateGraphics (T_void);
@@ -461,8 +461,8 @@ T_void StoreUIStart  (T_word32 formNum)
                                           0,
                                           0,
                                           TRUE,
-                                          TXTBOX_JUSTIFY_CENTER,
-                                          TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                          Txtbox_JUSTIFY_CENTER,
+                                          Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                           NULL);
 
     }
@@ -521,7 +521,7 @@ T_void StoreUIStart  (T_word32 formNum)
         /* Wand of Lightning Bolts */
         StoreAddItem (907,1);
         /* Mage rune 6, 8 */
-        StoreAddITem (305, 1);
+        StoreAddItem (305, 1);
         StoreAddItem (307, 1);
         /* Obsidian dagger */
         StoreAddItem(37064, 1);

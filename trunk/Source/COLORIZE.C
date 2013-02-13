@@ -263,6 +263,17 @@ T_byte8 *ColorizeGetTable(E_colorizeTable colorTable)
     return p_colorize ;
 }
 
+#ifdef NO_ASSEMBLY
+T_void ColorizeMemAsm(
+          T_byte8 *p_source,
+          T_byte8 *p_destination,
+          T_word32 count,
+          T_byte8 *p_transTable)
+{
+    // TODO: Make the fast C version of this one
+}
+#endif
+
 /****************************************************************************/
 /*    END OF FILE:  COLORIZE.C                                              */
 /****************************************************************************/

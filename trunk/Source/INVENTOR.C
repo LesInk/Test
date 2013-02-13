@@ -17,8 +17,8 @@ static T_word16  G_equipmentWindowY2=85;
 
 static T_buttonID G_lastStorePage=NULL;
 static T_buttonID G_nextStorePage=NULL;
-static T_txtboxID G_storePageType=NULL;
-static T_txtboxID G_storePageNumber=NULL;
+static T_TxtboxID G_storePageType=NULL;
+static T_TxtboxID G_storePageNumber=NULL;
 static E_Boolean  G_useResetNeeded=FALSE;
 
 //static T_byte8   G_curinvpage=0;
@@ -2156,7 +2156,7 @@ T_void InventoryDrawInventoryWindow (E_inventoryType which)
 	T_bitmap *b1;
 	T_resource r1;
     T_byte8 stmp[48];
-    T_txtboxID txtboxID=NULL;
+    T_TxtboxID TxtboxID=NULL;
     T_byte8 invcnt=0;
 
     DebugRoutine ("InventoryDrawInventoryWindow");
@@ -2190,26 +2190,26 @@ T_void InventoryDrawInventoryWindow (E_inventoryType which)
     if (which==INVENTORY_PLAYER)
     {
         sprintf (stmp,"LOAD:%3.1f kg",StatsGetPlayerLoad()/10.0);
-        txtboxID=FormGetObjID(500);
-        if (txtboxID != NULL)
+        TxtboxID=FormGetObjID(500);
+        if (TxtboxID != NULL)
         {
-            TxtboxSetData (txtboxID, stmp);
+            TxtboxSetData (TxtboxID, stmp);
         }
     }
 
     if (which==INVENTORY_PLAYER)
     {
         sprintf (stmp,"PG:%d/%d",G_inventories[which].curpage+1,G_inventories[which].maxpages);
-        txtboxID=FormGetObjID(501);
+        TxtboxID=FormGetObjID(501);
     } else
     {
 //        sprintf (stmp,"PAGE:%d of %d",G_inventories[which].curpage+1,G_inventories[which].maxpages);
-//        txtboxID=FormGetObjID(510);
+//        TxtboxID=FormGetObjID(510);
     }
 
-    if (txtboxID!=NULL)
+    if (TxtboxID!=NULL)
     {
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
     }
 
     DebugCompare ("InventoryDrawInventoryWindow");
@@ -2281,7 +2281,7 @@ T_void InventoryDrawEquipmentWindow (T_void)
     T_word16 i,locx,locy;
     T_word16 shield=0, value=0;
     T_inventoryItemStruct *p_inv;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 stmp[32];
 
     DebugRoutine ("InventoryDrawEquipmentWindow");
@@ -2330,58 +2330,58 @@ T_void InventoryDrawEquipmentWindow (T_void)
         shield=EffectGetPlayerEffectPower(PLAYER_EFFECT_SHIELD);
     }
 
-    txtboxID=FormGetObjID (500);
+    TxtboxID=FormGetObjID (500);
     value=StatsGetArmorValue(EQUIP_LOCATION_HEAD);
 //    value=(StatsGetArmorValue(EQUIP_LOCATION_HEAD) > shield ?
 //           StatsGetArmorValue(EQUIP_LOCATION_HEAD) : shield);
     sprintf (stmp,"%d%%",value);
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (501);
+    TxtboxID=FormGetObjID (501);
     value=StatsGetArmorValue(EQUIP_LOCATION_CHEST);
 //    value=(StatsGetArmorValue(EQUIP_LOCATION_CHEST) > shield ?
 //           StatsGetArmorValue(EQUIP_LOCATION_CHEST) : shield);
     sprintf (stmp,"%d%%",value);
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (502);
+    TxtboxID=FormGetObjID (502);
     value=StatsGetArmorValue(EQUIP_LOCATION_LEFT_ARM);
 //    value=(StatsGetArmorValue(EQUIP_LOCATION_LEFT_ARM) > shield ?
 //           StatsGetArmorValue(EQUIP_LOCATION_LEFT_ARM) : shield);
     sprintf (stmp,"%d%%",value);
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (503);
+    TxtboxID=FormGetObjID (503);
     value=StatsGetArmorValue(EQUIP_LOCATION_RIGHT_ARM);
 //    value=(StatsGetArmorValue(EQUIP_LOCATION_RIGHT_ARM) > shield ?
 //           StatsGetArmorValue(EQUIP_LOCATION_RIGHT_ARM) : shield);
     sprintf (stmp,"%d%%",value);
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (504);
+    TxtboxID=FormGetObjID (504);
     value=StatsGetArmorValue(EQUIP_LOCATION_LEGS);
 //    value=(StatsGetArmorValue(EQUIP_LOCATION_LEGS) > shield ?
 //           StatsGetArmorValue(EQUIP_LOCATION_LEGS) : shield);
     sprintf (stmp,"%d%%",value);
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (505);
+    TxtboxID=FormGetObjID (505);
     value=StatsGetArmorValue(EQUIP_LOCATION_LEGS);
 //    value=(StatsGetArmorValue(EQUIP_LOCATION_LEGS) > shield ?
 //           StatsGetArmorValue(EQUIP_LOCATION_LEGS) : shield);
     sprintf (stmp,"%d%%",value);
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (506);
+    TxtboxID=FormGetObjID (506);
     value= shield ;
     sprintf (stmp,"%d%%",value);
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
     /* calculate total armor value */
 
-    txtboxID=FormGetObjID (507);
+    TxtboxID=FormGetObjID (507);
     sprintf (stmp,"%d%%",StatsGetPlayerArmorValue());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
     DebugEnd();
 }
@@ -4054,7 +4054,7 @@ static T_void InventoryUpdateStoreItemTitlePage(T_void)
     T_doubleLinkListElement element;
     T_inventoryItemStruct *p_inv;
     T_byte8 stmp[64];
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     DebugRoutine ("InventoryUpdateStoreItemTitlePage");
     /* find first item on this page */
     element=DoubleLinkListGetFirst(G_inventories[INVENTORY_STORE].itemslist);
@@ -4184,8 +4184,8 @@ T_void InventoryOpenStoreInventory (T_void)
                                     0,
                                     0,
                                     FALSE,
-                                    TXTBOX_JUSTIFY_CENTER,
-                                    TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                    Txtbox_JUSTIFY_CENTER,
+                                    Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                     NULL);
 
     G_storePageNumber = TxtboxCreate (STORE_PAGE_NUMBER_DISPLAY_X1,
@@ -4196,8 +4196,8 @@ T_void InventoryOpenStoreInventory (T_void)
                                     0,
                                     0,
                                     FALSE,
-                                    TXTBOX_JUSTIFY_CENTER,
-                                    TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                    Txtbox_JUSTIFY_CENTER,
+                                    Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                     NULL);
 
     G_inventories[INVENTORY_STORE].curpage=0;

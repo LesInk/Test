@@ -13,6 +13,8 @@
  ****************************************************************************/
 
 #include <standard.h>
+
+#ifdef USE_SOS_LIBRARY
 #include <stdlib.h>
 #include <stdio.h>
 #include <dos.h>
@@ -467,3 +469,5 @@ close(hFile);
 // return pointer
 return (pData);
 }
+
+#endif // USE_SOS_LIBRARY

@@ -3,7 +3,12 @@
 /****************************************************************************/
 
 #include "standard.h"
-#if defined(DOS32)
+
+#ifdef WATCOM
+#define ALLOW_KEYBOARD_INTERRUPT
+#endif
+
+#ifdef ALLOW_KEYBOARD_INTERRUPT
 #include <bios.h>
 
 #define KEYBOARD_INTERRUPT_NUMBER 9
@@ -12,6 +17,7 @@
 #define KEYBOARD_DATA 0x60
 #define STATUS_PORT 0x64
 #define INPUT_BUFFER_FULL 0x02
+#endif
 
 #define KEYBOARD_HIGHEST_SCAN_CODE 255
 
@@ -44,7 +50,9 @@ static T_word16 G_scanKeyEnd = 0 ;
 static T_word16 G_keysPressed = 0 ;
 
 /* Pointer to old BIOS key handler. */
+#ifdef ALLOW_KEYBOARD_INTERRUPT
 static T_void (__interrupt __far *IOldKeyboardInterrupt)(T_void);
+#endif
 
 /* Keep track of the event handler for the keyboard. */
 static T_keyboardEventHandler G_keyboardEventHandler ;
@@ -53,7 +61,9 @@ static T_keyboardEventHandler G_keyboardEventHandler ;
 static E_Boolean G_allowKeyScans = TRUE ;
 
 /* Internal routines: */
+#ifdef ALLOW_KEYBOARD_INTERRUPT
 static T_void __interrupt __far IKeyboardInterrupt(T_void);
+#endif
 
 static T_void IKeyboardClear(T_void) ;
 
@@ -65,40 +75,80 @@ static T_doubleLinkList G_eventStack = DOUBLE_LINK_LIST_BAD ;
 
 static T_word16 G_pauseLevel = 0 ;
 
+#ifdef WIN32
 char G_keyboardToASCII[256] = {
      '\0',  '\0',  '1',   '2',   '3',   '4',   '5',   '6',
-     '7',   '8',   '9',   '0',   '-',   '=',   '\b',  '\t', 
-     'q',   'w',   'e',   'r',   't',   'y',   'u',   'i',  
+     '7',   '8',   '9',   '0',   '-',   '=',   '\b',  '\t',
+     'q',   'w',   'e',   'r',   't',   'y',   'u',   'i',
      'o',   'p',   '[',   ']',   '\r',  '\0',  'a',   's',
-     'd',   'f',   'g',   'h',   'j',   'k',   'l',   ';',  
-     '\'',  '\`',  '\0',  '\\',  'z',   'x',   'c',   'v',  
-     'b',   'n',   'm',   ',',   '.',   '\0',  '\0',  '\0', 
-     '\0',  '\040', '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '!',   '@',   '#',   '$',   '\%',  '\^',
-     '&',   '*',   '(',   ')',   '_',   '+',   '\b',  '\t', 
-     'Q',   'W',   'E',   'R',   'T',   'Y',   'U',   'I',  
+     'd',   'f',   'g',   'h',   'j',   'k',   'l',   ';',
+     '\'',  '`',  '\0',  '\\',  'z',   'x',   'c',   'v',
+     'b',   'n',   'm',   ',',   '.',   '/',  '\0',  '\0',
+     '\0',  '\040', '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '!',   '@',   '#',   '$',   '%',  '^',
+     '&',   '*',   '(',   ')',   '_',   '+',   '\b',  '\t',
+     'Q',   'W',   'E',   'R',   'T',   'Y',   'U',   'I',
      'O',   'P',   '{',   '}',   '\r',  '\0',  'A',   'S',
-     'D',   'F',   'G',   'H',   'J',   'K',   'L',   ':',  
-     '\"',  '\~',  '\0',  '|',   'Z',   'X',   'C',   'V',  
-     'B',   'N',   'M',   '<',   '>',   '\0',  '\0',  '\0', 
-     '\0',  '\040', '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
-     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0', 
+     'D',   'F',   'G',   'H',   'J',   'K',   'L',   ':',
+     '\"',  '~',  '\0',  '|',   'Z',   'X',   'C',   'V',
+     'B',   'N',   'M',   '<',   '>',   '?',  '\0',  '\0',
+     '\0',  '\040', '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
 } ;
+#endif
+
+#ifdef WATCOM
+char G_keyboardToASCII[256] = {
+     '\0',  '\0',  '1',   '2',   '3',   '4',   '5',   '6',
+     '7',   '8',   '9',   '0',   '-',   '=',   '\b',  '\t',
+     'q',   'w',   'e',   'r',   't',   'y',   'u',   'i',
+     'o',   'p',   '[',   ']',   '\r',  '\0',  'a',   's',
+     'd',   'f',   'g',   'h',   'j',   'k',   'l',   ';',
+     '\'',  '\`',  '\0',  '\\',  'z',   'x',   'c',   'v',
+     'b',   'n',   'm',   ',',   '.',   '\/',  '\0',  '\0',
+     '\0',  '\040', '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '!',   '@',   '#',   '$',   '\%',  '\^',
+     '&',   '*',   '(',   ')',   '_',   '+',   '\b',  '\t',
+     'Q',   'W',   'E',   'R',   'T',   'Y',   'U',   'I',
+     'O',   'P',   '{',   '}',   '\r',  '\0',  'A',   'S',
+     'D',   'F',   'G',   'H',   'J',   'K',   'L',   ':',
+     '\"',  '\~',  '\0',  '|',   'Z',   'X',   'C',   'V',
+     'B',   'N',   'M',   '<',   '>',   '?',  '\0',  '\0',
+     '\0',  '\040', '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+     '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',  '\0',
+} ;
+#endif
+
 
 static char G_asciiBuffer[32] ;
 static T_word16 G_asciiStart = 0 ;
@@ -157,6 +207,7 @@ T_void KeyboardOn(T_void)
     /* Note that the keyboard is now on. */
     F_keyboardOn = TRUE ;
 
+#ifdef ALLOW_KEYBOARD_INTERRUPT
     /* We are doing somewhat sensitive stuff, so turn off the interrupts. */
     _disable() ;
 
@@ -171,7 +222,10 @@ T_void KeyboardOn(T_void)
 
     /* Done twiddling with the hardware, turn back on the interrupts. */
     _enable() ;
-
+#else
+    /* Clear the keyboard and event keyboard before we let things go. */
+    IKeyboardClear() ;
+#endif
     G_eventStack = DoubleLinkListCreate() ;
     DebugCheck(G_eventStack != DOUBLE_LINK_LIST_BAD) ;
 
@@ -225,6 +279,7 @@ T_void KeyboardOff(T_void)
     DebugCheck(G_eventStack != DOUBLE_LINK_LIST_BAD) ;
     DoubleLinkListDestroy(G_eventStack) ;
 
+#ifdef ALLOW_KEYBOARD_INTERRUPT
     /* We are doing somewhat sensitive stuff, so turn off the interrupts. */
     _disable() ;
 
@@ -233,6 +288,7 @@ T_void KeyboardOff(T_void)
 
     /* Done twiddling with the hardware, turn back on the interrupts. */
     _enable() ;
+#endif
 
     /* Note that the keyboard is now off. */
     F_keyboardOn = FALSE ;
@@ -802,7 +858,7 @@ T_byte8 KeyboardBufferGet(T_void)
 /*    AMT  07/23/95  Made right and left equivalent for CTRL, ALT, & SHIFT  */
 /*                                                                          */
 /****************************************************************************/
-
+#ifdef ALLOW_KEYBOARD_INTERRUPT
 static T_void __interrupt __far IKeyboardInterrupt(T_void)
 {
     T_byte8 portStatus ;
@@ -988,6 +1044,7 @@ static T_void __interrupt __far IKeyboardInterrupt(T_void)
 #endif
     INDICATOR_LIGHT(8, INDICATOR_RED) ;
 }
+#endif
 
 /****************************************************************************/
 /*  Routine:  IKeyboardSendCommand               * INTERNAL *               */
@@ -1027,7 +1084,7 @@ static T_void __interrupt __far IKeyboardInterrupt(T_void)
 /*    LES  11/22/94  Created                                                */
 /*                                                                          */
 /****************************************************************************/
-
+#ifdef ALLOW_KEYBOARD_INTERRUPT
 static T_void IKeyboardSendCommand(T_byte8 keyboardCommand)
 {
     T_byte8 statusPort ;
@@ -1048,6 +1105,7 @@ static T_void IKeyboardSendCommand(T_byte8 keyboardCommand)
     /* Turn back on interrupts. */
 	_enable() ;
 }
+#endif
 
 /****************************************************************************/
 /*  Routine:  IKeyboardClear                     * INTERNAL *               */
@@ -1335,7 +1393,98 @@ E_Boolean KeyboardBufferReady(T_void)
     else
         return FALSE ;
 }
+
+
+
+#ifdef WIN32
+#include <direct.h>
+#define KEY_IS_DOWN 0x80
+#define KEY_IS_CHANGED 0x01
+static T_byte8 G_lastKeyState[256] ;
+T_void KeyboardUpdate(E_Boolean updateBuffers)
+{
+    //T_byte8 keys[256] ;
+    T_byte8 *keys;
+    T_word32 time ;
+    T_word16 scanCode ;
+    T_byte8 c ;
+    T_word16 next ;
+    T_word16 i ;
+    E_Boolean changed ;
+    E_Boolean newValue ;
+
+    time = TickerGet() ;
+    //GetKeyboardState(keys) ;
+    keys = SDL_GetKeyState(NULL);
+
+    /* Only care about up/down status */
+    for (scanCode=0; scanCode<256; scanCode++)
+        keys[scanCode] &= KEY_IS_DOWN ;
+
+    if (updateBuffers)  {
+        for (i=1; i<256; i++)  {
+            changed = (keys[i] != G_lastKeyState[i])?TRUE:FALSE ;
+            //scanCode = MapVirtualKey(i, 0) ;
+            scanCode = i;
+
+            /* Record the state of the keypress */
+            newValue = (keys[i])?TRUE:FALSE ;
+            changed = (newValue != G_keyTable[scanCode])?TRUE:FALSE ;
+
+            /* Find keys that have changed */
+            if (changed)  {
+                G_keyTable[scanCode] = newValue ;
+                /* Store the key in the scan key buffer */
+                G_scanKeyBuffer[G_scanKeyEnd] = scanCode ; /* | ((G_keyTable[scanCode]==FALSE)?0:0x100) ; */
+                next = (G_scanKeyEnd+1) & (MAX_SCAN_KEY_BUFFER-1) ;
+                if (next != G_scanKeyStart)
+                    G_scanKeyEnd = next ;
+
+                /* If a release and an ascii character, store that in the */
+                /* keyboard buffer. */
+                if ((G_keyTable[scanCode] == FALSE) && 
+                    (IGetAdjustedKey(KEY_SCAN_CODE_ALT) == FALSE) &&
+                    (G_keyTable[KEY_SCAN_CODE_RIGHT_CTRL]==FALSE) &&
+                    (G_keyTable[KEY_SCAN_CODE_LEFT_CTRL]==FALSE))  {
+                    c = scanCode & 0xFF;
+
+                    /* Translate for the shift key */
+                    if (G_keyTable[KEY_SCAN_CODE_RIGHT_SHIFT] |
+                          G_keyTable[KEY_SCAN_CODE_LEFT_SHIFT])
+                        c |= 0x80 ;
+
+                    /* What ascii character is this? */
+                    c = G_keyboardToASCII[c] ;
+
+                    /* Where are we going to roll over to next */
+                    next = (G_asciiEnd+1)&31 ;
+
+                    /* If back at start, don't do */
+                    if (next != G_asciiStart)  {
+                        /* Store in the buffer */
+                        G_asciiBuffer[G_asciiEnd] = c ;
+                        G_asciiEnd = next ;
+                    }
+                }
+
+                /* Check to see if keystroke changed from pressed to released or */
+                /* visa-versa.  If it has, update the key count appropriately. */
+                if (G_keyTable[scanCode] == TRUE)  {
+                    G_keysPressed++ ;
+                    /* Note the time that key is pressed. */
+                    G_keyPressTime[scanCode] = time ;
+                } else if (G_keyTable[scanCode] == FALSE)  {
+                    G_keysPressed-- ;
+                    /* Note how long the key has been held down. */
+                    G_keyHoldTime[scanCode] += time - G_keyPressTime[scanCode] ;
+                }
+            }
+        }
+    }
+    memcpy(G_lastKeyState, keys, sizeof(G_lastKeyState)) ;
+}
 #endif
+
 
 /****************************************************************************/
 /*    END OF FILE:  UIBUTTON.C                                              */

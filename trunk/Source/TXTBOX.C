@@ -1,13 +1,13 @@
 /****************************************************************************/
-/*    FILE:  TXTBOX.C                                                       */
+/*    FILE:  Txtbox.C                                                       */
 /****************************************************************************/
 
 #include "standard.h"
 
-static T_txtboxID G_txtboxArray[MAX_TXTBOXES];
+static T_TxtboxID G_TxtboxArray[MAX_TxtboxES];
 static T_word16 G_currentTextBox = 0;
-static E_txtboxAction G_currentAction = TXTBOX_ACTION_NO_ACTION;
-static T_void TxtboxAppendKeyNoRepag (T_txtboxID txtboxID, T_byte8 scankey);
+static E_TxtboxAction G_currentAction = Txtbox_ACTION_NO_ACTION;
+static T_void TxtboxAppendKeyNoRepag (T_TxtboxID TxtboxID, T_byte8 scankey);
 extern T_byte8 G_extendedColors[MAX_EXTENDED_COLORS];
 
 /****************************************************************************/
@@ -52,7 +52,7 @@ extern T_byte8 G_extendedColors[MAX_EXTENDED_COLORS];
 /****************************************************************************/
 
 
-T_txtboxID TxtboxCreate (T_word16 x1,
+T_TxtboxID TxtboxCreate (T_word16 x1,
                          T_word16 y1,
                          T_word16 x2,
                          T_word16 y2,
@@ -60,15 +60,15 @@ T_txtboxID TxtboxCreate (T_word16 x1,
                          T_word32 maxlength,
                          T_byte8 hotkey,
                          E_Boolean numericonly,
-                         E_txtboxJustify justify,
-                         E_txtboxMode boxmode,
-                         T_txtboxHandler callback)
+                         E_TxtboxJustify justify,
+                         E_TxtboxMode boxmode,
+                         T_TxtboxHandler callback)
 {
     T_word16 i,j;
     T_word16 tx1,ty1,tx2,ty2;
     T_word16 windowheight;
     T_word32 size;
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_graphicStruct *p_graphic;
     T_resourceFile res;
     T_bitfont *p_font;
@@ -84,166 +84,166 @@ T_txtboxID TxtboxCreate (T_word16 x1,
     /* make sure we have a fontname */
     DebugCheck (fontname!=NULL);
 
-    /* search through global txtbox pointer list and find an empty slot */
-    for (i=0;i<MAX_TXTBOXES;i++)
+    /* search through global Txtbox pointer list and find an empty slot */
+    for (i=0;i<MAX_TxtboxES;i++)
     {
 
-        if (G_txtboxArray[i]==NULL)
+        if (G_TxtboxArray[i]==NULL)
         {
             /* found an empty slot, create a new text box */
-            p_txtbox = (T_txtboxStruct *)G_txtboxArray[i];
-            size=sizeof (T_txtboxStruct);
-            p_txtbox = (T_txtboxID)MemAlloc(size);
+            p_Txtbox = (T_TxtboxStruct *)G_TxtboxArray[i];
+            size=sizeof (T_TxtboxStruct);
+            p_Txtbox = (T_TxtboxID)MemAlloc(size);
             /* make sure the memory was allocated */
-            DebugCheck (p_txtbox != NULL);
+            DebugCheck (p_Txtbox != NULL);
             /* now, set the default variables */
-            p_txtbox->p_graphicID=NULL;
-            p_txtbox->p_graphicID=GraphicCreate (x1,y1,NULL);
-            GraphicSetSize (p_txtbox->p_graphicID,x2-x1,y2-y1);
-            GraphicSetPostCallBack (p_txtbox->p_graphicID, TxtboxDrawCallBack, i);
-            DebugCheck (p_txtbox->p_graphicID!=NULL);
-            p_graphic=(T_graphicStruct *)p_txtbox->p_graphicID;
+            p_Txtbox->p_graphicID=NULL;
+            p_Txtbox->p_graphicID=GraphicCreate (x1,y1,NULL);
+            GraphicSetSize (p_Txtbox->p_graphicID,x2-x1,y2-y1);
+            GraphicSetPostCallBack (p_Txtbox->p_graphicID, TxtboxDrawCallBack, i);
+            DebugCheck (p_Txtbox->p_graphicID!=NULL);
+            p_graphic=(T_graphicStruct *)p_Txtbox->p_graphicID;
             DebugCheck (p_graphic->graphicpic==NULL);
 
             /* allocate inital data char */
-            p_txtbox->data = MemAlloc(sizeof(T_byte8)*2);
+            p_Txtbox->data = MemAlloc(sizeof(T_byte8)*2);
             MemCheck (308);
-            DebugCheck(p_txtbox->data != NULL) ;
-            p_txtbox->data[0]='\0';
+            DebugCheck(p_Txtbox->data != NULL) ;
+            p_Txtbox->data[0]='\0';
 
             /* allocate initial linestart/linewidth data space */
-            p_txtbox->linestarts=MemAlloc(sizeof(T_word32)*2);
+            p_Txtbox->linestarts=MemAlloc(sizeof(T_word32)*2);
             MemCheck (309);
-            DebugCheck (p_txtbox->linestarts != NULL);
-            p_txtbox->linestarts[0]=0;
+            DebugCheck (p_Txtbox->linestarts != NULL);
+            p_Txtbox->linestarts[0]=0;
 
-            p_txtbox->linewidths=MemAlloc(sizeof(T_word16)*2);
+            p_Txtbox->linewidths=MemAlloc(sizeof(T_word16)*2);
             MemCheck (310);
-            DebugCheck (p_txtbox->linewidths != NULL);
-            p_txtbox->linewidths[0]=0;
+            DebugCheck (p_Txtbox->linewidths != NULL);
+            p_Txtbox->linewidths[0]=0;
 
             /* copy passed in variables */
-            p_txtbox->lx1 = x1;
-            p_txtbox->lx2 = x2;
-            p_txtbox->ly1 = y1;
-            p_txtbox->ly2 = y2;
-            p_txtbox->mode = boxmode;
-            p_txtbox->txtboxcallback = callback;
-            p_txtbox->justify=justify;
-            p_txtbox->maxlength=maxlength;
-            p_txtbox->hotkey=hotkey;
-            p_txtbox->numericonly=numericonly;
-            p_txtbox->isselected=FALSE;
-            p_txtbox->isfull=FALSE;
-            p_txtbox->sbupID=NULL;
-            p_txtbox->sbdnID=NULL;
-            p_txtbox->sbgrID=NULL;
-            p_txtbox->sbstart=0;
-            p_txtbox->sblength=0;
-            if (p_txtbox->mode==TXTBOX_MODE_EDIT_FORM ||
-                p_txtbox->mode==TXTBOX_MODE_EDIT_FIELD ||
-                p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD)
+            p_Txtbox->lx1 = x1;
+            p_Txtbox->lx2 = x2;
+            p_Txtbox->ly1 = y1;
+            p_Txtbox->ly2 = y2;
+            p_Txtbox->mode = boxmode;
+            p_Txtbox->Txtboxcallback = callback;
+            p_Txtbox->justify=justify;
+            p_Txtbox->maxlength=maxlength;
+            p_Txtbox->hotkey=hotkey;
+            p_Txtbox->numericonly=numericonly;
+            p_Txtbox->isselected=FALSE;
+            p_Txtbox->isfull=FALSE;
+            p_Txtbox->sbupID=NULL;
+            p_Txtbox->sbdnID=NULL;
+            p_Txtbox->sbgrID=NULL;
+            p_Txtbox->sbstart=0;
+            p_Txtbox->sblength=0;
+            if (p_Txtbox->mode==Txtbox_MODE_EDIT_FORM ||
+                p_Txtbox->mode==Txtbox_MODE_EDIT_FIELD ||
+                p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
             {
-                DebugCheck (p_txtbox->justify==FALSE);
+                DebugCheck (p_Txtbox->justify==FALSE);
             }
 
 
             /* set default colors (grey text box) */
 /*
-            p_txtbox->textcolor=29;
-            p_txtbox->textshadow=6;
-            p_txtbox->backcolor=8;
-            p_txtbox->bordercolor1=11;
-            p_txtbox->bordercolor2=4;
-            p_txtbox->hbackcolor=9;
-            p_txtbox->hbordercolor1=12;
-            p_txtbox->hbordercolor2=5;
-            p_txtbox->htextcolor=31;
+            p_Txtbox->textcolor=29;
+            p_Txtbox->textshadow=6;
+            p_Txtbox->backcolor=8;
+            p_Txtbox->bordercolor1=11;
+            p_Txtbox->bordercolor2=4;
+            p_Txtbox->hbackcolor=9;
+            p_Txtbox->hbordercolor1=12;
+            p_Txtbox->hbordercolor2=5;
+            p_Txtbox->htextcolor=31;
 */
-            p_txtbox->textcolor=210;
-            p_txtbox->textshadow=0;
-            p_txtbox->backcolor=68;
-            p_txtbox->bordercolor1=66;
-            p_txtbox->bordercolor2=70;
-            p_txtbox->hbackcolor=67;
-            p_txtbox->hbordercolor1=65;
-            p_txtbox->hbordercolor2=69;
-            p_txtbox->htextcolor=209;
+            p_Txtbox->textcolor=210;
+            p_Txtbox->textshadow=0;
+            p_Txtbox->backcolor=68;
+            p_Txtbox->bordercolor1=66;
+            p_Txtbox->bordercolor2=70;
+            p_Txtbox->hbackcolor=67;
+            p_Txtbox->hbordercolor1=65;
+            p_Txtbox->hbordercolor2=69;
+            p_Txtbox->htextcolor=209;
 
 /*
             switch (boxmode)
             {
-                case TXTBOX_MODE_SELECTION_BOX:
-                p_txtbox->textcolor=210;
-                p_txtbox->textshadow=0;
-                p_txtbox->backcolor=68;
-                p_txtbox->bordercolor1=66;
-                p_txtbox->bordercolor2=70;
-                p_txtbox->hbackcolor=67;
-                p_txtbox->hbordercolor1=65;
-                p_txtbox->hbordercolor2=69;
-                p_txtbox->htextcolor=209;
-                p_txtbox->textcolor=168;
-                p_txtbox->htextcolor=168;
-                p_txtbox->textshadow=0;
-                p_txtbox->backcolor=154;
-                p_txtbox->hbackcolor=154;
-                p_txtbox->bordercolor1=152;
-                p_txtbox->hbordercolor1=152;
-                p_txtbox->bordercolor2=156;
-                p_txtbox->hbordercolor2=156;
+                case Txtbox_MODE_SELECTION_BOX:
+                p_Txtbox->textcolor=210;
+                p_Txtbox->textshadow=0;
+                p_Txtbox->backcolor=68;
+                p_Txtbox->bordercolor1=66;
+                p_Txtbox->bordercolor2=70;
+                p_Txtbox->hbackcolor=67;
+                p_Txtbox->hbordercolor1=65;
+                p_Txtbox->hbordercolor2=69;
+                p_Txtbox->htextcolor=209;
+                p_Txtbox->textcolor=168;
+                p_Txtbox->htextcolor=168;
+                p_Txtbox->textshadow=0;
+                p_Txtbox->backcolor=154;
+                p_Txtbox->hbackcolor=154;
+                p_Txtbox->bordercolor1=152;
+                p_Txtbox->hbordercolor1=152;
+                p_Txtbox->bordercolor2=156;
+                p_Txtbox->hbordercolor2=156;
 
                 break;
 
-                case TXTBOX_MODE_VIEW_NOSCROLL_FORM:
-                case TXTBOX_MODE_VIEW_SCROLL_FORM:
-                p_txtbox->textcolor=210;
-                p_txtbox->textshadow=0;
-                p_txtbox->backcolor=68;
-                p_txtbox->bordercolor1=66;
-                p_txtbox->bordercolor2=70;
+                case Txtbox_MODE_VIEW_NOSCROLL_FORM:
+                case Txtbox_MODE_VIEW_SCROLL_FORM:
+                p_Txtbox->textcolor=210;
+                p_Txtbox->textshadow=0;
+                p_Txtbox->backcolor=68;
+                p_Txtbox->bordercolor1=66;
+                p_Txtbox->bordercolor2=70;
                 default:
                 break;
             }
 */
             /* set the cursor to 0,0 */
-            p_txtbox->cursorl=0;
-            p_txtbox->cursorline=0;
-            p_txtbox->cursorx=0;
-            p_txtbox->cursory=0;
-            p_txtbox->windowstartline=0;
-            p_txtbox->totalrows=1;
+            p_Txtbox->cursorl=0;
+            p_Txtbox->cursorline=0;
+            p_Txtbox->cursorx=0;
+            p_Txtbox->cursory=0;
+            p_Txtbox->windowstartline=0;
+            p_Txtbox->totalrows=1;
 
             res = ResourceOpen ("sample.res");
             /* open up the selected font */
-            p_txtbox->font=ResourceFind (res,fontname);
-            p_font=ResourceLock (p_txtbox->font);
+            p_Txtbox->font=ResourceFind (res,fontname);
+            p_font=ResourceLock (p_Txtbox->font);
             GrSetBitFont (p_font);
 
             /* determine the height of the font */
-            p_txtbox->fontheight=p_font->height;
+            p_Txtbox->fontheight=p_font->height;
 
             /* close the font */
-            ResourceUnlock (p_txtbox->font);
-            ResourceUnfind (p_txtbox->font);
+            ResourceUnlock (p_Txtbox->font);
+            ResourceUnfind (p_Txtbox->font);
             ResourceClose (res);
 
             /* determine how many rows we can fit in the given area */
             windowheight=y2-y1;
-            p_txtbox->windowrows=windowheight/p_txtbox->fontheight;
+            p_Txtbox->windowrows=windowheight/p_Txtbox->fontheight;
 
             /* we made a new textbox, exit from loop */
-            G_txtboxArray[i]=p_txtbox;
+            G_TxtboxArray[i]=p_Txtbox;
             break;
         }
     }
 
     /* make sure we haven't exceeded any limits */
-    DebugCheck (i<MAX_TXTBOXES);
-    DebugCheck (G_txtboxArray[i]!=NULL);
+    DebugCheck (i<MAX_TxtboxES);
+    DebugCheck (G_TxtboxArray[i]!=NULL);
 
     DebugEnd();
-    return (G_txtboxArray[i]);
+    return (G_TxtboxArray[i]);
 
 }
 
@@ -255,7 +255,7 @@ T_txtboxID TxtboxCreate (T_word16 x1,
 /****************************************************************************/
 /*                                                                          */
 /*  Description:                                                            */
-/*  TxtboxDelete removes all data associated with txtboxID (passed in).     */
+/*  TxtboxDelete removes all data associated with TxtboxID (passed in).     */
 /*  TxtboxCleanup removes all data associated with all textboxes.           */
 /*                                                                          */
 /*                                                                          */
@@ -270,7 +270,7 @@ T_txtboxID TxtboxCreate (T_word16 x1,
 /*                                                                          */
 /*  Inputs:                                                                 */
 /*                                                                          */
-/*  txtboxID to delete with TxtboxDelete                                    */
+/*  TxtboxID to delete with TxtboxDelete                                    */
 /*  void for TxtboxCleanup                                                  */
 /*                                                                          *//*                                                                          *//*                                                                          */
 /*  Outputs:                                                                */
@@ -291,41 +291,41 @@ T_txtboxID TxtboxCreate (T_word16 x1,
 /*                                                                          */
 /****************************************************************************/
 
-T_void TxtboxDelete (T_txtboxID txtboxID)
+T_void TxtboxDelete (T_TxtboxID TxtboxID)
 {
     T_word16 i,j;
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxDelete");
 
-    if (txtboxID != NULL)
+    if (TxtboxID != NULL)
     {
-        /* search for txtboxID in list of current textboxes */
-        for (i=0;i<MAX_TXTBOXES;i++)
+        /* search for TxtboxID in list of current textboxes */
+        for (i=0;i<MAX_TxtboxES;i++)
         {
-            if (G_txtboxArray[i]==txtboxID)
+            if (G_TxtboxArray[i]==TxtboxID)
             {
                 if (G_currentTextBox==i) G_currentTextBox=-0;
 
                 /* found it, now kill it */
-                p_txtbox=(T_txtboxStruct *)txtboxID;
+                p_Txtbox=(T_TxtboxStruct *)TxtboxID;
                 /* get rid of the data string */
-                MemFree (p_txtbox->data);
+                MemFree (p_Txtbox->data);
                 MemCheck (300);
-                p_txtbox->data=NULL;
+                p_Txtbox->data=NULL;
                 /* get rid of the linestarts */
-                MemFree (p_txtbox->linestarts);
+                MemFree (p_Txtbox->linestarts);
                 MemCheck (305);
-                p_txtbox->linestarts=NULL;
-                MemFree (p_txtbox->linewidths);
+                p_Txtbox->linestarts=NULL;
+                MemFree (p_Txtbox->linewidths);
                 MemCheck (306);
-                p_txtbox->linewidths=NULL;
+                p_Txtbox->linewidths=NULL;
                 /* get rid of the graphic */
-                GraphicDelete (p_txtbox->p_graphicID);
+                GraphicDelete (p_Txtbox->p_graphicID);
                 /* get rid of the structure */
-                MemFree (G_txtboxArray[i]);
+                MemFree (G_TxtboxArray[i]);
                 MemCheck (301);
-                G_txtboxArray[i]=NULL;
+                G_TxtboxArray[i]=NULL;
                 /* we found it, break */
                 break;
             }
@@ -333,7 +333,7 @@ T_void TxtboxDelete (T_txtboxID txtboxID)
     }
 
     /* make sure we found it */
-//    DebugCheck (i<MAX_TXTBOXES);
+//    DebugCheck (i<MAX_TxtboxES);
 
     DebugEnd();
 }
@@ -346,9 +346,9 @@ T_void TxtboxCleanUp (T_void)
 
     DebugRoutine ("TxtboxCleanUp");
 
-    for (i=0;i<MAX_TXTBOXES;i++)
+    for (i=0;i<MAX_TxtboxES;i++)
     {
-        if (G_txtboxArray[i]!=NULL) TxtboxDelete (G_txtboxArray[i]);
+        if (G_TxtboxArray[i]!=NULL) TxtboxDelete (G_TxtboxArray[i]);
         /* not efficient, but it works */
     }
     G_currentTextBox=0;
@@ -400,149 +400,149 @@ T_void TxtboxCleanUp (T_void)
 /*                                                                          */
 /****************************************************************************/
 
-T_void TxtboxCursTop  (T_txtboxID txtboxID)
+T_void TxtboxCursTop  (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursTop");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
     /* move cursor position to first character */
-    p_txtbox->cursorl=0;
-    p_txtbox->cursorline=0;
+    p_Txtbox->cursorl=0;
+    p_Txtbox->cursorline=0;
     /* move window position to first character */
-    p_txtbox->windowstartline=0;
+    p_Txtbox->windowstartline=0;
 
     /* update the view */
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursBot  (T_txtboxID txtboxID)
+T_void TxtboxCursBot  (T_TxtboxID TxtboxID)
 {
     T_word16 wrow;
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursBot");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    switch (p_txtbox->mode)
+    switch (p_Txtbox->mode)
     {
-        case TXTBOX_MODE_EDIT_FIELD:
-        case TXTBOX_MODE_EDIT_FORM:
-        case TXTBOX_MODE_FIXED_WIDTH_FIELD:
+        case Txtbox_MODE_EDIT_FIELD:
+        case Txtbox_MODE_EDIT_FORM:
+        case Txtbox_MODE_FIXED_WIDTH_FIELD:
         /* move cursor position to last character */
-        p_txtbox->cursorl=strlen(p_txtbox->data);
-        p_txtbox->cursorline=p_txtbox->totalrows;
+        p_Txtbox->cursorl=strlen(p_Txtbox->data);
+        p_Txtbox->cursorline=p_Txtbox->totalrows;
 
         /* calculate the window start line for new window positon */
-        wrow=p_txtbox->cursorline;
+        wrow=p_Txtbox->cursorline;
 
         /* back the window start row up a number of lines */
         /* equal to the height of the window */
-        if (wrow>=p_txtbox->windowrows) wrow-=p_txtbox->windowrows;
-        p_txtbox->windowstartline=wrow;
+        if (wrow>=p_Txtbox->windowrows) wrow-=p_Txtbox->windowrows;
+        p_Txtbox->windowstartline=wrow;
 
         break;
 
-        case TXTBOX_MODE_VIEW_SCROLL_FORM:
-        case TXTBOX_MODE_SELECTION_BOX:
+        case Txtbox_MODE_VIEW_SCROLL_FORM:
+        case Txtbox_MODE_SELECTION_BOX:
 
         /* move the cursor to the beginning of the last line */
-        p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->totalrows];
-        p_txtbox->cursorline=p_txtbox->totalrows;
+        p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->totalrows];
+        p_Txtbox->cursorline=p_Txtbox->totalrows;
         /* calculate the window start line for new window positon */
-        wrow=p_txtbox->cursorline;
+        wrow=p_Txtbox->cursorline;
 
         /* back the window start row up a number of lines */
         /* equal to the height of the window */
-        if (wrow>=p_txtbox->windowrows) wrow-=p_txtbox->windowrows;
-        p_txtbox->windowstartline=wrow;
+        if (wrow>=p_Txtbox->windowrows) wrow-=p_Txtbox->windowrows;
+        p_Txtbox->windowstartline=wrow;
         break;
 
         default:
         break;
     }
     /* update the view */
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursHome  (T_txtboxID txtboxID)
+T_void TxtboxCursHome  (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word16 x,y;
 
     DebugRoutine ("TxtboxCursHome");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
     /* move cursor position x to leftmost screen position possible */
-    p_txtbox->cursorl=TxtboxScanRow(txtboxID, 0, 0);
+    p_Txtbox->cursorl=TxtboxScanRow(TxtboxID, 0, 0);
 
     /* update the view */
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
-T_void TxtboxCursEnd  (T_txtboxID txtboxID)
+T_void TxtboxCursEnd  (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word16 x,y;
 
     DebugRoutine ("TxtboxCursEnd");
-    DebugCheck (txtboxID != NULL);
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    DebugCheck (TxtboxID != NULL);
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    if (p_txtbox->mode < TXTBOX_MODE_VIEW_SCROLL_FORM ||
-        p_txtbox->mode == TXTBOX_MODE_FIXED_WIDTH_FIELD)
+    if (p_Txtbox->mode < Txtbox_MODE_VIEW_SCROLL_FORM ||
+        p_Txtbox->mode == Txtbox_MODE_FIXED_WIDTH_FIELD)
     /* move cursor to the rightmost screen position possible */
-    p_txtbox->cursorl=TxtboxScanRow(txtboxID, 0, 320);
+    p_Txtbox->cursorl=TxtboxScanRow(TxtboxID, 0, 320);
 
     /* update the view */
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursUp   (T_txtboxID txtboxID)
+T_void TxtboxCursUp   (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursUp");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* if we are already on the first line */
-    if (p_txtbox->cursorline==0)
+    if (p_Txtbox->cursorline==0)
     {
         /* set the cursor to the first character */
-        p_txtbox->cursorl=0;
+        p_Txtbox->cursorl=0;
     } else
     {
-        switch (p_txtbox->mode)
+        switch (p_Txtbox->mode)
         {
-            case TXTBOX_MODE_EDIT_FIELD:
-            case TXTBOX_MODE_EDIT_FORM:
-            case TXTBOX_MODE_FIXED_WIDTH_FIELD:
-            p_txtbox->cursorl=TxtboxScanRow(txtboxID, -1, p_txtbox->cursorx);
-            p_txtbox->cursorline--;
+            case Txtbox_MODE_EDIT_FIELD:
+            case Txtbox_MODE_EDIT_FORM:
+            case Txtbox_MODE_FIXED_WIDTH_FIELD:
+            p_Txtbox->cursorl=TxtboxScanRow(TxtboxID, -1, p_Txtbox->cursorx);
+            p_Txtbox->cursorline--;
             break;
 
-            case TXTBOX_MODE_VIEW_SCROLL_FORM:
-            case TXTBOX_MODE_SELECTION_BOX:
-            p_txtbox->cursorline--;
-            p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+            case Txtbox_MODE_VIEW_SCROLL_FORM:
+            case Txtbox_MODE_SELECTION_BOX:
+            p_Txtbox->cursorline--;
+            p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
             break;
 
             default:
@@ -551,60 +551,60 @@ T_void TxtboxCursUp   (T_txtboxID txtboxID)
     }
 
     /* check to see if we've moved the window */
-    if (p_txtbox->windowstartline > p_txtbox->cursorline)
+    if (p_Txtbox->windowstartline > p_Txtbox->cursorline)
     {
-        p_txtbox->windowstartline--;
+        p_Txtbox->windowstartline--;
     }
 
     /* update the view */
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursDn (T_txtboxID txtboxID)
+T_void TxtboxCursDn (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     DebugRoutine ("TxtboxCursDn");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    switch (p_txtbox->mode)
+    switch (p_Txtbox->mode)
     {
-        case TXTBOX_MODE_EDIT_FIELD:
-        case TXTBOX_MODE_FIXED_WIDTH_FIELD:
-        case TXTBOX_MODE_EDIT_FORM:
-        if (p_txtbox->cursorline>=p_txtbox->totalrows)
+        case Txtbox_MODE_EDIT_FIELD:
+        case Txtbox_MODE_FIXED_WIDTH_FIELD:
+        case Txtbox_MODE_EDIT_FORM:
+        if (p_Txtbox->cursorline>=p_Txtbox->totalrows)
         {
             /* we're already at the bottom line */
             /* move the cursor to the last character */
-            p_txtbox->cursorline=p_txtbox->totalrows;
-            p_txtbox->cursorl=strlen (p_txtbox->data);
+            p_Txtbox->cursorline=p_Txtbox->totalrows;
+            p_Txtbox->cursorl=strlen (p_Txtbox->data);
         }
         else
         {
-            p_txtbox->cursorl=TxtboxScanRow(txtboxID, 1, p_txtbox->cursorx);
-            p_txtbox->cursorline++;
+            p_Txtbox->cursorl=TxtboxScanRow(TxtboxID, 1, p_Txtbox->cursorx);
+            p_Txtbox->cursorline++;
         }
         break;
 
-        case TXTBOX_MODE_VIEW_SCROLL_FORM:
+        case Txtbox_MODE_VIEW_SCROLL_FORM:
         /* move window down a click */
-        if (p_txtbox->windowstartline <= p_txtbox->totalrows - p_txtbox->windowrows)
+        if (p_Txtbox->windowstartline <= p_Txtbox->totalrows - p_Txtbox->windowrows)
         {
-            p_txtbox->windowstartline++;
-            p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->windowstartline];
-            p_txtbox->cursorline=p_txtbox->windowstartline;
+            p_Txtbox->windowstartline++;
+            p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->windowstartline];
+            p_Txtbox->cursorline=p_Txtbox->windowstartline;
         }
         break;
 
-        case TXTBOX_MODE_SELECTION_BOX:
-        if (p_txtbox->cursorline < p_txtbox->totalrows)
+        case Txtbox_MODE_SELECTION_BOX:
+        if (p_Txtbox->cursorline < p_Txtbox->totalrows)
         {
-            p_txtbox->cursorline++;
-            p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+            p_Txtbox->cursorline++;
+            p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
         }
         break;
 
@@ -613,202 +613,202 @@ T_void TxtboxCursDn (T_txtboxID txtboxID)
     }
 
     /* check to see if we've moved the window */
-    if (p_txtbox->cursorline >= p_txtbox->windowstartline + p_txtbox->windowrows )
+    if (p_Txtbox->cursorline >= p_Txtbox->windowstartline + p_Txtbox->windowrows )
     {
-        p_txtbox->windowstartline++;
+        p_Txtbox->windowstartline++;
     }
 
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursLeft   (T_txtboxID txtboxID)
+T_void TxtboxCursLeft   (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursLeft");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
     /* subtract one from the cursor l position */
-    if (p_txtbox->cursorl>0)
+    if (p_Txtbox->cursorl>0)
     {
-        p_txtbox->cursorl--;
+        p_Txtbox->cursorl--;
     }
 
     /* check to see if we've changed rows */
-    if (p_txtbox->cursorline > 0)
+    if (p_Txtbox->cursorline > 0)
     {
-        if (p_txtbox->cursorl<p_txtbox->linestarts[p_txtbox->cursorline])
+        if (p_Txtbox->cursorl<p_Txtbox->linestarts[p_Txtbox->cursorline])
         {
             /* subtract one from the cursor line start */
-            p_txtbox->cursorline--;
-            if (p_txtbox->windowstartline > p_txtbox->cursorline)
+            p_Txtbox->cursorline--;
+            if (p_Txtbox->windowstartline > p_Txtbox->cursorline)
             {
-                p_txtbox->windowstartline--;
+                p_Txtbox->windowstartline--;
             }
         }
     }
 
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursRight   (T_txtboxID txtboxID)
+T_void TxtboxCursRight   (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursRight");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
     /* add one to the cursor l position */
-    if (p_txtbox->cursorl < strlen (p_txtbox->data))
+    if (p_Txtbox->cursorl < strlen (p_Txtbox->data))
     {
-        p_txtbox->cursorl++;
+        p_Txtbox->cursorl++;
     }
 
     /* check to see if we've changed rows */
-    if (p_txtbox->cursorline < p_txtbox->totalrows)
+    if (p_Txtbox->cursorline < p_Txtbox->totalrows)
     {
-        if (p_txtbox->cursorl > p_txtbox->linestarts[p_txtbox->cursorline+1])
+        if (p_Txtbox->cursorl > p_Txtbox->linestarts[p_Txtbox->cursorline+1])
         {
             /* increment the cursor line */
-            p_txtbox->cursorline++;
+            p_Txtbox->cursorline++;
             /* see if we've moved the window */
-            if (p_txtbox->cursorline >= p_txtbox->windowstartline+p_txtbox->windowrows)
+            if (p_Txtbox->cursorline >= p_Txtbox->windowstartline+p_Txtbox->windowrows)
             {
-                p_txtbox->windowstartline++;
+                p_Txtbox->windowstartline++;
             }
         }
     }
 
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursPgUp (T_txtboxID txtboxID)
+T_void TxtboxCursPgUp (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursPgUp");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    switch (p_txtbox->mode)
+    switch (p_Txtbox->mode)
     {
-        case TXTBOX_MODE_EDIT_FIELD:
-        case TXTBOX_MODE_FIXED_WIDTH_FIELD:
-        case TXTBOX_MODE_EDIT_FORM:
-        if (p_txtbox->cursorline > p_txtbox->windowrows)
+        case Txtbox_MODE_EDIT_FIELD:
+        case Txtbox_MODE_FIXED_WIDTH_FIELD:
+        case Txtbox_MODE_EDIT_FORM:
+        if (p_Txtbox->cursorline > p_Txtbox->windowrows)
         {
-            p_txtbox->cursorl=TxtboxScanRow(txtboxID, -p_txtbox->windowrows, p_txtbox->cursorx);
-            p_txtbox->cursorline-=p_txtbox->windowrows;
-            if (p_txtbox->windowstartline < p_txtbox->cursorline)
-              p_txtbox->windowstartline = p_txtbox->cursorline;
+            p_Txtbox->cursorl=TxtboxScanRow(TxtboxID, -p_Txtbox->windowrows, p_Txtbox->cursorx);
+            p_Txtbox->cursorline-=p_Txtbox->windowrows;
+            if (p_Txtbox->windowstartline < p_Txtbox->cursorline)
+              p_Txtbox->windowstartline = p_Txtbox->cursorline;
         } else
         {
-            p_txtbox->cursorline=0;
-            p_txtbox->windowstartline=0;
-            p_txtbox->cursorl=0;
+            p_Txtbox->cursorline=0;
+            p_Txtbox->windowstartline=0;
+            p_Txtbox->cursorl=0;
         }
         break;
 
-        case TXTBOX_MODE_VIEW_SCROLL_FORM:
-        if (p_txtbox->windowstartline > p_txtbox->windowrows)
+        case Txtbox_MODE_VIEW_SCROLL_FORM:
+        if (p_Txtbox->windowstartline > p_Txtbox->windowrows)
         {
-            p_txtbox->windowstartline -= p_txtbox->windowrows;
+            p_Txtbox->windowstartline -= p_Txtbox->windowrows;
         } else
         {
-            p_txtbox->windowstartline = 0;
+            p_Txtbox->windowstartline = 0;
         }
-        p_txtbox->cursorline = p_txtbox->windowstartline;
-        p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+        p_Txtbox->cursorline = p_Txtbox->windowstartline;
+        p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
         break;
 
-        case TXTBOX_MODE_SELECTION_BOX:
+        case Txtbox_MODE_SELECTION_BOX:
 
-        if (p_txtbox->cursorline > p_txtbox->windowrows)
+        if (p_Txtbox->cursorline > p_Txtbox->windowrows)
         {
-            p_txtbox->cursorline -= p_txtbox->windowrows;
-            p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+            p_Txtbox->cursorline -= p_Txtbox->windowrows;
+            p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
         } else
         {
-            p_txtbox->cursorline=0;
-            p_txtbox->cursorl=0;
+            p_Txtbox->cursorline=0;
+            p_Txtbox->cursorl=0;
         }
 
         /* move viewing window */
-        if (p_txtbox->windowstartline < p_txtbox->cursorline)
-          p_txtbox->windowstartline = p_txtbox->cursorline;
+        if (p_Txtbox->windowstartline < p_Txtbox->cursorline)
+          p_Txtbox->windowstartline = p_Txtbox->cursorline;
         break;
 
         default:
         break;
     }
     /* update the view */
-    TxtboxUpdate(txtboxID);
+    TxtboxUpdate(TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursPgDn (T_txtboxID txtboxID)
+T_void TxtboxCursPgDn (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursPgDn");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    switch (p_txtbox->mode)
+    switch (p_Txtbox->mode)
     {
-        case TXTBOX_MODE_EDIT_FIELD:
-        case TXTBOX_MODE_FIXED_WIDTH_FIELD:
-        case TXTBOX_MODE_EDIT_FORM:
-        if (p_txtbox->cursorline+p_txtbox->windowrows > p_txtbox->totalrows)
+        case Txtbox_MODE_EDIT_FIELD:
+        case Txtbox_MODE_FIXED_WIDTH_FIELD:
+        case Txtbox_MODE_EDIT_FORM:
+        if (p_Txtbox->cursorline+p_Txtbox->windowrows > p_Txtbox->totalrows)
         {
-            p_txtbox->cursorline=p_txtbox->totalrows;
-            p_txtbox->windowstartline = p_txtbox->cursorline;
-            p_txtbox->cursorl=strlen(p_txtbox->data);
+            p_Txtbox->cursorline=p_Txtbox->totalrows;
+            p_Txtbox->windowstartline = p_Txtbox->cursorline;
+            p_Txtbox->cursorl=strlen(p_Txtbox->data);
         } else
         {
-            p_txtbox->cursorl=TxtboxScanRow(txtboxID, p_txtbox->windowrows, p_txtbox->cursorx);
-            p_txtbox->cursorline += p_txtbox->windowrows;
-            if (p_txtbox->windowstartline < p_txtbox->cursorline-p_txtbox->windowrows)
-              p_txtbox->windowstartline = p_txtbox->cursorline-p_txtbox->windowrows;
+            p_Txtbox->cursorl=TxtboxScanRow(TxtboxID, p_Txtbox->windowrows, p_Txtbox->cursorx);
+            p_Txtbox->cursorline += p_Txtbox->windowrows;
+            if (p_Txtbox->windowstartline < p_Txtbox->cursorline-p_Txtbox->windowrows)
+              p_Txtbox->windowstartline = p_Txtbox->cursorline-p_Txtbox->windowrows;
         }
         break;
 
-        case TXTBOX_MODE_VIEW_SCROLL_FORM:
+        case Txtbox_MODE_VIEW_SCROLL_FORM:
         /*move view down a whole screen */
-        p_txtbox->windowstartline += p_txtbox->windowrows;
-        if (p_txtbox->windowstartline > p_txtbox->totalrows - p_txtbox->windowrows+1)
-          p_txtbox->windowstartline = p_txtbox->totalrows - p_txtbox->windowrows+1;
-        p_txtbox->cursorline = p_txtbox->windowstartline;
-        p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+        p_Txtbox->windowstartline += p_Txtbox->windowrows;
+        if (p_Txtbox->windowstartline > p_Txtbox->totalrows - p_Txtbox->windowrows+1)
+          p_Txtbox->windowstartline = p_Txtbox->totalrows - p_Txtbox->windowrows+1;
+        p_Txtbox->cursorline = p_Txtbox->windowstartline;
+        p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
         break;
 
-        case TXTBOX_MODE_SELECTION_BOX:
+        case Txtbox_MODE_SELECTION_BOX:
 
-        p_txtbox->cursorline+=p_txtbox->windowrows;
-        if (p_txtbox->cursorline > p_txtbox->totalrows)
-          p_txtbox->cursorline=p_txtbox->totalrows;
+        p_Txtbox->cursorline+=p_Txtbox->windowrows;
+        if (p_Txtbox->cursorline > p_Txtbox->totalrows)
+          p_Txtbox->cursorline=p_Txtbox->totalrows;
 
-        p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+        p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
 
         /* move viewing window down if necessary */
-        if (p_txtbox->windowstartline + p_txtbox->windowrows < p_txtbox->cursorline)
+        if (p_Txtbox->windowstartline + p_Txtbox->windowrows < p_Txtbox->cursorline)
         {
-            p_txtbox->windowstartline = p_txtbox->cursorline - p_txtbox->windowrows;
+            p_Txtbox->windowstartline = p_Txtbox->cursorline - p_Txtbox->windowrows;
         }
         break;
 
@@ -817,39 +817,39 @@ T_void TxtboxCursPgDn (T_txtboxID txtboxID)
     }
 
     /* update the view */
-    TxtboxUpdate (txtboxID);
+    TxtboxUpdate (TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxCursSetRow (T_txtboxID txtboxID, T_word16 row)
+T_void TxtboxCursSetRow (T_TxtboxID TxtboxID, T_word16 row)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxCursSetRow");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    if (row > p_txtbox->totalrows) row=p_txtbox->totalrows;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    if (row > p_Txtbox->totalrows) row=p_Txtbox->totalrows;
 
     /* set row */
-    p_txtbox->cursorline=row;
-    p_txtbox->cursorl=p_txtbox->linestarts[row];
-    if (p_txtbox->windowstartline > row)
-     p_txtbox->windowstartline=row;
+    p_Txtbox->cursorline=row;
+    p_Txtbox->cursorl=p_Txtbox->linestarts[row];
+    if (p_Txtbox->windowstartline > row)
+     p_Txtbox->windowstartline=row;
 
     /* force update */
-    TxtboxUpdate (txtboxID);
+    TxtboxUpdate (TxtboxID);
 
     DebugEnd();
 }
 
 
 
-T_word32 TxtboxScanRow (T_txtboxID txtboxID, T_word16 rowinc, T_word16 ox)
+T_word32 TxtboxScanRow (T_TxtboxID TxtboxID, T_word16 rowinc, T_word16 ox)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_bitfont *p_font;
 
     T_word16 startrow,startch,startx,targetx,wsize;
@@ -858,36 +858,36 @@ T_word32 TxtboxScanRow (T_txtboxID txtboxID, T_word16 rowinc, T_word16 ox)
 
     DebugRoutine ("TxtboxScanRow");
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* open the font */
-    p_font = ResourceLock(p_txtbox->font) ;
+    p_font = ResourceLock(p_Txtbox->font) ;
 	GrSetBitFont (p_font);
 
     wsize=GrGetCharacterWidth('W');
 
-    startrow=p_txtbox->cursorline+rowinc;
-    if (startrow > p_txtbox->totalrows) startrow=p_txtbox->totalrows;
+    startrow=p_Txtbox->cursorline+rowinc;
+    if (startrow > p_Txtbox->totalrows) startrow=p_Txtbox->totalrows;
 
-    startch=p_txtbox->linestarts[startrow];
-    startx=p_txtbox->lx1;
+    startch=p_Txtbox->linestarts[startrow];
+    startx=p_Txtbox->lx1;
     targetx=ox;
 
     /* scan the row of text for a near-x cursor positon */
-    for (i=startch;i<strlen(p_txtbox->data);i++)
+    for (i=startch;i<strlen(p_Txtbox->data);i++)
     {
-        if (p_txtbox->data[i]==13)
+        if (p_Txtbox->data[i]==13)
         {
             /* we found a return, set the cursor here */
             retvalue=i;
             break;
-        } else if (p_txtbox->data[i]==9)
+        } else if (p_Txtbox->data[i]==9)
         {
             /* we have a tab here, advance to the nearest tab position */
             /* currently 3*wsize or 3 capital doubleyous :) */
-            startx=((((startx-p_txtbox->lx1)/(3*wsize))+1)*(3*wsize))+p_txtbox->lx1;
+            startx=((((startx-p_Txtbox->lx1)/(3*wsize))+1)*(3*wsize))+p_Txtbox->lx1;
             /* make sure we haven't reached the end of the line */
-            if (startx+wsize>p_txtbox->lx2)
+            if (startx+wsize>p_Txtbox->lx2)
             {
                 /* out of room, set the cursor here */
                 retvalue=i;
@@ -896,8 +896,8 @@ T_word32 TxtboxScanRow (T_txtboxID txtboxID, T_word16 rowinc, T_word16 ox)
         }
         else
         {   /* normal character */
-            startx+=GrGetCharacterWidth (p_txtbox->data[i]);
-            if (startx+wsize>p_txtbox->lx2)
+            startx+=GrGetCharacterWidth (p_Txtbox->data[i]);
+            if (startx+wsize>p_Txtbox->lx2)
             {
                 /* reached end of line, drop down a row */
                 retvalue=i;
@@ -912,14 +912,14 @@ T_word32 TxtboxScanRow (T_txtboxID txtboxID, T_word16 rowinc, T_word16 ox)
         }
     }
 
-    if (retvalue>=strlen(p_txtbox->data)) retvalue=strlen(p_txtbox->data);
+    if (retvalue>=strlen(p_Txtbox->data)) retvalue=strlen(p_Txtbox->data);
 
 
     /* check for total failure */
-    if (retvalue==0 && startx < targetx) retvalue=strlen(p_txtbox->data);
+    if (retvalue==0 && startx < targetx) retvalue=strlen(p_Txtbox->data);
 
     /* close the font */
-    ResourceUnlock (p_txtbox->font);
+    ResourceUnlock (p_Txtbox->font);
 
     DebugEnd();
 
@@ -973,63 +973,63 @@ T_word32 TxtboxScanRow (T_txtboxID txtboxID, T_word16 rowinc, T_word16 ox)
 /****************************************************************************/
 
 
-T_void TxtboxAppendKey (T_txtboxID txtboxID, T_word16 scankey)
+T_void TxtboxAppendKey (T_TxtboxID TxtboxID, T_word16 scankey)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_byte8 *newdata;
     T_word32 len;
     T_word32 i;
 
     DebugRoutine ("TxtboxAppendKey");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* make sure the data string is valid */
-    DebugCheck (p_txtbox->data!=NULL);
+    DebugCheck (p_Txtbox->data!=NULL);
 
     /* make sure we have room for another character */
-    if ((p_txtbox->isfull==FALSE) &&
-        (p_txtbox->numericonly==FALSE || (scankey>='0' && scankey<='9')) &&
-        (strlen(p_txtbox->data)<p_txtbox->maxlength))
+    if ((p_Txtbox->isfull==FALSE) &&
+        (p_Txtbox->numericonly==FALSE || (scankey>='0' && scankey<='9')) &&
+        (strlen(p_Txtbox->data)<p_Txtbox->maxlength))
     {
 
         /* get the length of the current data string */
-        len=strlen(p_txtbox->data);
+        len=strlen(p_Txtbox->data);
 
         /* create a new string with old length +1 */
         newdata=MemAlloc((sizeof(T_byte8))*(len+2));
         MemCheck (1);
 
         /* copy the old contents, up to the cursorl position to the new data area */
-        memcpy (newdata,p_txtbox->data,p_txtbox->cursorl);
+        memcpy (newdata,p_Txtbox->data,p_Txtbox->cursorl);
 
         /* insert the new character */
-        newdata[p_txtbox->cursorl]=scankey;
+        newdata[p_Txtbox->cursorl]=scankey;
 
         /* copy the rest of the old string to the new one */
-        memcpy (newdata+p_txtbox->cursorl+1,
-            p_txtbox->data+p_txtbox->cursorl,len+1-p_txtbox->cursorl);
+        memcpy (newdata+p_Txtbox->cursorl+1,
+            p_Txtbox->data+p_Txtbox->cursorl,len+1-p_Txtbox->cursorl);
 
         /* delete the old data string */
-        MemFree (p_txtbox->data);
+        MemFree (p_Txtbox->data);
         MemCheck (302);
-        p_txtbox->data=NULL;
+        p_Txtbox->data=NULL;
 
         /* set the pointer */
-        p_txtbox->data=newdata;
+        p_Txtbox->data=newdata;
 
         if ((scankey==13) &&
-            (p_txtbox->cursorline==p_txtbox->windowstartline+p_txtbox->windowrows-1))
-            p_txtbox->windowstartline++;
+            (p_Txtbox->cursorline==p_Txtbox->windowstartline+p_Txtbox->windowrows-1))
+            p_Txtbox->windowstartline++;
 
         if (scankey==9 || scankey==13 || scankey==31)
-          TxtboxRepaginateAll (txtboxID);
+          TxtboxRepaginateAll (TxtboxID);
         /* repaginate the form */
-        else TxtboxRepaginate(txtboxID);
+        else TxtboxRepaginate(TxtboxID);
 
         /* add one to the cursor position */
-        TxtboxCursRight (txtboxID);
+        TxtboxCursRight (TxtboxID);
 
     }
     DebugEnd();
@@ -1037,62 +1037,62 @@ T_void TxtboxAppendKey (T_txtboxID txtboxID, T_word16 scankey)
 
 
 
-T_void TxtboxAppendKeyNoRepag (T_txtboxID txtboxID, T_byte8 scankey)
+T_void TxtboxAppendKeyNoRepag (T_TxtboxID TxtboxID, T_byte8 scankey)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_byte8 *newdata;
     T_word32 len;
     T_word32 i;
 
     DebugRoutine ("TxtboxAppendKeyNoRepag");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* make sure the data string is valid */
-    DebugCheck (p_txtbox->data!=NULL);
+    DebugCheck (p_Txtbox->data!=NULL);
 
     /* make sure we have room for another character */
-    if ((p_txtbox->isfull==FALSE) &&
-        (p_txtbox->numericonly==FALSE || (scankey>='0' && scankey<='9')) &&
-        (strlen(p_txtbox->data)<p_txtbox->maxlength))
+    if ((p_Txtbox->isfull==FALSE) &&
+        (p_Txtbox->numericonly==FALSE || (scankey>='0' && scankey<='9')) &&
+        (strlen(p_Txtbox->data)<p_Txtbox->maxlength))
     {
 
         /* get the length of the current data string */
-        len=strlen(p_txtbox->data);
+        len=strlen(p_Txtbox->data);
 
         /* create a new string with old length +1 */
         newdata=MemAlloc((sizeof(T_byte8))*(len+2));
         MemCheck (1);
 
         /* copy the old contents, up to the cursorl position to the new data area */
-        memcpy (newdata,p_txtbox->data,p_txtbox->cursorl);
+        memcpy (newdata,p_Txtbox->data,p_Txtbox->cursorl);
 
         /* insert the new character */
-        newdata[p_txtbox->cursorl]=scankey;
+        newdata[p_Txtbox->cursorl]=scankey;
 
         /* copy the rest of the old string to the new one */
-        memcpy (newdata+p_txtbox->cursorl+1,
-            p_txtbox->data+p_txtbox->cursorl,len+1-p_txtbox->cursorl);
+        memcpy (newdata+p_Txtbox->cursorl+1,
+            p_Txtbox->data+p_Txtbox->cursorl,len+1-p_Txtbox->cursorl);
 
         /* delete the old data string */
-        MemFree (p_txtbox->data);
-        p_txtbox->data=NULL;
+        MemFree (p_Txtbox->data);
+        p_Txtbox->data=NULL;
 
         /* set the pointer */
-        p_txtbox->data=newdata;
+        p_Txtbox->data=newdata;
 
         if ((scankey==13) &&
-            (p_txtbox->cursorline==p_txtbox->windowstartline+p_txtbox->windowrows-1))
-            p_txtbox->windowstartline++;
+            (p_Txtbox->cursorline==p_Txtbox->windowstartline+p_Txtbox->windowrows-1))
+            p_Txtbox->windowstartline++;
 
         if (scankey==9 || scankey==13 || scankey==31)
-          TxtboxRepaginate (txtboxID);
+          TxtboxRepaginate (TxtboxID);
         /* repaginate the form */
-//        else TxtboxRepaginate(txtboxID);
+//        else TxtboxRepaginate(TxtboxID);
 
         /* add one to the cursor position */
-        TxtboxCursRight (txtboxID);
+        TxtboxCursRight (TxtboxID);
 
     }
     DebugEnd();
@@ -1100,52 +1100,52 @@ T_void TxtboxAppendKeyNoRepag (T_txtboxID txtboxID, T_byte8 scankey)
 
 
 
-T_void TxtboxBackSpace (T_txtboxID txtboxID)
+T_void TxtboxBackSpace (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_byte8 *newdata;
     T_word32 len;
     T_word32 i;
 
     DebugRoutine ("TxtboxBackSpace");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* make sure the data string is valid */
-    DebugCheck (p_txtbox->data!=NULL);
+    DebugCheck (p_Txtbox->data!=NULL);
 
     /* get the length of the current data string */
-    len=strlen(p_txtbox->data);
+    len=strlen(p_Txtbox->data);
 
     /* make sure we have a character to delete ! */
-    if (len>0 && p_txtbox->cursorl>0)
+    if (len>0 && p_Txtbox->cursorl>0)
     {
 
         /* create a new string with old length -1 */
         newdata=MemAlloc((sizeof(T_byte8))*(len+1));
 
         /* copy the old contents, up to the cursorl-1 position to the new data area */
-        memcpy (newdata,p_txtbox->data,p_txtbox->cursorl-1);
+        memcpy (newdata,p_Txtbox->data,p_Txtbox->cursorl-1);
 
         /* copy the rest of the old string to the new one */
-        memcpy (newdata+p_txtbox->cursorl-1,
-                p_txtbox->data+p_txtbox->cursorl,
-                len-p_txtbox->cursorl+1);
+        memcpy (newdata+p_Txtbox->cursorl-1,
+                p_Txtbox->data+p_Txtbox->cursorl,
+                len-p_Txtbox->cursorl+1);
 
         /* delete the old data string */
-        MemFree (p_txtbox->data);
+        MemFree (p_Txtbox->data);
         MemCheck (303);
-        p_txtbox->data=NULL;
+        p_Txtbox->data=NULL;
 
         /* set the pointer */
-        p_txtbox->data=newdata;
+        p_Txtbox->data=newdata;
 
         /* repaginate the form */
-        TxtboxRepaginateAll(txtboxID);
+        TxtboxRepaginateAll(TxtboxID);
 
         /* subtract one to the cursor position */
-        TxtboxCursLeft (txtboxID);
+        TxtboxCursLeft (TxtboxID);
     }
 
     DebugEnd();
@@ -1154,15 +1154,15 @@ T_void TxtboxBackSpace (T_txtboxID txtboxID)
 
 
 
-T_void TxtboxAppendString (T_txtboxID txtboxID, T_byte8 *data)
+T_void TxtboxAppendString (T_TxtboxID TxtboxID, T_byte8 *data)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_byte8 ch;
     T_byte8 val;
     T_word16 i;
 
     DebugRoutine ("TxtboxAppendString");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
     /* scan for control shifted (^) characters */
     for (i=0;i<strlen(data);i++)
@@ -1176,35 +1176,35 @@ T_void TxtboxAppendString (T_txtboxID txtboxID, T_byte8 *data)
             val+=((data[++i]-'0')*10);
             val+=(data[++i]-'0');
 
-            TxtboxAppendKeyNoRepag(txtboxID,val+128);
+            TxtboxAppendKeyNoRepag(TxtboxID,val+128);
 //tempstr2[j++]=val+128;
-        } else TxtboxAppendKeyNoRepag (txtboxID, data[i]);
+        } else TxtboxAppendKeyNoRepag (TxtboxID, data[i]);
 //tempstr2[j++]=tempstr[i];
     }
 
-//    TxtboxRepaginateAll (txtboxID);
+//    TxtboxRepaginateAll (TxtboxID);
     DebugEnd();
 }
 
 
-T_void TxtboxSetData (T_txtboxID txtboxID, T_byte8 *string)
+T_void TxtboxSetData (T_TxtboxID TxtboxID, T_byte8 *string)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word16 i,cnt=0;
     T_byte8 val;
     DebugRoutine ("TxtboxSetData");
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* delete old data string */
-    MemFree (p_txtbox->data);
+    MemFree (p_Txtbox->data);
     MemCheck (304);
-    p_txtbox->data=NULL;
+    p_Txtbox->data=NULL;
 
     /* allocate a new data block the size of the string parameter */
-    p_txtbox->data= MemAlloc(sizeof(T_byte8)*strlen(string)+2);
+    p_Txtbox->data= MemAlloc(sizeof(T_byte8)*strlen(string)+2);
 
     /* make sure it worked */
-    DebugCheck (p_txtbox->data != NULL);
+    DebugCheck (p_Txtbox->data != NULL);
 
     /* copy the data string */
     for (i=0;i<strlen(string);i++)
@@ -1218,43 +1218,43 @@ T_void TxtboxSetData (T_txtboxID txtboxID, T_byte8 *string)
             val+=((string[++i]-'0')*10);
             val+=(string[++i]-'0');
 
-            p_txtbox->data[cnt++]=val+128;
-        } else p_txtbox->data[cnt++]=string[i];
+            p_Txtbox->data[cnt++]=val+128;
+        } else p_Txtbox->data[cnt++]=string[i];
     }
-    p_txtbox->data[cnt]='\0';
+    p_Txtbox->data[cnt]='\0';
 
     /* move the cursor to the top */
-    p_txtbox->cursorl=0;
-    p_txtbox->cursorline=0;
-    p_txtbox->windowstartline=0;
+    p_Txtbox->cursorl=0;
+    p_Txtbox->cursorline=0;
+    p_Txtbox->windowstartline=0;
 
     /* repaginate the form */
-    TxtboxRepaginateAll (txtboxID);
+    TxtboxRepaginateAll (TxtboxID);
 
     /* force a screen update */
-    TxtboxUpdate (txtboxID);
+    TxtboxUpdate (TxtboxID);
 
     DebugEnd();
 }
 
-T_void TxtboxSetNData (T_txtboxID txtboxID, T_byte8 *string, T_word32 len)
+T_void TxtboxSetNData (T_TxtboxID TxtboxID, T_byte8 *string, T_word32 len)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word16 i,cnt=0;
     T_byte8 val;
     DebugRoutine ("TxtboxSetData");
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* delete old data string */
-    MemFree (p_txtbox->data);
+    MemFree (p_Txtbox->data);
     MemCheck (304);
-    p_txtbox->data=NULL;
+    p_Txtbox->data=NULL;
 
     /* allocate a new data block the size of the string parameter */
-    p_txtbox->data= MemAlloc(sizeof(T_byte8)*len+2);
+    p_Txtbox->data= MemAlloc(sizeof(T_byte8)*len+2);
 
     /* make sure it worked */
-    DebugCheck (p_txtbox->data != NULL);
+    DebugCheck (p_Txtbox->data != NULL);
 
     /* copy the data string */
     for (i=0;i<len;i++)
@@ -1268,21 +1268,21 @@ T_void TxtboxSetNData (T_txtboxID txtboxID, T_byte8 *string, T_word32 len)
             val+=((string[++i]-'0')*10);
             val+=(string[++i]-'0');
 
-            p_txtbox->data[cnt++]=val+128;
-        } else p_txtbox->data[cnt++]=string[i];
+            p_Txtbox->data[cnt++]=val+128;
+        } else p_Txtbox->data[cnt++]=string[i];
     }
-    p_txtbox->data[cnt]='\0';
+    p_Txtbox->data[cnt]='\0';
 
     /* move the cursor to the top */
-    p_txtbox->cursorl=0;
-    p_txtbox->cursorline=0;
-    p_txtbox->windowstartline=0;
+    p_Txtbox->cursorl=0;
+    p_Txtbox->cursorline=0;
+    p_Txtbox->windowstartline=0;
 
     /* repaginate the form */
-    TxtboxRepaginateAll (txtboxID);
+    TxtboxRepaginateAll (TxtboxID);
 
     /* force a screen update */
-    TxtboxUpdate (txtboxID);
+    TxtboxUpdate (TxtboxID);
 
     DebugEnd();
 }
@@ -1291,53 +1291,53 @@ T_void TxtboxSetNData (T_txtboxID txtboxID, T_byte8 *string, T_word32 len)
 
 
 
-T_byte8 *TxtboxGetData (T_txtboxID txtboxID)
+T_byte8 *TxtboxGetData (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxGetData");
-    DebugCheck (txtboxID != NULL);
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    DebugCheck (TxtboxID != NULL);
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     DebugEnd();
-    return (p_txtbox->data);
+    return (p_Txtbox->data);
 }
 
-T_word32 TxtboxGetDataLength (T_txtboxID txtboxID)
+T_word32 TxtboxGetDataLength (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxGetDataLength");
-    DebugCheck (txtboxID != NULL);
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    DebugCheck (TxtboxID != NULL);
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     DebugEnd();
-    return (strlen(p_txtbox->data));
+    return (strlen(p_Txtbox->data));
 }
 
 
-T_void TxtboxSetColor (T_txtboxID txtboxID,
+T_void TxtboxSetColor (T_TxtboxID TxtboxID,
                        T_byte8 txtcolor,
                        T_byte8 bkcolor,
                        T_byte8 txtshadow,
                        T_byte8 bordclr1,
                        T_byte8 bordclr2)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxSetColor");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    p_txtbox->textcolor=txtcolor;
-    p_txtbox->backcolor=bkcolor;
-    p_txtbox->textshadow=txtshadow;
-    p_txtbox->bordercolor1=bordclr1,
-    p_txtbox->bordercolor2=bordclr2;
+    p_Txtbox->textcolor=txtcolor;
+    p_Txtbox->backcolor=bkcolor;
+    p_Txtbox->textshadow=txtshadow;
+    p_Txtbox->bordercolor1=bordclr1,
+    p_Txtbox->bordercolor2=bordclr2;
 
     /* force an update */
-    TxtboxUpdate (txtboxID);
+    TxtboxUpdate (TxtboxID);
 
     DebugEnd();
 }
@@ -1387,20 +1387,20 @@ T_void TxtboxSetColor (T_txtboxID txtboxID,
 /****************************************************************************/
 
 
-E_Boolean TxtboxIsAt (T_txtboxID txtboxID, T_word16 x, T_word16 y)
+E_Boolean TxtboxIsAt (T_TxtboxID TxtboxID, T_word16 x, T_word16 y)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     E_Boolean retvalue=FALSE;
 
     DebugRoutine ("TxtboxIsAt");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    if ((x>=p_txtbox->lx1) &&
-        (x<=p_txtbox->lx2) &&
-        (y>=p_txtbox->ly1) &&
-        (y<=p_txtbox->ly2)) retvalue=TRUE;
+    if ((x>=p_Txtbox->lx1) &&
+        (x<=p_Txtbox->lx2) &&
+        (y>=p_Txtbox->ly1) &&
+        (y<=p_Txtbox->ly2)) retvalue=TRUE;
 
     DebugEnd();
 
@@ -1451,13 +1451,13 @@ E_Boolean TxtboxIsAt (T_txtboxID txtboxID, T_word16 x, T_word16 y)
 T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
 {
 
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_byte8 *data,*tempstr;
     DebugRoutine ("TxtboxKeyControl");
 
-    p_txtbox=(T_txtboxStruct *)G_txtboxArray[G_currentTextBox];
+    p_Txtbox=(T_TxtboxStruct *)G_TxtboxArray[G_currentTextBox];
 
-    G_currentAction = TXTBOX_ACTION_NO_ACTION;
+    G_currentAction = Txtbox_ACTION_NO_ACTION;
 
     switch (event)
     {
@@ -1466,29 +1466,29 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
         if (scankey==8)
         {
             /* recieved a backspace, see what to do with it */
-            if (p_txtbox->mode<TXTBOX_MODE_VIEW_SCROLL_FORM ||
-                p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD)
+            if (p_Txtbox->mode<Txtbox_MODE_VIEW_SCROLL_FORM ||
+                p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
             {
-                TxtboxBackSpace (G_txtboxArray[G_currentTextBox]);
-                G_currentAction = TXTBOX_ACTION_DATA_CHANGED;
+                TxtboxBackSpace (G_TxtboxArray[G_currentTextBox]);
+                G_currentAction = Txtbox_ACTION_DATA_CHANGED;
             }
         }
         else if (scankey>31 && scankey < 128)
         {
-            if (p_txtbox->mode<TXTBOX_MODE_VIEW_SCROLL_FORM)
+            if (p_Txtbox->mode<Txtbox_MODE_VIEW_SCROLL_FORM)
             {
-                TxtboxAppendKey(G_txtboxArray[G_currentTextBox],scankey);
-                G_currentAction = TXTBOX_ACTION_DATA_CHANGED;
+                TxtboxAppendKey(G_TxtboxArray[G_currentTextBox],scankey);
+                G_currentAction = Txtbox_ACTION_DATA_CHANGED;
             }
-            else if (p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD)
+            else if (p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
             {
                 /* see if the new character will fit */
-                data=TxtboxGetData(G_txtboxArray[G_currentTextBox]);
+                data=TxtboxGetData(G_TxtboxArray[G_currentTextBox]);
                 tempstr=MemAlloc(strlen(data)+4);
                 sprintf (tempstr,"%sWW",data);
-                if (TxtboxCanFit (G_txtboxArray[G_currentTextBox],tempstr)==strlen(tempstr))
+                if (TxtboxCanFit (G_TxtboxArray[G_currentTextBox],tempstr)==strlen(tempstr))
                 {
-                    TxtboxAppendKey(G_txtboxArray[G_currentTextBox],scankey);
+                    TxtboxAppendKey(G_TxtboxArray[G_currentTextBox],scankey);
                 }
                 MemFree(tempstr);
             }
@@ -1496,13 +1496,13 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
         else if (scankey==9)
         {
             /* we've got a tab, figure out what to do with it */
-            switch (p_txtbox->mode)
+            switch (p_Txtbox->mode)
             {
                 /* in these modes the tab key will advance a field */
-                case TXTBOX_MODE_EDIT_FIELD:
-                case TXTBOX_MODE_FIXED_WIDTH_FIELD:
-                case TXTBOX_MODE_VIEW_SCROLL_FORM:
-                case TXTBOX_MODE_SELECTION_BOX:
+                case Txtbox_MODE_EDIT_FIELD:
+                case Txtbox_MODE_FIXED_WIDTH_FIELD:
+                case Txtbox_MODE_VIEW_SCROLL_FORM:
+                case Txtbox_MODE_SELECTION_BOX:
                 if (KeyboardGetScanCode(KEY_SCAN_CODE_LEFT_SHIFT)==TRUE ||
                     KeyboardGetScanCode(KEY_SCAN_CODE_RIGHT_SHIFT)==TRUE)
                 {
@@ -1513,12 +1513,12 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
                 {
                     TxtboxNextBox();
                 }
-                p_txtbox=(T_txtboxStruct *)G_txtboxArray[G_currentTextBox];
-                G_currentAction = TXTBOX_ACTION_GAINED_FOCUS;
+                p_Txtbox=(T_TxtboxStruct *)G_TxtboxArray[G_currentTextBox];
+                G_currentAction = Txtbox_ACTION_GAINED_FOCUS;
                 break;
 
                 /* in these modes, ctrl-shift is needed to advance a field */
-                case TXTBOX_MODE_EDIT_FORM:
+                case Txtbox_MODE_EDIT_FORM:
                 if (KeyboardGetScanCode(KEY_SCAN_CODE_LEFT_CTRL)==TRUE ||
                     KeyboardGetScanCode(KEY_SCAN_CODE_RIGHT_CTRL)==TRUE)
                 {
@@ -1533,13 +1533,13 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
                     {
                         TxtboxNextBox();
                     }
-                    p_txtbox=(T_txtboxStruct *)G_txtboxArray[G_currentTextBox];
-                    G_currentAction = TXTBOX_ACTION_GAINED_FOCUS;
+                    p_Txtbox=(T_TxtboxStruct *)G_TxtboxArray[G_currentTextBox];
+                    G_currentAction = Txtbox_ACTION_GAINED_FOCUS;
                 }
                 else  /* ctrl is not being held, add a tab to the field */
                 {
-                    TxtboxAppendKey(G_txtboxArray[G_currentTextBox],scankey);
-                    G_currentAction = TXTBOX_ACTION_DATA_CHANGED;
+                    TxtboxAppendKey(G_TxtboxArray[G_currentTextBox],scankey);
+                    G_currentAction = Txtbox_ACTION_DATA_CHANGED;
                 }
                 break;
                 default:
@@ -1549,27 +1549,27 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
         else if (scankey==13)
         {
             /* we've got a return here, figure out what to do with it */
-            switch (p_txtbox->mode)
+            switch (p_Txtbox->mode)
             {
                 /* in these modes the return key will advance a field */
-                case TXTBOX_MODE_EDIT_FIELD:
-                case TXTBOX_MODE_FIXED_WIDTH_FIELD:
-                case TXTBOX_MODE_VIEW_SCROLL_FORM:
-                G_currentAction = TXTBOX_ACTION_ACCEPTED;
-                if (p_txtbox->txtboxcallback != NULL)
+                case Txtbox_MODE_EDIT_FIELD:
+                case Txtbox_MODE_FIXED_WIDTH_FIELD:
+                case Txtbox_MODE_VIEW_SCROLL_FORM:
+                G_currentAction = Txtbox_ACTION_ACCEPTED;
+                if (p_Txtbox->Txtboxcallback != NULL)
                 {
-                    p_txtbox->txtboxcallback (G_txtboxArray[G_currentTextBox]);
+                    p_Txtbox->Txtboxcallback (G_TxtboxArray[G_currentTextBox]);
                 }
 
 //                TxtboxNextBox();
-                p_txtbox=(T_txtboxStruct *)G_txtboxArray[G_currentTextBox];
-                G_currentAction = TXTBOX_ACTION_GAINED_FOCUS;
+                p_Txtbox=(T_TxtboxStruct *)G_TxtboxArray[G_currentTextBox];
+                G_currentAction = Txtbox_ACTION_GAINED_FOCUS;
                 break;
 
                 /* in these modes, return is sent as a character */
-                case TXTBOX_MODE_EDIT_FORM:
-                TxtboxAppendKey(G_txtboxArray[G_currentTextBox],scankey);
-                G_currentAction = TXTBOX_ACTION_DATA_CHANGED;
+                case Txtbox_MODE_EDIT_FORM:
+                TxtboxAppendKey(G_TxtboxArray[G_currentTextBox],scankey);
+                G_currentAction = Txtbox_ACTION_DATA_CHANGED;
                 default:
                 break;
             }
@@ -1581,80 +1581,80 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
 
         if (scankey==KEY_SCAN_CODE_LEFT)
         {
-            if (p_txtbox->mode<TXTBOX_MODE_VIEW_SCROLL_FORM ||
-                p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD)
+            if (p_Txtbox->mode<Txtbox_MODE_VIEW_SCROLL_FORM ||
+                p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
             {
-                TxtboxCursLeft (G_txtboxArray[G_currentTextBox]);
-                G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+                TxtboxCursLeft (G_TxtboxArray[G_currentTextBox]);
+                G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
             }
         }
         else if (scankey==KEY_SCAN_CODE_RIGHT)
         {
-            if (p_txtbox->mode<TXTBOX_MODE_VIEW_SCROLL_FORM ||
-                p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD)
+            if (p_Txtbox->mode<Txtbox_MODE_VIEW_SCROLL_FORM ||
+                p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
             {
-                TxtboxCursRight (G_txtboxArray[G_currentTextBox]);
-                G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+                TxtboxCursRight (G_TxtboxArray[G_currentTextBox]);
+                G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
             }
         }
         else if (scankey==KEY_SCAN_CODE_UP)
         {
-            TxtboxCursUp (G_txtboxArray[G_currentTextBox]);
-            G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+            TxtboxCursUp (G_TxtboxArray[G_currentTextBox]);
+            G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
         }
         else if (scankey==KEY_SCAN_CODE_DOWN)
         {
-            TxtboxCursDn (G_txtboxArray[G_currentTextBox]);
-            G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+            TxtboxCursDn (G_TxtboxArray[G_currentTextBox]);
+            G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
         }
         else if (scankey==KEY_SCAN_CODE_PGUP)
         {
-            TxtboxCursPgUp (G_txtboxArray[G_currentTextBox]);
-            G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+            TxtboxCursPgUp (G_TxtboxArray[G_currentTextBox]);
+            G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
         }
         else if (scankey==KEY_SCAN_CODE_PGDN)
         {
-            TxtboxCursPgDn (G_txtboxArray[G_currentTextBox]);
-            G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+            TxtboxCursPgDn (G_TxtboxArray[G_currentTextBox]);
+            G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
         }
         else if (scankey==KEY_SCAN_CODE_HOME)
         {
             if (KeyboardGetScanCode (KEY_SCAN_CODE_CTRL)==TRUE)
             {
-               TxtboxCursTop (G_txtboxArray[G_currentTextBox]);
+               TxtboxCursTop (G_TxtboxArray[G_currentTextBox]);
             }
             else
             {
-                TxtboxCursHome (G_txtboxArray[G_currentTextBox]);
+                TxtboxCursHome (G_TxtboxArray[G_currentTextBox]);
             }
-            G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+            G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
         }
         else if (scankey==KEY_SCAN_CODE_END)
         {
             if (KeyboardGetScanCode (KEY_SCAN_CODE_CTRL)==TRUE)
             {
-               TxtboxCursBot (G_txtboxArray[G_currentTextBox]);
+               TxtboxCursBot (G_TxtboxArray[G_currentTextBox]);
             }
             else
             {
-                TxtboxCursEnd (G_txtboxArray[G_currentTextBox]);
+                TxtboxCursEnd (G_TxtboxArray[G_currentTextBox]);
             }
-            G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+            G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
         }
         else if (scankey==KEY_SCAN_CODE_DELETE)
         {
-            if (p_txtbox->mode<TXTBOX_MODE_VIEW_SCROLL_FORM ||
-                p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD)
+            if (p_Txtbox->mode<Txtbox_MODE_VIEW_SCROLL_FORM ||
+                p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
             {
                 /* make sure we have a character to delete */
-                if (p_txtbox->cursorl<strlen(p_txtbox->data))
+                if (p_Txtbox->cursorl<strlen(p_Txtbox->data))
                 {
                     /* move cursor right */
-                    TxtboxCursRight (G_txtboxArray[G_currentTextBox]);
+                    TxtboxCursRight (G_TxtboxArray[G_currentTextBox]);
                     /* backspace once */
-                    TxtboxBackSpace (G_txtboxArray[G_currentTextBox]);
+                    TxtboxBackSpace (G_TxtboxArray[G_currentTextBox]);
                 }
-                G_currentAction = TXTBOX_ACTION_DATA_CHANGED;
+                G_currentAction = Txtbox_ACTION_DATA_CHANGED;
             }
         }
         break;
@@ -1663,9 +1663,9 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
         break;
     }
 
-    if (p_txtbox->txtboxcallback != NULL)
+    if (p_Txtbox->Txtboxcallback != NULL)
     {
-        p_txtbox->txtboxcallback (G_txtboxArray[G_currentTextBox]);
+        p_Txtbox->Txtboxcallback (G_TxtboxArray[G_currentTextBox]);
     }
 
     DebugEnd();
@@ -1674,8 +1674,8 @@ T_void TxtboxKeyControl (E_keyboardEvent event, T_word16 scankey)
 
 T_void TxtboxMouseControl (E_mouseEvent event, T_word16 x, T_word16 y, T_buttonClick button)
 {
-    T_txtboxStruct *p_txtbox,*p_txtbox2;
-    static T_txtboxID *selected,*selectedsb;
+    T_TxtboxStruct *p_Txtbox,*p_Txtbox2;
+    static T_TxtboxID *selected,*selectedsb;
     T_sword16 row;
     T_word16 i;
 
@@ -1688,74 +1688,74 @@ T_void TxtboxMouseControl (E_mouseEvent event, T_word16 x, T_word16 y, T_buttonC
         selectedsb=NULL;
         selected=NULL;
 
-        for (i=0;i<MAX_TXTBOXES;i++)
+        for (i=0;i<MAX_TxtboxES;i++)
         {
-            if (G_txtboxArray[i]!=NULL)
+            if (G_TxtboxArray[i]!=NULL)
             {
-                p_txtbox=(T_txtboxStruct *)G_txtboxArray[i];
-                if (p_txtbox->sbgrID!=NULL)
+                p_Txtbox=(T_TxtboxStruct *)G_TxtboxArray[i];
+                if (p_Txtbox->sbgrID!=NULL)
                 {
-                    if (GraphicIsAt(p_txtbox->sbgrID,x,y))
+                    if (GraphicIsAt(p_Txtbox->sbgrID,x,y))
                     {
-                        TxtboxMoveSB (G_txtboxArray[i],y);
+                        TxtboxMoveSB (G_TxtboxArray[i],y);
                         /* set selected scroll bar for dragging */
-                        selectedsb=G_txtboxArray[i];
-                        G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
-                        if (p_txtbox->txtboxcallback != NULL) p_txtbox->txtboxcallback (G_txtboxArray[i]);
+                        selectedsb=G_TxtboxArray[i];
+                        G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
+                        if (p_Txtbox->Txtboxcallback != NULL) p_Txtbox->Txtboxcallback (G_TxtboxArray[i]);
                     }
                 }
 
-                if (TxtboxIsAt(G_txtboxArray[i],x,y))
+                if (TxtboxIsAt(G_TxtboxArray[i],x,y))
                 {
-                    if (p_txtbox->mode<TXTBOX_MODE_VIEW_NOSCROLL_FORM ||
-                        p_txtbox->mode>TXTBOX_MODE_VIEW_NOSCROLL_FORM)
+                    if (p_Txtbox->mode<Txtbox_MODE_VIEW_NOSCROLL_FORM ||
+                        p_Txtbox->mode>Txtbox_MODE_VIEW_NOSCROLL_FORM)
                     {
                         /* select this text box */
-                        p_txtbox2=(T_txtboxStruct *)G_txtboxArray[G_currentTextBox];
-                        p_txtbox2->isselected=FALSE;
-                        G_currentAction = TXTBOX_ACTION_LOST_FOCUS;
-                        if (p_txtbox2->txtboxcallback != NULL) p_txtbox2->txtboxcallback (G_txtboxArray[G_currentTextBox]);
+                        p_Txtbox2=(T_TxtboxStruct *)G_TxtboxArray[G_currentTextBox];
+                        p_Txtbox2->isselected=FALSE;
+                        G_currentAction = Txtbox_ACTION_LOST_FOCUS;
+                        if (p_Txtbox2->Txtboxcallback != NULL) p_Txtbox2->Txtboxcallback (G_TxtboxArray[G_currentTextBox]);
 
-                        if (G_txtboxArray[G_currentTextBox] != NULL)
-                          TxtboxUpdate (G_txtboxArray[G_currentTextBox]);
-                        p_txtbox->isselected=TRUE;
+                        if (G_TxtboxArray[G_currentTextBox] != NULL)
+                          TxtboxUpdate (G_TxtboxArray[G_currentTextBox]);
+                        p_Txtbox->isselected=TRUE;
                         G_currentTextBox=i;
-                        G_currentAction = TXTBOX_ACTION_GAINED_FOCUS;
-                        if (p_txtbox->txtboxcallback != NULL) p_txtbox->txtboxcallback (G_txtboxArray[i]);
+                        G_currentAction = Txtbox_ACTION_GAINED_FOCUS;
+                        if (p_Txtbox->Txtboxcallback != NULL) p_Txtbox->Txtboxcallback (G_TxtboxArray[i]);
 
                         /* set selected */
-                        selected=G_txtboxArray[i];
+                        selected=G_TxtboxArray[i];
 
                         /* move cursor to selected row or character */
-                        switch (p_txtbox->mode)
+                        switch (p_Txtbox->mode)
                         {
-                            case TXTBOX_MODE_EDIT_FORM:
-                            case TXTBOX_MODE_FIXED_WIDTH_FIELD:
-                            case TXTBOX_MODE_EDIT_FIELD:
+                            case Txtbox_MODE_EDIT_FORM:
+                            case Txtbox_MODE_FIXED_WIDTH_FIELD:
+                            case Txtbox_MODE_EDIT_FIELD:
                             /* determine row, col pointed at */
-                            row=(y-p_txtbox->ly1)/p_txtbox->fontheight;
-                            p_txtbox->cursorline=p_txtbox->windowstartline+row;
-                            if (p_txtbox->cursorline>p_txtbox->totalrows) p_txtbox->cursorline=p_txtbox->totalrows;
-                            p_txtbox->cursorl=TxtboxScanRow (G_txtboxArray[i],0,x);
+                            row=(y-p_Txtbox->ly1)/p_Txtbox->fontheight;
+                            p_Txtbox->cursorline=p_Txtbox->windowstartline+row;
+                            if (p_Txtbox->cursorline>p_Txtbox->totalrows) p_Txtbox->cursorline=p_Txtbox->totalrows;
+                            p_Txtbox->cursorl=TxtboxScanRow (G_TxtboxArray[i],0,x);
                             break;
 
-                            case TXTBOX_MODE_SELECTION_BOX:
-                            G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
+                            case Txtbox_MODE_SELECTION_BOX:
+                            G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
                             /* determine the row pointed at */
-                            row=(y-p_txtbox->ly1)/p_txtbox->fontheight;
-                            p_txtbox->cursorline=p_txtbox->windowstartline+row;
-                            if (p_txtbox->cursorline>p_txtbox->totalrows)
-                              p_txtbox->cursorline=p_txtbox->totalrows;
-                            p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+                            row=(y-p_Txtbox->ly1)/p_Txtbox->fontheight;
+                            p_Txtbox->cursorline=p_Txtbox->windowstartline+row;
+                            if (p_Txtbox->cursorline>p_Txtbox->totalrows)
+                              p_Txtbox->cursorline=p_Txtbox->totalrows;
+                            p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
                             /* notify callback */
-                            if (p_txtbox->txtboxcallback != NULL) p_txtbox->txtboxcallback (G_txtboxArray[i]);
+                            if (p_Txtbox->Txtboxcallback != NULL) p_Txtbox->Txtboxcallback (G_TxtboxArray[i]);
                             break;
 
                             default:
                             break;
                         }
 
-                        if (G_txtboxArray[i]!=NULL) TxtboxUpdate (G_txtboxArray[i]);
+                        if (G_TxtboxArray[i]!=NULL) TxtboxUpdate (G_TxtboxArray[i]);
                         break;
                     }
                 }
@@ -1773,62 +1773,62 @@ T_void TxtboxMouseControl (E_mouseEvent event, T_word16 x, T_word16 y, T_buttonC
                 break;
             }
 
-            p_txtbox=(T_txtboxStruct *)selected;
-            switch (p_txtbox->mode)
+            p_Txtbox=(T_TxtboxStruct *)selected;
+            switch (p_Txtbox->mode)
             {
-                case TXTBOX_MODE_EDIT_FORM:
-                case TXTBOX_MODE_EDIT_FIELD:
-                case TXTBOX_MODE_FIXED_WIDTH_FIELD:
+                case Txtbox_MODE_EDIT_FORM:
+                case Txtbox_MODE_EDIT_FIELD:
+                case Txtbox_MODE_FIXED_WIDTH_FIELD:
                 break;
 
-                case TXTBOX_MODE_SELECTION_BOX:
+                case Txtbox_MODE_SELECTION_BOX:
 
-                if (y < p_txtbox->ly1)
+                if (y < p_Txtbox->ly1)
                 {
-                    if (p_txtbox->cursorline > p_txtbox->windowstartline)
-                      p_txtbox->cursorline=p_txtbox->windowstartline;
+                    if (p_Txtbox->cursorline > p_Txtbox->windowstartline)
+                      p_Txtbox->cursorline=p_Txtbox->windowstartline;
 
-                    if (p_txtbox->cursorline > 0)
+                    if (p_Txtbox->cursorline > 0)
                     {
-                        p_txtbox->cursorline--;
-                        p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
-                        if (p_txtbox->windowstartline > p_txtbox->cursorline)
-                          p_txtbox->windowstartline --;
+                        p_Txtbox->cursorline--;
+                        p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
+                        if (p_Txtbox->windowstartline > p_Txtbox->cursorline)
+                          p_Txtbox->windowstartline --;
                     } else
                     {
-                        p_txtbox->cursorline=0;
-                        p_txtbox->cursorl=0;
-                        if (p_txtbox->windowstartline > 0) p_txtbox->windowstartline--;
+                        p_Txtbox->cursorline=0;
+                        p_Txtbox->cursorl=0;
+                        if (p_Txtbox->windowstartline > 0) p_Txtbox->windowstartline--;
                     }
                 }
-                else if (y>p_txtbox->ly2)
+                else if (y>p_Txtbox->ly2)
                 {
-                    if (p_txtbox-> cursorline < p_txtbox->windowstartline + p_txtbox->windowrows+1)
+                    if (p_Txtbox-> cursorline < p_Txtbox->windowstartline + p_Txtbox->windowrows+1)
                     {
-                        p_txtbox->cursorline = p_txtbox->windowstartline + p_txtbox->windowrows+1;
-                        if (p_txtbox->cursorline > p_txtbox->totalrows) p_txtbox->cursorline=p_txtbox->totalrows;
-                        p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+                        p_Txtbox->cursorline = p_Txtbox->windowstartline + p_Txtbox->windowrows+1;
+                        if (p_Txtbox->cursorline > p_Txtbox->totalrows) p_Txtbox->cursorline=p_Txtbox->totalrows;
+                        p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
                     }
 
-                    if (p_txtbox-> cursorline < p_txtbox->totalrows)
+                    if (p_Txtbox-> cursorline < p_Txtbox->totalrows)
                     {
-                        p_txtbox->cursorline++;
-                        p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+                        p_Txtbox->cursorline++;
+                        p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
                     }
                 }
                 else
                 {
-                    row=(y-p_txtbox->ly1)/p_txtbox->fontheight;
-                    p_txtbox->cursorline=p_txtbox->windowstartline+row;
-                    if (p_txtbox->cursorline>p_txtbox->totalrows)
-                       p_txtbox->cursorline=p_txtbox->totalrows;
-                    p_txtbox->cursorl=p_txtbox->linestarts[p_txtbox->cursorline];
+                    row=(y-p_Txtbox->ly1)/p_Txtbox->fontheight;
+                    p_Txtbox->cursorline=p_Txtbox->windowstartline+row;
+                    if (p_Txtbox->cursorline>p_Txtbox->totalrows)
+                       p_Txtbox->cursorline=p_Txtbox->totalrows;
+                    p_Txtbox->cursorl=p_Txtbox->linestarts[p_Txtbox->cursorline];
                 }
 
                 TxtboxUpdate (selected);
                 /* notify callback */
-                G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
-                if (p_txtbox->txtboxcallback != NULL) p_txtbox->txtboxcallback (selected);
+                G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
+                if (p_Txtbox->Txtboxcallback != NULL) p_Txtbox->Txtboxcallback (selected);
                 break;
 
                 default:
@@ -1900,122 +1900,122 @@ T_void TxtboxMouseControl (E_mouseEvent event, T_word16 x, T_word16 y, T_buttonC
 
 T_void TxtboxNextBox (T_void)
 {
-	T_word16 oldtxtbox;
-	T_txtboxStruct *p_txtbox;
+	T_word16 oldTxtbox;
+	T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxNextBox");
-	oldtxtbox=G_currentTextBox;
+	oldTxtbox=G_currentTextBox;
 	/* turn off the cursor of the old text field */
-	p_txtbox=(T_txtboxStruct*)G_txtboxArray[oldtxtbox];
+	p_Txtbox=(T_TxtboxStruct*)G_TxtboxArray[oldTxtbox];
 
     /* report lost focus */
-    G_currentAction = TXTBOX_ACTION_LOST_FOCUS;
+    G_currentAction = Txtbox_ACTION_LOST_FOCUS;
 
-    if (p_txtbox->txtboxcallback != NULL)
+    if (p_Txtbox->Txtboxcallback != NULL)
     {
-        p_txtbox->txtboxcallback (G_txtboxArray[G_currentTextBox]);
+        p_Txtbox->Txtboxcallback (G_TxtboxArray[G_currentTextBox]);
     }
 
-	p_txtbox->isselected=FALSE;
+	p_Txtbox->isselected=FALSE;
 	/* force redraw the old text field so the cursor goes away*/
-	TxtboxUpdate (G_txtboxArray[oldtxtbox]);
+	TxtboxUpdate (G_TxtboxArray[oldTxtbox]);
     /* increment the pointer to the active box */
 	G_currentTextBox++;
-	if (G_currentTextBox>=MAX_TXTBOXES) G_currentTextBox=0;
-	/* scan through txtboxarray list until a valid txtbox is found */
+	if (G_currentTextBox>=MAX_TxtboxES) G_currentTextBox=0;
+	/* scan through Txtboxarray list until a valid Txtbox is found */
 	/* or we pass the original point */
-	while (G_txtboxArray[G_currentTextBox]==NULL)
+	while (G_TxtboxArray[G_currentTextBox]==NULL)
 	{
 		G_currentTextBox++;
-		if (G_currentTextBox>=MAX_TXTBOXES) G_currentTextBox=0;
-		if (G_currentTextBox==oldtxtbox) break; /* we looped around */
+		if (G_currentTextBox>=MAX_TxtboxES) G_currentTextBox=0;
+		if (G_currentTextBox==oldTxtbox) break; /* we looped around */
 	}
 
     /* skip this field if it is not editable */
-    p_txtbox=(T_txtboxStruct*)G_txtboxArray[G_currentTextBox];
+    p_Txtbox=(T_TxtboxStruct*)G_TxtboxArray[G_currentTextBox];
 
     DebugEnd();
 
-    if (p_txtbox->mode==TXTBOX_MODE_VIEW_NOSCROLL_FORM)
+    if (p_Txtbox->mode==Txtbox_MODE_VIEW_NOSCROLL_FORM)
     {
         TxtboxNextBox();
         /* recursive call */
     } else
     {
-        p_txtbox->isselected=TRUE;
-        TxtboxRepaginateAll (G_txtboxArray[G_currentTextBox]);
-        TxtboxUpdate (G_txtboxArray[G_currentTextBox]);
+        p_Txtbox->isselected=TRUE;
+        TxtboxRepaginateAll (G_TxtboxArray[G_currentTextBox]);
+        TxtboxUpdate (G_TxtboxArray[G_currentTextBox]);
     }
 }
 
 
 T_void TxtboxLastBox (T_void)
 {
-	T_word16 oldtxtbox;
-	T_txtboxStruct *p_txtbox;
+	T_word16 oldTxtbox;
+	T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxLastBox");
 
-	oldtxtbox=G_currentTextBox;
+	oldTxtbox=G_currentTextBox;
 	/* turn off the cursor of the old text field */
-	p_txtbox=(T_txtboxStruct*)G_txtboxArray[oldtxtbox];
+	p_Txtbox=(T_TxtboxStruct*)G_TxtboxArray[oldTxtbox];
 
     /* report lost focus */
-    G_currentAction = TXTBOX_ACTION_LOST_FOCUS;
+    G_currentAction = Txtbox_ACTION_LOST_FOCUS;
 
-    if (p_txtbox->txtboxcallback != NULL)
+    if (p_Txtbox->Txtboxcallback != NULL)
     {
-        p_txtbox->txtboxcallback (G_txtboxArray[G_currentTextBox]);
+        p_Txtbox->Txtboxcallback (G_TxtboxArray[G_currentTextBox]);
     }
 
-	p_txtbox->isselected=FALSE;
+	p_Txtbox->isselected=FALSE;
 	/* force redraw the old text field so the cursor goes away*/
-	TxtboxUpdate (G_txtboxArray[oldtxtbox]);
+	TxtboxUpdate (G_TxtboxArray[oldTxtbox]);
     /* increment the pointer to the active box */
 	G_currentTextBox--;
-	if (G_currentTextBox>=MAX_TXTBOXES) G_currentTextBox=MAX_TXTBOXES;
-	/* scan through txtboxarray list until a valid txtbox is found */
+	if (G_currentTextBox>=MAX_TxtboxES) G_currentTextBox=MAX_TxtboxES;
+	/* scan through Txtboxarray list until a valid Txtbox is found */
 	/* or we pass the original point */
-	while (G_txtboxArray[G_currentTextBox]==NULL)
+	while (G_TxtboxArray[G_currentTextBox]==NULL)
 	{
 		G_currentTextBox--;
-		if (G_currentTextBox>=MAX_TXTBOXES) G_currentTextBox=MAX_TXTBOXES;
-		if (G_currentTextBox==oldtxtbox) break; /* we looped around */
+		if (G_currentTextBox>=MAX_TxtboxES) G_currentTextBox=MAX_TxtboxES;
+		if (G_currentTextBox==oldTxtbox) break; /* we looped around */
 	}
 
     /* skip this field if it is not editable */
-    p_txtbox=(T_txtboxStruct*)G_txtboxArray[G_currentTextBox];
+    p_Txtbox=(T_TxtboxStruct*)G_TxtboxArray[G_currentTextBox];
 
     DebugEnd();
 
-    if (p_txtbox->mode==TXTBOX_MODE_VIEW_NOSCROLL_FORM)
+    if (p_Txtbox->mode==Txtbox_MODE_VIEW_NOSCROLL_FORM)
     {
         TxtboxLastBox();
         /* recursive call */
     } else
     {
-        p_txtbox->isselected=TRUE;
-        TxtboxRepaginateAll (G_txtboxArray[G_currentTextBox]);
-        TxtboxUpdate (G_txtboxArray[G_currentTextBox]);
+        p_Txtbox->isselected=TRUE;
+        TxtboxRepaginateAll (G_TxtboxArray[G_currentTextBox]);
+        TxtboxUpdate (G_TxtboxArray[G_currentTextBox]);
     }
 }
 
 
 T_void TxtboxFirstBox (T_void)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word16 i;
 
     DebugRoutine ("TxtboxFirstBox");
 
-    for (i=0;i<MAX_TXTBOXES;i++)
+    for (i=0;i<MAX_TxtboxES;i++)
     {
-        if (G_txtboxArray[i] != NULL)
+        if (G_TxtboxArray[i] != NULL)
         {
-            p_txtbox=(T_txtboxStruct *)G_txtboxArray[i];
-            if (p_txtbox->mode != TXTBOX_MODE_VIEW_NOSCROLL_FORM)
+            p_Txtbox=(T_TxtboxStruct *)G_TxtboxArray[i];
+            if (p_Txtbox->mode != Txtbox_MODE_VIEW_NOSCROLL_FORM)
             {
-                p_txtbox->isselected=TRUE;
+                p_Txtbox->isselected=TRUE;
                 G_currentTextBox=i;
                 break;
             }
@@ -2066,16 +2066,16 @@ T_void TxtboxFirstBox (T_void)
 /*                                                                          */
 /****************************************************************************/
 
-T_void TxtboxUpdate (T_txtboxID txtboxID)
+T_void TxtboxUpdate (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_graphicStruct *p_graphic;
 
     DebugRoutine ("TxtboxUpdate");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    p_graphic=(T_graphicStruct *)p_txtbox->p_graphicID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    p_graphic=(T_graphicStruct *)p_Txtbox->p_graphicID;
 
     p_graphic->changed=TRUE;
 
@@ -2092,8 +2092,8 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
     T_word32 loopstart,loopend;
     T_word16 newcolor;
     T_graphicStruct *p_graphic;
-    T_txtboxStruct *p_txtbox;
-    T_txtboxID txtboxID;
+    T_TxtboxStruct *p_Txtbox;
+    T_TxtboxID TxtboxID;
     T_bitfont *p_font;
     T_byte8 bcolor1, bcolor2, pcolor;
     T_byte8 tempstr[10];
@@ -2104,21 +2104,21 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
     DebugRoutine ("TxtboxDrawCallBack");
     DebugCheck (graphicID != NULL);
 
-    txtboxID=G_txtboxArray[index];
-    DebugCheck (txtboxID != NULL);
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    TxtboxID=G_TxtboxArray[index];
+    DebugCheck (TxtboxID != NULL);
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* highlight if selected */
-    if (p_txtbox->isselected==TRUE)
+    if (p_Txtbox->isselected==TRUE)
     {
-        bcolor1=p_txtbox->hbordercolor1;
-        bcolor2=p_txtbox->hbordercolor2;
-        pcolor=p_txtbox->hbackcolor;
+        bcolor1=p_Txtbox->hbordercolor1;
+        bcolor2=p_Txtbox->hbordercolor2;
+        pcolor=p_Txtbox->hbackcolor;
     } else
     {
-        bcolor1=p_txtbox->bordercolor1;
-        bcolor2=p_txtbox->bordercolor2;
-        pcolor=p_txtbox->backcolor;
+        bcolor1=p_Txtbox->bordercolor1;
+        bcolor2=p_Txtbox->bordercolor2;
+        pcolor=p_Txtbox->backcolor;
     }
 
     /* allocate a temporary drawing field */
@@ -2127,66 +2127,66 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
 //    GrScreenSet (tempscreen);
 //    GraphicDrawToCurrentScreen();
     /* first, draw the background box */
-    GrDrawRectangle (p_txtbox->lx1,
-                     p_txtbox->ly1,
-                     p_txtbox->lx2,
-                     p_txtbox->ly2,
+    GrDrawRectangle (p_Txtbox->lx1,
+                     p_Txtbox->ly1,
+                     p_Txtbox->lx2,
+                     p_Txtbox->ly2,
                      pcolor);
 
     /* draw window border striping */
-    GrDrawHorizontalLine (p_txtbox->lx1,
-                          p_txtbox->ly1,
-                          p_txtbox->lx2-1,
+    GrDrawHorizontalLine (p_Txtbox->lx1,
+                          p_Txtbox->ly1,
+                          p_Txtbox->lx2-1,
                           bcolor1);
 
-    GrDrawVerticalLine   (p_txtbox->lx1,
-                          p_txtbox->ly1,
-                          p_txtbox->ly2-1,
+    GrDrawVerticalLine   (p_Txtbox->lx1,
+                          p_Txtbox->ly1,
+                          p_Txtbox->ly2-1,
                           bcolor1);
 
-    GrDrawHorizontalLine (p_txtbox->lx1+1,
-                          p_txtbox->ly2,
-                          p_txtbox->lx2,
+    GrDrawHorizontalLine (p_Txtbox->lx1+1,
+                          p_Txtbox->ly2,
+                          p_Txtbox->lx2,
                           bcolor2);
 
-    GrDrawVerticalLine   (p_txtbox->lx2,
-                          p_txtbox->ly1+1,
-                          p_txtbox->ly2,
+    GrDrawVerticalLine   (p_Txtbox->lx2,
+                          p_Txtbox->ly1+1,
+                          p_Txtbox->ly2,
                           bcolor2);
 
     /* open the font */
-    p_font = ResourceLock(p_txtbox->font) ;
+    p_font = ResourceLock(p_Txtbox->font) ;
 	GrSetBitFont (p_font);
 
     wsize=GrGetCharacterWidth ('W');
 
     /* check to make sure the cursor is in the window */
-    if (p_txtbox->cursorline < p_txtbox->windowstartline)
+    if (p_Txtbox->cursorline < p_Txtbox->windowstartline)
     {
-        p_txtbox->windowstartline=p_txtbox->cursorline;
-    } else if (p_txtbox->cursorline >= (p_txtbox->windowstartline+p_txtbox->windowrows))
+        p_Txtbox->windowstartline=p_Txtbox->cursorline;
+    } else if (p_Txtbox->cursorline >= (p_Txtbox->windowstartline+p_Txtbox->windowrows))
     {
-        p_txtbox->windowstartline++;
+        p_Txtbox->windowstartline++;
     }
 
-    startline=p_txtbox->windowstartline;
-    endline=p_txtbox->windowstartline+p_txtbox->windowrows;
-    if (endline>p_txtbox->totalrows) endline=p_txtbox->totalrows;
+    startline=p_Txtbox->windowstartline;
+    endline=p_Txtbox->windowstartline+p_Txtbox->windowrows;
+    if (endline>p_Txtbox->totalrows) endline=p_Txtbox->totalrows;
 
-//    bcolor1=p_txtbox->textcolor;
-//    bcolor2=p_txtbox->textshadow;
+//    bcolor1=p_Txtbox->textcolor;
+//    bcolor2=p_Txtbox->textshadow;
 
     /* figure out our last color */
-    for (i=0;i<p_txtbox->linestarts[startline];i++)
+    for (i=0;i<p_Txtbox->linestarts[startline];i++)
     {
-        if (p_txtbox->data[i]>128)
+        if (p_Txtbox->data[i]>128)
         {
-            newcolor=p_txtbox->data[i]-128;
+            newcolor=p_Txtbox->data[i]-128;
             if (newcolor < MAX_EXTENDED_COLORS)
             {
                 newcolor=G_extendedColors[newcolor];
-                p_txtbox->textcolor=newcolor;
-                p_txtbox->htextcolor=newcolor;
+                p_Txtbox->textcolor=newcolor;
+                p_Txtbox->htextcolor=newcolor;
              }
         }
     }
@@ -2195,27 +2195,27 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
     for (i=startline; i<=endline; i++)
     {
         /* set the y cursor start position */
-        curposy=p_txtbox->ly1+(i-startline)*p_txtbox->fontheight;
+        curposy=p_Txtbox->ly1+(i-startline)*p_Txtbox->fontheight;
 
         /* set the x cursor start position */
-        if (p_txtbox->justify==TXTBOX_JUSTIFY_CENTER)
+        if (p_Txtbox->justify==Txtbox_JUSTIFY_CENTER)
         {
-            curposx=((p_txtbox->lx2-p_txtbox->lx1)/2)-(p_txtbox->linewidths[i]/2)+p_txtbox->lx1;
+            curposx=((p_Txtbox->lx2-p_Txtbox->lx1)/2)-(p_Txtbox->linewidths[i]/2)+p_Txtbox->lx1;
         } else
         {
-            curposx=p_txtbox->lx1;
+            curposx=p_Txtbox->lx1;
         }
 
         /* loop through each character in the line, drawing as we go */
-        loopstart=p_txtbox->linestarts[i];
-        if (i+1>p_txtbox->totalrows) loopend=strlen(p_txtbox->data);
-        else loopend=p_txtbox->linestarts[i+1];
+        loopstart=p_Txtbox->linestarts[i];
+        if (i+1>p_Txtbox->totalrows) loopend=strlen(p_Txtbox->data);
+        else loopend=p_Txtbox->linestarts[i+1];
 
         /* set the color if selection box */
-//        if (p_txtbox->mode==TXTBOX_MODE_SELECTION_BOX && i==p_txtbox->cursorline)
+//        if (p_Txtbox->mode==Txtbox_MODE_SELECTION_BOX && i==p_Txtbox->cursorline)
 //        {
-//            p_txtbox->textcolor=47;
-//            p_txtbox->textshadow=53;
+//            p_Txtbox->textcolor=47;
+//            p_Txtbox->textshadow=53;
 //        }
 
         if (i==endline) loopend++;
@@ -2223,27 +2223,27 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
         for (j=loopstart;j<loopend;j++)
         {
 
-            if (curposy+p_txtbox->fontheight > p_txtbox->ly2) break;
+            if (curposy+p_Txtbox->fontheight > p_Txtbox->ly2) break;
 
             /* draw the cursor if here */
-            if (p_txtbox->cursorl==j)
+            if (p_Txtbox->cursorl==j)
             {
-                if (p_txtbox->mode==TXTBOX_MODE_SELECTION_BOX)
+                if (p_Txtbox->mode==Txtbox_MODE_SELECTION_BOX)
                 {
                     /* draw a highlighted line */
-                    GrDrawRectangle (p_txtbox->lx1+1,
+                    GrDrawRectangle (p_Txtbox->lx1+1,
                                      curposy+1,
-                                     p_txtbox->lx2-1,
-                                     curposy+p_txtbox->fontheight,
+                                     p_Txtbox->lx2-1,
+                                     curposy+p_Txtbox->fontheight,
                                      215);
                 }
-                else if (p_txtbox->isselected==TRUE)
+                else if (p_Txtbox->isselected==TRUE)
                 {
-                    if (p_txtbox->mode<TXTBOX_MODE_VIEW_SCROLL_FORM ||
-                        p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD)
+                    if (p_Txtbox->mode<Txtbox_MODE_VIEW_SCROLL_FORM ||
+                        p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
                     {
                         /* draw a cursor box */
-                        for (k=0;k<p_txtbox->fontheight;k++)
+                        for (k=0;k<p_Txtbox->fontheight;k++)
                         {
 			                GrDrawHorizontalLine (curposx+1,
 					                      curposy+k+1,
@@ -2252,82 +2252,82 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
                         }
                     }
 		        }
-                p_txtbox->cursorx=curposx;
-                p_txtbox->cursory=curposy;
-                p_txtbox->cursorline=i;
+                p_Txtbox->cursorx=curposx;
+                p_Txtbox->cursory=curposy;
+                p_Txtbox->cursorline=i;
             }
 
             /* examine each character and draw */
-            if (p_txtbox->data[j]==9)
+            if (p_Txtbox->data[j]==9)
             {
                 /* we have a tab here, advance to the nearest tab position */
                 /* currently 3*wsize or 3 capital doubleyous :) */
-                curposx=((((curposx-p_txtbox->lx1)/(3*wsize))+1)*(3*wsize))+p_txtbox->lx1;
-            } else if (p_txtbox->data[j]==13)
+                curposx=((((curposx-p_Txtbox->lx1)/(3*wsize))+1)*(3*wsize))+p_Txtbox->lx1;
+            } else if (p_Txtbox->data[j]==13)
             {
 
-            } else if (p_txtbox->data[j]>31 && p_txtbox->data[j]<128)
+            } else if (p_Txtbox->data[j]>31 && p_Txtbox->data[j]<128)
             {
                 /* must be a normal character */
-                tempstr[0]=p_txtbox->data[j];
+                tempstr[0]=p_Txtbox->data[j];
                 tempstr[1]='\0';
 
                 GrSetCursorPosition (curposx+1,curposy+1);
 
-                if (j==p_txtbox->cursorl && p_txtbox->isselected==TRUE && (p_txtbox->mode <= TXTBOX_MODE_EDIT_FORM ||
-                                                                           p_txtbox->mode==TXTBOX_MODE_FIXED_WIDTH_FIELD))
+                if (j==p_Txtbox->cursorl && p_Txtbox->isselected==TRUE && (p_Txtbox->mode <= Txtbox_MODE_EDIT_FORM ||
+                                                                           p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD))
                 {
                     /* cursor is over a character, change character color */
                     GrDrawShadowedText (tempstr,240,0);
                 } else
                 {
-                    if (p_txtbox->mode==TXTBOX_MODE_SELECTION_BOX && i==p_txtbox->cursorline)
+                    if (p_Txtbox->mode==Txtbox_MODE_SELECTION_BOX && i==p_Txtbox->cursorline)
                     {
                         GrDrawShadowedText (tempstr,29,0);
                     }
-                    else if (p_txtbox->isselected==TRUE)
+                    else if (p_Txtbox->isselected==TRUE)
                     {
-                        GrDrawShadowedText (tempstr,p_txtbox->htextcolor,p_txtbox->textshadow);
-                    } else GrDrawShadowedText (tempstr,p_txtbox->textcolor,p_txtbox->textshadow);
+                        GrDrawShadowedText (tempstr,p_Txtbox->htextcolor,p_Txtbox->textshadow);
+                    } else GrDrawShadowedText (tempstr,p_Txtbox->textcolor,p_Txtbox->textshadow);
                 }
-                curposx+=GrGetCharacterWidth (p_txtbox->data[j]);
-            } else if (p_txtbox->data[j]>128)
+                curposx+=GrGetCharacterWidth (p_Txtbox->data[j]);
+            } else if (p_Txtbox->data[j]>128)
             {
-                newcolor=p_txtbox->data[j]-128;
+                newcolor=p_Txtbox->data[j]-128;
                 if (newcolor < MAX_EXTENDED_COLORS)
                 {
                     newcolor=G_extendedColors[newcolor];
-                    p_txtbox->textcolor=newcolor;
-                    p_txtbox->htextcolor=newcolor;
+                    p_Txtbox->textcolor=newcolor;
+                    p_Txtbox->htextcolor=newcolor;
                 }
             }
         }
 
         /* restore the text colors */
-//        p_txtbox->textcolor=bcolor1;
-//        p_txtbox->textshadow=bcolor2;
+//        p_Txtbox->textcolor=bcolor1;
+//        p_Txtbox->textshadow=bcolor2;
     }
 
     /* close the font */
     /* close the font */
-    ResourceUnlock (p_txtbox->font);
+    ResourceUnlock (p_Txtbox->font);
 
     /* copy the contents of the temporary screen area to the visual one */
 //    GrTransferRectangle (oldscreen,
-//                         p_txtbox->lx1,
-//                         p_txtbox->ly1,
-//                         p_txtbox->lx2,
-//                         p_txtbox->ly2,
-//                         p_txtbox->lx1,
-//                         p_txtbox->ly1);
+//                         p_Txtbox->lx1,
+//                         p_Txtbox->ly1,
+//                         p_Txtbox->lx2,
+//                         p_Txtbox->ly2,
+//                         p_Txtbox->lx1,
+//                         p_Txtbox->ly1);
 
 //    GrScreenSet (oldscreen);
 //    GrScreenFree (tempscreen);
 //    GraphicDrawToActualScreen();
     /* update the scroll bar if applicable */
-    if (p_txtbox->sbgrID != NULL)
+    if (p_Txtbox->sbgrID != NULL)
     {
-        TxtboxUpdateSB (txtboxID);
+        TxtboxUpdateSB (TxtboxID);
     }
 
     DebugEnd();
@@ -2335,103 +2335,103 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
 
 
 
-T_void TxtboxRepaginateAll (T_txtboxID txtboxID)
+T_void TxtboxRepaginateAll (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word16 templn;
 
     DebugRoutine ("TxtboxRepaginateAll");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    templn=p_txtbox->cursorline;
-    p_txtbox->cursorline=0;
-    TxtboxRepaginate (txtboxID);
-    p_txtbox->cursorline=templn;
+    templn=p_Txtbox->cursorline;
+    p_Txtbox->cursorline=0;
+    TxtboxRepaginate (TxtboxID);
+    p_Txtbox->cursorline=templn;
 
     DebugEnd();
 }
 
 
-T_void TxtboxRepaginate (T_txtboxID txtboxID)
+T_void TxtboxRepaginate (T_TxtboxID TxtboxID)
 {
     T_word16 i,j;
     T_word16 wsize;
     T_word16 linecnt;
     T_word16 curposx, curposy;
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_bitfont *p_font;
     static T_word16 cnt=0;
     T_byte8 stmp[64];
     T_word32 end,tcurposx;
 
     DebugRoutine ("TxtboxRepaginate");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
     /* open the font */
-    p_font = ResourceLock(p_txtbox->font) ;
+    p_font = ResourceLock(p_Txtbox->font) ;
 	GrSetBitFont (p_font);
 
     /* set the tab size using the character 'w' */
 
     wsize=GrGetCharacterWidth ('W');
-    curposx=p_txtbox->lx1;
+    curposx=p_Txtbox->lx1;
 
-    linecnt=p_txtbox->cursorline;
-    p_txtbox->linestarts[0]=0;
+    linecnt=p_Txtbox->cursorline;
+    p_Txtbox->linestarts[0]=0;
 
     /* now format the data string */
-    for (i=p_txtbox->linestarts[p_txtbox->cursorline];i<=strlen(p_txtbox->data);i++)
+    for (i=p_Txtbox->linestarts[p_Txtbox->cursorline];i<=strlen(p_Txtbox->data);i++)
     {
         /* examine each character and draw */
-        if (p_txtbox->data[i]==13)
+        if (p_Txtbox->data[i]==13)
         {
             /* we got a return here, advance a line */
-            p_txtbox->linewidths[linecnt]=curposx-p_txtbox->lx1;
-            curposx=p_txtbox->lx1;
-            if (linecnt >= p_txtbox->totalrows) TxtboxAllocLine (txtboxID);
-            p_txtbox->linestarts[++linecnt]=i+1;
+            p_Txtbox->linewidths[linecnt]=curposx-p_Txtbox->lx1;
+            curposx=p_Txtbox->lx1;
+            if (linecnt >= p_Txtbox->totalrows) TxtboxAllocLine (TxtboxID);
+            p_Txtbox->linestarts[++linecnt]=i+1;
 
-        } else if (p_txtbox->data[i]==9)
+        } else if (p_Txtbox->data[i]==9)
         {
             /* we have a tab here, advance to the nearest tab position */
             /* currently 3*wsize or 3 capital doubleyous :) */
-            curposx=((((curposx-p_txtbox->lx1)/(3*wsize))+1)*(3*wsize))+p_txtbox->lx1;
+            curposx=((((curposx-p_Txtbox->lx1)/(3*wsize))+1)*(3*wsize))+p_Txtbox->lx1;
             /* make sure we haven't reached the end of the line */
-            if (curposx+wsize>p_txtbox->lx2)
+            if (curposx+wsize>p_Txtbox->lx2)
             {
                 /* out of room, advance a line */
-                p_txtbox->linewidths[linecnt]=curposx-p_txtbox->lx1;
-                curposx=p_txtbox->lx1;
-                if (linecnt >= p_txtbox->totalrows) TxtboxAllocLine (txtboxID);
-                p_txtbox->linestarts[++linecnt]=i+1;
+                p_Txtbox->linewidths[linecnt]=curposx-p_Txtbox->lx1;
+                curposx=p_Txtbox->lx1;
+                if (linecnt >= p_Txtbox->totalrows) TxtboxAllocLine (TxtboxID);
+                p_Txtbox->linestarts[++linecnt]=i+1;
 
             }
         }
-        else if (p_txtbox->data[i]>31 && p_txtbox->data[i]<128)
+        else if (p_Txtbox->data[i]>31 && p_Txtbox->data[i]<128)
         {   /* normal character */
-            curposx+=GrGetCharacterWidth (p_txtbox->data[i]);
-            if (curposx+wsize>p_txtbox->lx2)
+            curposx+=GrGetCharacterWidth (p_Txtbox->data[i]);
+            if (curposx+wsize>p_Txtbox->lx2)
             {
                 /* reached end of line, traverse backwards until we
                    find a space */
-                if (linecnt>0) end=p_txtbox->linestarts[linecnt-1];
+                if (linecnt>0) end=p_Txtbox->linestarts[linecnt-1];
                 else end=0;
 
                 tcurposx=curposx;
 
                 for (j=i;j>end;j--)
                 {
-                    if (p_txtbox->data[j]==32 || p_txtbox->data[j]==9)
+                    if (p_Txtbox->data[j]==32 || p_Txtbox->data[j]==9)
                     {
                         /* found a space, do it. */
                         break;
                     } else
                     {
-                        tcurposx-=GrGetCharacterWidth (p_txtbox->data[j]);
+                        tcurposx-=GrGetCharacterWidth (p_Txtbox->data[j]);
                         if (tcurposx<wsize)
                         {
                             j=end;
@@ -2441,49 +2441,49 @@ T_void TxtboxRepaginate (T_txtboxID txtboxID)
                 }
                 if (j==end) /* wow, can't do it */
                 {
-                    p_txtbox->linewidths[linecnt]=curposx-p_txtbox->lx1;
-                    curposx=p_txtbox->lx1;
-                    if (linecnt >= p_txtbox->totalrows) TxtboxAllocLine (txtboxID);
-                    p_txtbox->linestarts[++linecnt]=i+1;
+                    p_Txtbox->linewidths[linecnt]=curposx-p_Txtbox->lx1;
+                    curposx=p_Txtbox->lx1;
+                    if (linecnt >= p_Txtbox->totalrows) TxtboxAllocLine (TxtboxID);
+                    p_Txtbox->linestarts[++linecnt]=i+1;
                 } else
                 {
-                    p_txtbox->linewidths[linecnt]=tcurposx-p_txtbox->lx1;
-                    curposx=p_txtbox->lx1;
-                    if (linecnt >= p_txtbox->totalrows) TxtboxAllocLine (txtboxID);
-                    p_txtbox->linestarts[++linecnt]=j+1;
+                    p_Txtbox->linewidths[linecnt]=tcurposx-p_Txtbox->lx1;
+                    curposx=p_Txtbox->lx1;
+                    if (linecnt >= p_Txtbox->totalrows) TxtboxAllocLine (TxtboxID);
+                    p_Txtbox->linestarts[++linecnt]=j+1;
                     i=j+1;
                 }
             }
         }
     }
 
-    p_txtbox->linewidths[linecnt]=curposx-p_txtbox->lx1;
-    p_txtbox->totalrows=linecnt;
+    p_Txtbox->linewidths[linecnt]=curposx-p_Txtbox->lx1;
+    p_Txtbox->totalrows=linecnt;
 
     /* close the font */
-    ResourceUnlock (p_txtbox->font);
+    ResourceUnlock (p_Txtbox->font);
 
     DebugEnd();
 }
 
 
-T_void TxtboxSetScrollBarObjIDs (T_txtboxID txtboxID,
+T_void TxtboxSetScrollBarObjIDs (T_TxtboxID TxtboxID,
                                  T_buttonID sbupID,
                                  T_buttonID sbdnID,
                                  T_graphicID sbgrID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxSetScrollBarObjIDs");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
     DebugCheck (sbupID != NULL);
     DebugCheck (sbdnID != NULL);
     DebugCheck (sbgrID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    p_txtbox->sbupID=sbupID;
-    p_txtbox->sbdnID=sbdnID;
-    p_txtbox->sbgrID=sbgrID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    p_Txtbox->sbupID=sbupID;
+    p_Txtbox->sbdnID=sbdnID;
+    p_Txtbox->sbgrID=sbgrID;
 
     DebugEnd();
 }
@@ -2491,39 +2491,39 @@ T_void TxtboxSetScrollBarObjIDs (T_txtboxID txtboxID,
 
 T_void TxtboxHandleSBDn (T_buttonID buttonID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_buttonStruct *p_button;
 
     DebugRoutine ("TxtboxHandleSBDn");
     DebugCheck (buttonID != NULL);
 
     p_button=(T_buttonStruct *)buttonID;
-    txtboxID=FormGetObjID(p_button->data);
-    DebugCheck (txtboxID != NULL);
-    TxtboxCursDn (txtboxID);
+    TxtboxID=FormGetObjID(p_button->data);
+    DebugCheck (TxtboxID != NULL);
+    TxtboxCursDn (TxtboxID);
     DebugEnd();
 }
 
 
 T_void TxtboxHandleSBUp (T_buttonID buttonID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_buttonStruct *p_button;
 
     DebugRoutine ("TxtboxHandleSBUp");
     DebugCheck (buttonID != NULL);
 
     p_button=(T_buttonStruct *)buttonID;
-    txtboxID=FormGetObjID(p_button->data);
-    DebugCheck (txtboxID != NULL);
-    TxtboxCursUp (txtboxID);
+    TxtboxID=FormGetObjID(p_button->data);
+    DebugCheck (TxtboxID != NULL);
+    TxtboxCursUp (TxtboxID);
     DebugEnd();
 }
 
 
-T_void TxtboxUpdateSB (T_txtboxID txtboxID)
+T_void TxtboxUpdateSB (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_graphicStruct *p_graphic;
     T_screen tempscreen,oldscreen;
 
@@ -2532,10 +2532,10 @@ T_void TxtboxUpdateSB (T_txtboxID txtboxID)
     float ratio;
 
     DebugRoutine ("TxtboxUpdateSB");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    DebugCheck (p_txtbox->sbgrID != NULL);
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    DebugCheck (p_Txtbox->sbgrID != NULL);
 
    /* allocate a temporary drawing field */
 //    oldscreen=GrScreenGet();
@@ -2543,9 +2543,9 @@ T_void TxtboxUpdateSB (T_txtboxID txtboxID)
 //    GrScreenSet (tempscreen);
 //    GraphicDrawToCurrentScreen();
     /* force redraw of the scroll bar graphic */
-    p_graphic=(T_graphicStruct *)p_txtbox->sbgrID;
+    p_graphic=(T_graphicStruct *)p_Txtbox->sbgrID;
     p_graphic->changed=TRUE;
-    GraphicUpdate (p_txtbox->sbgrID);
+    GraphicUpdate (p_Txtbox->sbgrID);
 
     /* get the loci of the scroll bar graphic */
     sbx1=p_graphic->locx+1;
@@ -2554,27 +2554,27 @@ T_void TxtboxUpdateSB (T_txtboxID txtboxID)
     sby2=p_graphic->locy+p_graphic->height-2;
 
     /* figure the percentage of the total document that is visible */
-    if (p_txtbox->totalrows < p_txtbox->windowrows)
+    if (p_Txtbox->totalrows < p_Txtbox->windowrows)
     {
         /* fully visible */
         ylength=sby2-sby1;
         ystart=sby1;
     } else
     {
-        ratio=(float)p_txtbox->windowrows/(float)(p_txtbox->totalrows+1);
+        ratio=(float)p_Txtbox->windowrows/(float)(p_Txtbox->totalrows+1);
 
         /* partially visible document */
         ylength=(((float)(sby2-sby1))*ratio);
 
         yleft=(sby2-sby1)-ylength;
-        if (p_txtbox->mode==TXTBOX_MODE_VIEW_SCROLL_FORM)
+        if (p_Txtbox->mode==Txtbox_MODE_VIEW_SCROLL_FORM)
         {
-            ratio=((float)p_txtbox->windowstartline)/((float)p_txtbox->totalrows+1-p_txtbox->windowrows);
+            ratio=((float)p_Txtbox->windowstartline)/((float)p_Txtbox->totalrows+1-p_Txtbox->windowrows);
             ystart=(yleft*ratio)+sby1;
         }
         else
         {
-            ratio=((float)p_txtbox->cursorline)/((float)p_txtbox->totalrows+1);
+            ratio=((float)p_Txtbox->cursorline)/((float)p_Txtbox->totalrows+1);
             ystart=(yleft*ratio)+sby1;
         }
     }
@@ -2586,8 +2586,8 @@ T_void TxtboxUpdateSB (T_txtboxID txtboxID)
     GrDrawVerticalLine (sbx1,(int)ystart,(int)ystart+(int)ylength,70);
 
     /* set structure records */
-    p_txtbox->sbstart=(int)ystart;
-    p_txtbox->sblength=(int)ylength;
+    p_Txtbox->sbstart=(int)ystart;
+    p_Txtbox->sblength=(int)ylength;
 
     /* copy the contents of the temporary screen area to the visual one */
 //    GrTransferRectangle (oldscreen,
@@ -2606,9 +2606,9 @@ T_void TxtboxUpdateSB (T_txtboxID txtboxID)
 }
 
 
-T_void TxtboxMoveSB (T_txtboxID txtboxID, T_word16 y)
+T_void TxtboxMoveSB (T_TxtboxID TxtboxID, T_word16 y)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_graphicStruct *p_graphic;
     float pratio;
     T_word16 pline;
@@ -2618,26 +2618,26 @@ T_void TxtboxMoveSB (T_txtboxID txtboxID, T_word16 y)
     T_word16 cnt;
 
     DebugRoutine ("TxtboxMoveSB");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    p_graphic=(T_graphicStruct *)p_txtbox->sbgrID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    p_graphic=(T_graphicStruct *)p_Txtbox->sbgrID;
 
-    if (y<p_txtbox->sbstart) TxtboxCursPgUp (txtboxID);
-    else if (y>p_txtbox->sbstart+p_txtbox->sblength) TxtboxCursPgDn (txtboxID);
+    if (y<p_Txtbox->sbstart) TxtboxCursPgUp (TxtboxID);
+    else if (y>p_Txtbox->sbstart+p_Txtbox->sblength) TxtboxCursPgDn (TxtboxID);
     else
     {
         /* calculate center of scroll bar */
-        center=p_txtbox->sbstart+(p_txtbox->sblength/2);
+        center=p_Txtbox->sbstart+(p_Txtbox->sblength/2);
         if (y>center+1)
         {
             cnt=0;
             while (y>center+2)
             {
                 cnt++;
-                TxtboxCursDn (txtboxID);
-                TxtboxUpdateSB (txtboxID);
-                center=p_txtbox->sbstart+(p_txtbox->sblength/2);
+                TxtboxCursDn (TxtboxID);
+                TxtboxUpdateSB (TxtboxID);
+                center=p_Txtbox->sbstart+(p_Txtbox->sblength/2);
                 if (cnt>5) break;
             }
         }
@@ -2647,24 +2647,24 @@ T_void TxtboxMoveSB (T_txtboxID txtboxID, T_word16 y)
             while (y<center-2)
             {
                 cnt++;
-                TxtboxCursUp (txtboxID);
-                TxtboxUpdateSB (txtboxID);
-                center=p_txtbox->sbstart+(p_txtbox->sblength/2);
+                TxtboxCursUp (TxtboxID);
+                TxtboxUpdateSB (TxtboxID);
+                center=p_Txtbox->sbstart+(p_Txtbox->sblength/2);
                 if (cnt>5) break;
             }
         }
 
-        G_currentAction = TXTBOX_ACTION_SELECTION_CHANGED;
-        if (p_txtbox->txtboxcallback != NULL) p_txtbox->txtboxcallback (txtboxID);
+        G_currentAction = Txtbox_ACTION_SELECTION_CHANGED;
+        if (p_Txtbox->Txtboxcallback != NULL) p_Txtbox->Txtboxcallback (TxtboxID);
 
-//          pratio=((float)(y-(p_txtbox->sbstart)))/p_txtbox->sblength;
-//          pline=(int)(pratio*(float)p_txtbox->totalrows);
+//          pratio=((float)(y-(p_Txtbox->sbstart)))/p_Txtbox->sblength;
+//          pline=(int)(pratio*(float)p_Txtbox->totalrows);
 
         /* calc the center of the scroll bar */
-//        center=p_txtbox->sbstart+(p_txtbox->sblength/2);
+//        center=p_Txtbox->sbstart+(p_Txtbox->sblength/2);
 
         /* calc the space around the edges */
-//        spaceleft=(p_graphic->height-2) - p_txtbox->sblength;
+//        spaceleft=(p_graphic->height-2) - p_Txtbox->sblength;
 
         /* calculate the distance moved */
 //        dy=y-center;
@@ -2673,136 +2673,136 @@ T_void TxtboxMoveSB (T_txtboxID txtboxID, T_word16 y)
 //        center+=dy;
 
         /* limit the movement */
-//        if (center - (p_txtbox->sblength/2) < p_graphic->locy+1)
-//          center=p_graphic->locy+(p_txtbox->sblength/2);
-//        else if ((center + p_txtbox->sblength/2) > p_graphic->locy+p_graphic->height-1)
-//          center=p_graphic->locy+p_graphic->height-1-(p_txtbox->sblength/2);
+//        if (center - (p_Txtbox->sblength/2) < p_graphic->locy+1)
+//          center=p_graphic->locy+(p_Txtbox->sblength/2);
+//        else if ((center + p_Txtbox->sblength/2) > p_graphic->locy+p_graphic->height-1)
+//          center=p_graphic->locy+p_graphic->height-1-(p_Txtbox->sblength/2);
 
         /* distance from top edge of sb graphic to top edge of sb is our ratio */
-//        pratio=((center-(p_txtbox->sblength/2))-(p_txtbox->ly1+1))/spaceleft;
-//        pline=(int)(pratio*(float)p_txtbox->totalrows);
+//        pratio=((center-(p_Txtbox->sblength/2))-(p_Txtbox->ly1+1))/spaceleft;
+//        pline=(int)(pratio*(float)p_Txtbox->totalrows);
 
 //
-/*        switch (p_txtbox->mode)
+/*        switch (p_Txtbox->mode)
         {
-            case TXTBOX_MODE_EDIT_FIELD:
-            case TXTBOX_MODE_EDIT_FORM:
+            case Txtbox_MODE_EDIT_FIELD:
+            case Txtbox_MODE_EDIT_FORM:
 
             break;
 
-            case TXTBOX_MODE_VIEW_SCROLL_FORM:
-            case TXTBOX_MODE_SELECTION_BOX:
+            case Txtbox_MODE_VIEW_SCROLL_FORM:
+            case Txtbox_MODE_SELECTION_BOX:
 
-                 p_txtbox->cursorline=pline;
-                 p_txtbox->cursorl=p_txtbox->linestarts[pline];
-                 TxtboxUpdate (txtboxID);
+                 p_Txtbox->cursorline=pline;
+                 p_Txtbox->cursorl=p_Txtbox->linestarts[pline];
+                 TxtboxUpdate (TxtboxID);
             break;
 
             default:
             break;
         }
 */
-//        if (pline < p_txtbox->cursorline) TxtboxCursUp (txtboxID);
-//        else TxtboxCursDn (txtboxID);
+//        if (pline < p_Txtbox->cursorline) TxtboxCursUp (TxtboxID);
+//        else TxtboxCursDn (TxtboxID);
     }
 
     /* force redraw */
-    TxtboxUpdateSB (txtboxID);
+    TxtboxUpdateSB (TxtboxID);
 
     DebugEnd();
 }
 
 
-T_void TxtboxAllocLine (T_txtboxID txtboxID)
+T_void TxtboxAllocLine (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word32 *newlinestarts;
     T_word16 *newlinewidths;
     T_word16 i;
 
     DebugRoutine ("TxtboxAllocLine");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    DebugCheck (p_txtbox->linewidths != NULL);
-    DebugCheck (p_txtbox->linestarts != NULL);
-    DebugCheck (p_txtbox->data != NULL);
+    DebugCheck (p_Txtbox->linewidths != NULL);
+    DebugCheck (p_Txtbox->linestarts != NULL);
+    DebugCheck (p_Txtbox->data != NULL);
 
-    p_txtbox->totalrows++;
+    p_Txtbox->totalrows++;
 
     /* allocate a new chunk for linewidths / linestarts */
-    newlinestarts=MemAlloc (sizeof(T_word32)*(p_txtbox->totalrows+1));
+    newlinestarts=MemAlloc (sizeof(T_word32)*(p_Txtbox->totalrows+1));
     MemCheck (311);
     DebugCheck (newlinestarts != NULL);
 
-    newlinewidths=MemAlloc (sizeof(T_word16)*(p_txtbox->totalrows+1));
+    newlinewidths=MemAlloc (sizeof(T_word16)*(p_Txtbox->totalrows+1));
     MemCheck (312);
     DebugCheck (newlinewidths != NULL);
 
     /* copy old data */
-    for (i=0;i<p_txtbox->totalrows;i++)
+    for (i=0;i<p_Txtbox->totalrows;i++)
     {
-        newlinestarts[i]=p_txtbox->linestarts[i];
-        newlinewidths[i]=p_txtbox->linewidths[i];
+        newlinestarts[i]=p_Txtbox->linestarts[i];
+        newlinewidths[i]=p_Txtbox->linewidths[i];
     }
     newlinestarts[i]=0;
     newlinewidths[i]=0;
 
     /* delete old data */
-    MemFree (p_txtbox->linewidths);
+    MemFree (p_Txtbox->linewidths);
     MemCheck (313);
-    p_txtbox->linewidths=newlinewidths;
+    p_Txtbox->linewidths=newlinewidths;
 
-    MemFree (p_txtbox->linestarts);
+    MemFree (p_Txtbox->linestarts);
     MemCheck (314);
-    p_txtbox->linestarts=newlinestarts;
+    p_Txtbox->linestarts=newlinestarts;
 
     DebugEnd();
 }
 
 
-T_void TxtboxSetCallback (T_txtboxID txtboxID, T_txtboxHandler newcallback)
+T_void TxtboxSetCallback (T_TxtboxID TxtboxID, T_TxtboxHandler newcallback)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxSetCallBack");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    p_txtbox->txtboxcallback = newcallback;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    p_Txtbox->Txtboxcallback = newcallback;
 
     DebugEnd();
 }
 
-T_void TxtboxSetNumericOnlyFlag (T_txtboxID txtboxID, E_Boolean newflag)
+T_void TxtboxSetNumericOnlyFlag (T_TxtboxID TxtboxID, E_Boolean newflag)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxSetNumericOnlyFlag");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    p_txtbox->numericonly=newflag;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    p_Txtbox->numericonly=newflag;
 
     DebugEnd();
 }
 
 
-E_txtboxAction TxtboxGetAction (T_void)
+E_TxtboxAction TxtboxGetAction (T_void)
 {
     return (G_currentAction);
 }
 
-E_Boolean TxtboxValidateID (T_txtboxID txtboxID)
+E_Boolean TxtboxValidateID (T_TxtboxID TxtboxID)
 {
     T_word16 i;
     E_Boolean retvalue=FALSE;
 
     DebugRoutine ("TxtboxValidateID");
-    for (i=0;i<MAX_TXTBOXES;i++)
+    for (i=0;i<MAX_TxtboxES;i++)
     {
-        if (txtboxID==G_txtboxArray[i])
+        if (TxtboxID==G_TxtboxArray[i])
         {
             retvalue=TRUE;
             break;
@@ -2814,18 +2814,18 @@ E_Boolean TxtboxValidateID (T_txtboxID txtboxID)
 }
 
 
-T_word16 TxtboxGetSelectionNumber (T_txtboxID txtboxID)
+T_word16 TxtboxGetSelectionNumber (T_TxtboxID TxtboxID)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     T_word16 retvalue;
 
     DebugRoutine ("TxtboxGetSelectionNumber");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    DebugCheck (p_txtbox->mode==TXTBOX_MODE_SELECTION_BOX);
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    DebugCheck (p_Txtbox->mode==Txtbox_MODE_SELECTION_BOX);
 
-    retvalue=p_txtbox->cursorline;
+    retvalue=p_Txtbox->cursorline;
 
     DebugEnd();
 
@@ -2833,51 +2833,51 @@ T_word16 TxtboxGetSelectionNumber (T_txtboxID txtboxID)
 }
 
 
-E_Boolean TxtboxIsSelected (T_txtboxID txtboxID)
+E_Boolean TxtboxIsSelected (T_TxtboxID TxtboxID)
 {
-   T_txtboxStruct *p_txtbox;
+   T_TxtboxStruct *p_Txtbox;
    E_Boolean retvalue;
 
    DebugRoutine ("TxtboxIsSelected");
-   DebugCheck (txtboxID != NULL);
+   DebugCheck (TxtboxID != NULL);
 
-   p_txtbox=(T_txtboxStruct *)txtboxID;
+   p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-   retvalue=p_txtbox->isselected;
+   retvalue=p_Txtbox->isselected;
    DebugEnd();
    return (retvalue);
 }
 
 
-T_void TxtboxSetMaxLength (T_txtboxID txtboxID,T_word32 newmaxlen)
+T_void TxtboxSetMaxLength (T_TxtboxID TxtboxID,T_word32 newmaxlen)
 {
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
 
     DebugRoutine ("TxtboxSetMaxLength");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
 
-    p_txtbox->maxlength=newmaxlen;
+    p_Txtbox->maxlength=newmaxlen;
 
     DebugEnd();
 }
 
 /* routine will take stringToFit and return n where n is the number of */
-/* characters from the left that will fit in txtboxID's field width */
-T_word16 TxtboxCanFit (T_txtboxID txtboxID, T_byte8 *stringToFit)
+/* characters from the left that will fit in TxtboxID's field width */
+T_word16 TxtboxCanFit (T_TxtboxID TxtboxID, T_byte8 *stringToFit)
 {
     T_word16 widthcnt=0;
     T_word16 boxwidth=0;
     T_word16 charcnt=0;
     T_word16 length;
-    T_txtboxStruct *p_txtbox;
+    T_TxtboxStruct *p_Txtbox;
     DebugRoutine ("TxtboxCanFit");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
     DebugCheck (stringToFit != NULL);
 
-    p_txtbox=(T_txtboxStruct *)txtboxID;
-    boxwidth=p_txtbox->lx2-p_txtbox->lx1 - (GrGetCharacterWidth('W')+3);
+    p_Txtbox=(T_TxtboxStruct *)TxtboxID;
+    boxwidth=p_Txtbox->lx2-p_Txtbox->lx1 - (GrGetCharacterWidth('W')+3);
     length=strlen(stringToFit);
 /*
     printf ("string=%d\n",stringToFit);
@@ -2900,21 +2900,21 @@ T_word16 TxtboxCanFit (T_txtboxID txtboxID, T_byte8 *stringToFit)
 
 T_void *TxtboxGetStateBlock(T_void)
 {
-    T_txtboxID *p_txtboxs;
+    T_TxtboxID *p_Txtboxs;
 
-    p_txtboxs = MemAlloc(sizeof(G_txtboxArray)) ;
-    DebugCheck(p_txtboxs != NULL) ;
-    memcpy(p_txtboxs, G_txtboxArray, sizeof(G_txtboxArray)) ;
-    memset(G_txtboxArray, 0, sizeof(G_txtboxArray)) ;
+    p_Txtboxs = MemAlloc(sizeof(G_TxtboxArray)) ;
+    DebugCheck(p_Txtboxs != NULL) ;
+    memcpy(p_Txtboxs, G_TxtboxArray, sizeof(G_TxtboxArray)) ;
+    memset(G_TxtboxArray, 0, sizeof(G_TxtboxArray)) ;
 
-    return p_txtboxs ;
+    return p_Txtboxs ;
 }
 
 T_void TxtboxSetStateBlock(T_void *p_state)
 {
-    memcpy(G_txtboxArray, p_state, sizeof(G_txtboxArray)) ;
+    memcpy(G_TxtboxArray, p_state, sizeof(G_TxtboxArray)) ;
 }
 
 /****************************************************************************/
-/* END OF FILE: TXTBOX.C                                                    */
+/* END OF FILE: Txtbox.C                                                    */
 /****************************************************************************/

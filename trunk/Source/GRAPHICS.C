@@ -1456,6 +1456,7 @@ T_void GrSetPalette(
            T_word16 number_colors,
            T_palette *p_palette)
 {
+#ifdef WATCOM
     T_byte8 *p_color ;
     T_word16 i ;
     E_Boolean changed = FALSE ;
@@ -1554,6 +1555,20 @@ T_void GrSetPalette(
     INDICATOR_LIGHT(955, INDICATOR_RED) ;
     INDICATOR_LIGHT(943, INDICATOR_RED) ;
     TICKER_TIME_ROUTINE_ENDM("GrSetPalette", 1000)
+#endif
+
+#ifdef WIN32
+    T_word16 i ;
+    /* See if the palette is changing. */
+    i = start_color*3 ;
+
+    /* Record the last palette */
+    memcpy(G_lastPalette+i, p_palette+i, number_colors*3) ;
+    MouseDraw() ;
+    WindowsUpdate(GRAPHICS_ACTUAL_SCREEN, &G_lastPalette[0][0]) ;
+    MouseErase() ;
+    MouseAllowUpdate() ;
+#endif
 }
 
 /****************************************************************************/
@@ -3901,6 +3916,37 @@ T_void GrInvalidateRectClipped(
     DebugEnd() ;
 }
 
+#ifdef WIN32
+T_void DrawTranslucentAsm(
+           T_byte8 *p_source,
+           T_byte8 *p_destination,
+           T_word32 count)
+{
+}
+
+T_void DrawTranslucentSeeThroughAsm(
+           T_byte8 *p_source,
+           T_byte8 *p_destination,
+           T_word32 count) 
+{
+}
+
+T_void DrawSeeThroughAsm(
+           T_byte8 *p_source,
+           T_byte8 *p_destination,
+           T_word32 count)
+{
+}
+
+T_void ShadeMemAsm(
+          T_byte8 *p_source,
+          T_byte8 *p_destination,
+          T_word32 count,
+          T_byte8 *p_transTable)
+{
+}
+
+#endif
 /****************************************************************************/
 /*    END OF FILE:  GRAPHICS.C                                              */
 /****************************************************************************/

@@ -120,6 +120,22 @@
 /* Option to turn on copy protection */
 #define COMPILE_OPTION_COPY_PROTECTION_ON
 
+#ifdef WIN32
+#pragma warning(disable:4200)
+#pragma warning(disable:4100)
+//#include <windows.h>
+//#include <direct.h>
+#include <sdl.h>
+// Delay in a number of ticks (70th of a second)
+#define delay(x) SDL_Delay((x)*14)
+/* The mouse driver is handled not in the mouse calls, but in the file 'winmouse.c' */
+#define OUTSIDE_MOUSE_DRIVER
+/* Remove C++ debug checks */
+#define _NDEBUG
+#define _disable()
+#define _enable()
+#endif
+
 #endif
 
 /****************************************************************************/

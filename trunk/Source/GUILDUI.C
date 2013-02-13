@@ -7,7 +7,7 @@ static T_graphicID G_backgroundPic=NULL;
 static T_buttonID G_upButtons[4];
 static T_buttonID G_dnButtons[4];
 static T_graphicID G_scrollBars[4];
-static T_txtboxID G_displayBoxes[4];
+static T_TxtboxID G_displayBoxes[4];
 static T_buttonID G_joinButton=NULL;
 static T_buttonID G_createButton=NULL;
 static T_doubleLinkList G_mapList=DOUBLE_LINK_LIST_BAD;
@@ -18,8 +18,8 @@ static T_doubleLinkList G_playerList=DOUBLE_LINK_LIST_BAD;
 static T_void GuildUIUpdateGraphics (T_void);
 static T_void GuildUIBuildMapList (T_void);
 static E_Boolean GuildUIPlayerCanVisitMap (T_word16 which);
-static T_void GuildDisplayMapInfo (T_txtboxID txtboxID);
-static T_void GuildDisplayGameInfo (T_txtboxID txtboxID);
+static T_void GuildDisplayMapInfo (T_TxtboxID TxtboxID);
+static T_void GuildDisplayGameInfo (T_TxtboxID TxtboxID);
 static T_void GuildUIUpDisplay (T_buttonID buttonID);
 static T_void GuildUIDnDisplay (T_buttonID buttonID);
 static T_void GuildUIDrawGameList (T_void);
@@ -48,15 +48,15 @@ T_void GuildUIStart  (T_word32 formNum)
     const T_word16 dispWindowX2[4]=  { 95,  95,  198, 198};
     const T_word16 dispWindowY2[4]=  { 75,  125, 75,  125};
 
-    const E_txtboxMode dispWindowMode[4]={TXTBOX_MODE_SELECTION_BOX,
-                                          TXTBOX_MODE_VIEW_SCROLL_FORM,
-                                          TXTBOX_MODE_SELECTION_BOX,
-                                          TXTBOX_MODE_VIEW_SCROLL_FORM};
+    const E_TxtboxMode dispWindowMode[4]={Txtbox_MODE_SELECTION_BOX,
+                                          Txtbox_MODE_VIEW_SCROLL_FORM,
+                                          Txtbox_MODE_SELECTION_BOX,
+                                          Txtbox_MODE_VIEW_SCROLL_FORM};
 
-    const E_txtboxJustify dispWindowJustify[4]={TXTBOX_JUSTIFY_LEFT,
-                                                TXTBOX_JUSTIFY_LEFT,
-                                                TXTBOX_JUSTIFY_CENTER,
-                                                TXTBOX_JUSTIFY_CENTER};
+    const E_TxtboxJustify dispWindowJustify[4]={Txtbox_JUSTIFY_LEFT,
+                                                Txtbox_JUSTIFY_LEFT,
+                                                Txtbox_JUSTIFY_CENTER,
+                                                Txtbox_JUSTIFY_CENTER};
 
     DebugRoutine ("GuildUIStart");
 
@@ -380,7 +380,7 @@ static T_void GuildUIBuildMapList (T_void)
 
     TxtboxSetData (G_displayBoxes[GUILD_MAPS_LIST],listdata);
     TxtboxCursBot(G_displayBoxes[GUILD_MAPS_LIST]);
-    TxtboxBackspace (G_displayBoxes[GUILD_MAPS_LIST]);
+    TxtboxBackSpace (G_displayBoxes[GUILD_MAPS_LIST]);
     TxtboxCursTop(G_displayBoxes[GUILD_MAPS_LIST]);
     MemFree(listdata);
 
@@ -422,7 +422,7 @@ static E_Boolean GuildUIPlayerCanVisitMap (T_word16 which)
 
 /* routine called when the map selection list is changed, displays text */
 /* information block about an adventure */
-static T_void GuildDisplayMapInfo (T_txtboxID txtboxID)
+static T_void GuildDisplayMapInfo (T_TxtboxID TxtboxID)
 {
     T_word16 selection;
     T_mapDescriptionStruct *p_map;
@@ -430,7 +430,7 @@ static T_void GuildDisplayMapInfo (T_txtboxID txtboxID)
 
     DebugRoutine ("GuildDisplayMapInfo");
 
-    selection=TxtboxGetSelectionNumber(txtboxID);
+    selection=TxtboxGetSelectionNumber(TxtboxID);
     element=DoubleLinkListGetFirst(G_mapList);
 
     /* Record that adventure as the selected adventure. */
@@ -457,7 +457,7 @@ static T_void GuildDisplayMapInfo (T_txtboxID txtboxID)
 
 
 /* displays information about an open game */
-static T_void GuildDisplayGameInfo (T_txtboxID txtboxID)
+static T_void GuildDisplayGameInfo (T_TxtboxID TxtboxID)
 {
     T_sword16 selection;
     T_doubleLinkListElement element;
@@ -467,7 +467,7 @@ static T_void GuildDisplayGameInfo (T_txtboxID txtboxID)
 
     DebugRoutine ("GuildDisplayGameInfo");
 
-    selection=TxtboxGetSelectionNumber(txtboxID);
+    selection=TxtboxGetSelectionNumber(TxtboxID);
     element=DoubleLinkListGetFirst (G_gameList);
 
     while (element != DOUBLE_LINK_LIST_ELEMENT_BAD)
@@ -1049,8 +1049,8 @@ T_void GuildUIConfirmCreateGame (T_void)
                                                   0,
                                                   0,
                                                   FALSE,
-                                                  TXTBOX_JUSTIFY_CENTER,
-                                                  TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                                  Txtbox_JUSTIFY_CENTER,
+                                                  Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                                   NULL);
 
     TxtboxSetData (G_displayBoxes[GUILD_GAME_LIST],
@@ -1064,7 +1064,7 @@ T_void GuildUIConfirmCreateGame (T_void)
 /* server callback, should be notified after a 'join game' packet has been */
 /* recieved, puts player in a wait state, waiting on the open game creator */
 /* to select 'begin game'.  Player has the option to cancel the join */
-T_void GuilDUIConfirmJoinGame (T_void)
+T_void GuildUIConfirmJoinGame (T_void)
 {
     DebugRoutine ("GuildUIConfirmJoinGame");
 
@@ -1101,8 +1101,8 @@ T_void GuilDUIConfirmJoinGame (T_void)
                                                   0,
                                                   0,
                                                   FALSE,
-                                                  TXTBOX_JUSTIFY_CENTER,
-                                                  TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                                  Txtbox_JUSTIFY_CENTER,
+                                                  Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                                   NULL);
 
     TxtboxSetData (G_displayBoxes[GUILD_GAME_LIST],

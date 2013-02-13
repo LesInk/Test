@@ -234,7 +234,7 @@ T_void ScriptFormCallback(
 		   T_word16 objstatus,
 		   T_word32 objID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 selectnum;
     T_sword32 id ;
     T_sword32 selection ;
@@ -260,27 +260,27 @@ T_void ScriptFormCallback(
             break ;
         case FORM_OBJECT_TEXTBOX:
             switch(objstatus)  {
-                case TXTBOX_ACTION_GAINED_FOCUS:
+                case Txtbox_ACTION_GAINED_FOCUS:
                     IScriptFormEventOneNumber(
                         SCRIPT_EVENT_TEXT_BOX_GAINED_FOCUS,
                         id) ;
                     break ;
-                case TXTBOX_ACTION_LOST_FOCUS:
+                case Txtbox_ACTION_LOST_FOCUS:
                     IScriptFormEventOneNumber(
                         SCRIPT_EVENT_TEXT_BOX_LOST_FOCUS,
                         id) ;
                     break ;
-                case TXTBOX_ACTION_ACCEPTED:
+                case Txtbox_ACTION_ACCEPTED:
                     IScriptFormEventOneNumber(
                         SCRIPT_EVENT_TEXT_BOX_ACCEPTED,
                         id) ;
                     break ;
-                case TXTBOX_ACTION_DATA_CHANGED:
+                case Txtbox_ACTION_DATA_CHANGED:
                     IScriptFormEventOneNumber(
                         SCRIPT_EVENT_TEXT_BOX_DATA_CHANGED,
                         id) ;
                     break ;
-                case TXTBOX_ACTION_SELECTION_CHANGED:
+                case Txtbox_ACTION_SELECTION_CHANGED:
                     /* Get what is the new selection. */
                     selection = TxtboxGetSelectionNumber(FormGetObjID(id)) ;
 
@@ -512,7 +512,7 @@ T_void ScriptFormTextBoxSetSelection(
            T_word16 id,
            T_word16 selection)
 {
-    T_txtboxID textBoxID ;
+    T_TxtboxID textBoxID ;
 
     DebugRoutine("ScriptFormTextBoxSetSelection") ;
     DebugCheck(G_formScript != SCRIPT_BAD) ;

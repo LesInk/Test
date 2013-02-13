@@ -316,18 +316,18 @@ T_formObjectID FormAddTextBox    (T_word16  x1,
                                   T_word32  maxlength,
                                   T_byte8   hotkey,
                                   E_Boolean numericonly,
-                                  E_txtboxJustify justify,
-                                  E_txtboxMode boxmode,
+                                  E_TxtboxJustify justify,
+                                  E_TxtboxMode boxmode,
 								  T_word32  idnum)
 {
 	T_word16 i;
-	T_txtboxID txtboxID;
+	T_TxtboxID TxtboxID;
 
  	DebugRoutine ("FormAddTextBox");
     DebugCheck (fontname != NULL);
     DebugCheck (maxlength > 0);
-    DebugCheck (justify < TXTBOX_JUSTIFY_UNKNOWN);
-    DebugCheck (boxmode < TXTBOX_MODE_UNKNOWN);
+    DebugCheck (justify < Txtbox_JUSTIFY_UNKNOWN);
+    DebugCheck (boxmode < Txtbox_MODE_UNKNOWN);
 
     G_formHasTextBoxes = TRUE;
 
@@ -337,7 +337,7 @@ T_formObjectID FormAddTextBox    (T_word16  x1,
 		if (G_formObjectArray[i]==NULL)
 		{
 			/* found one, create a new textform */
-			txtboxID=TxtboxCreate (x1,
+			TxtboxID=TxtboxCreate (x1,
 								   y1,
 								   x2,
 								   y2,
@@ -349,10 +349,10 @@ T_formObjectID FormAddTextBox    (T_word16  x1,
 								   boxmode,
 								   FormReportTextBox);
 
-            TxtboxSetCallback (txtboxID, FormReportTextBox);
+            TxtboxSetCallback (TxtboxID, FormReportTextBox);
 			/* now that a textform has been created, make an objstruct for it */
 			G_formObjectArray[i]=FormCreateObject (FORM_OBJECT_TEXTBOX,
-												  (T_formObjectID)txtboxID,
+												  (T_formObjectID)TxtboxID,
 												  idnum);
 			/* we made a new object struct, break from the loop */
 			break;
@@ -452,17 +452,17 @@ T_void FormReportField (T_TxtfldID TxtfldID)
 }
 
 
-T_void FormReportTextBox (T_txtboxID txtboxID)
+T_void FormReportTextBox (T_TxtboxID TxtboxID)
 {
-	T_txtboxStruct *p_txtbox;
+	T_TxtboxStruct *p_Txtbox;
     T_formObjectStruct *p_object;
-    E_txtboxAction action;
+    E_TxtboxAction action;
     T_word16 i;
 
 	DebugRoutine ("FormReportBox");
-    DebugCheck (txtboxID != NULL);
+    DebugCheck (TxtboxID != NULL);
 
-	p_txtbox=(T_txtboxStruct*)txtboxID;
+	p_Txtbox=(T_TxtboxStruct*)TxtboxID;
     action=TxtboxGetAction();
 
 	for (i=0;i<MAX_FORM_OBJECTS;i++)
@@ -470,7 +470,7 @@ T_void FormReportTextBox (T_txtboxID txtboxID)
 		p_object=(T_formObjectStruct*)G_formObjectArray[i];
 		if (p_object->objtype==FORM_OBJECT_TEXTBOX)
 		{
-			if ((T_txtboxID)p_object->objID==txtboxID)
+			if ((T_TxtboxID)p_object->objID==TxtboxID)
 			{
 				/* found the button, call the callback routine */
 				if (formcallback!=NULL && action != 0)
@@ -549,8 +549,8 @@ T_void FormLoadFromFile (T_byte8 *filename)
             {
                 /* strip last character if newline */
 				if (tempstr[strlen(tempstr)-1]=='\n') tempstr[strlen(tempstr)-1]='\0';
-				TxtBoxAppendString (p_obj->objID,tempstr);
-                TxtBoxAppendKey (p_obj->objID,13);
+				TxtboxAppendString (p_obj->objID,tempstr);
+                TxtboxAppendKey (p_obj->objID,13);
                 sprintf (tempstr,"#");
             }
         }
@@ -677,7 +677,7 @@ T_void FormLoadFromFile (T_byte8 *filename)
                                   hotkey,
                                   numericonly,
                                   justify,
-									       (E_txtboxMode)fieldtype,
+									       (E_TxtboxMode)fieldtype,
 									       objid);
 
             DebugCheck (objID != NULL);
@@ -686,10 +686,10 @@ T_void FormLoadFromFile (T_byte8 *filename)
             {
                SBUbuttonID=FormGetObjID(sbupID);
                ButtonSetData (SBUbuttonID,objid);
-               ButtonSetCallBacks (SBUbuttonID,NULL,TxtboxHandleSBUp);
+               ButtonSetCallbacks (SBUbuttonID,NULL,TxtboxHandleSBUp);
                SBDbuttonID=FormGetObjID(sbdnID);
                ButtonSetData (SBDbuttonID,objid);
-               ButtonSetCallBacks (SBDbuttonID,NULL,TxtboxHandleSBDn);
+               ButtonSetCallbacks (SBDbuttonID,NULL,TxtboxHandleSBDn);
                SBGgraphicID=FormGetObjID(sbgrID);
                DebugCheck (SBUbuttonID != NULL);
                DebugCheck (SBDbuttonID != NULL);
@@ -764,7 +764,7 @@ T_void FormCleanUp (T_void)
 					TxtfldDelete ((T_TxtfldID)p_object->objID);
 					break;
             case FORM_OBJECT_TEXTBOX:
-               TxtboxDelete ((T_txtboxID)p_object->objID);
+               TxtboxDelete ((T_TxtboxID)p_object->objID);
                break;
             case FORM_OBJECT_SLIDER:
                SliderDelete ((T_sliderID)p_object->objID);
@@ -826,8 +826,12 @@ T_void FormHandleKey (E_keyboardEvent event, T_word16 scankey)
         MessagePrintf("Gamma level %d",
             ColorGammaAdjust()) ;
         ColorUpdate(1) ;
-        while (KeyMapGetScan(KEYMAP_GAMMA_CORRECT) == TRUE)
-            {}
+        while (KeyMapGetScan(KEYMAP_GAMMA_CORRECT) == TRUE)  {
+#ifdef WIN32
+            extern void KeyboardUpdate(E_Boolean updateBuffers) ;
+            KeyboardUpdate(TRUE) ;
+#endif
+        }
     }
 
 	DebugEnd();

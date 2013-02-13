@@ -102,7 +102,7 @@ T_efxID EfxCreate (E_efxType type,        // type of effect
             if (p_efx->objectList != DOUBLE_LINK_LIST_BAD)
             {
                 /* init extra data */
-                p_efx->reserved=tickerGet();
+                p_efx->reserved=TickerGet();
                 p_efx->updateCallback=NULL;
                 p_efx->Xorigin=Xorigin;
                 p_efx->Yorigin=Yorigin;

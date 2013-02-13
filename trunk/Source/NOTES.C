@@ -9,7 +9,7 @@ static T_word16 G_currentJournalPage=1;
 T_void NotesOpenNotesPage (T_void)
 {
     T_buttonID buttonID;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     DebugRoutine ("NotesOpenNotesPage");
 
     buttonID=FormGetObjID(301);
@@ -18,9 +18,9 @@ T_void NotesOpenNotesPage (T_void)
     ButtonSetData (buttonID, BANNER_FORM_JOURNAL);
 
     /* set field data */
-    txtboxID=FormGetObjID(500);
-    DebugCheck (txtboxID != NULL);
-    TxtboxSetData (txtboxID,StatsGetPlayerNotes());
+    TxtboxID=FormGetObjID(500);
+    DebugCheck (TxtboxID != NULL);
+    TxtboxSetData (TxtboxID,StatsGetPlayerNotes());
 
     /* select data entry textbox */
     TxtboxFirstBox();
@@ -34,15 +34,15 @@ T_void NotesOpenNotesPage (T_void)
 
 T_void NotesCloseNotesPage (T_void)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     DebugRoutine ("NotesCloseNotesPage");
 
     /* disable keyboard buffering */
     KeyboardBufferOff();
 
-    txtboxID=FormGetObjID(500);
-    /* save txtbox data */
-    StatsSetPlayerNotes (TxtboxGetData(txtboxID));
+    TxtboxID=FormGetObjID(500);
+    /* save Txtbox data */
+    StatsSetPlayerNotes (TxtboxGetData(TxtboxID));
 
     DebugEnd();
 }
@@ -87,7 +87,7 @@ T_void NotesOpenJournalPage (T_void)
 
 T_void NotesUpdateJournalPage (T_void)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_graphicID tempGraphic;
     T_word16 notePage;
     T_byte8 stmp[32];
@@ -124,7 +124,7 @@ T_void NotesUpdateJournalPage (T_void)
 */
 
     /* draw G_currentJournalPage page of notes */
-    txtboxID = FormGetObjID(500);
+    TxtboxID = FormGetObjID(500);
     notePage=StatsGetPlayerNotePageID(G_currentJournalPage);
     if (notePage != MAX_NOTES)
     {
@@ -139,17 +139,17 @@ T_void NotesUpdateJournalPage (T_void)
         GraphicDelete (tempGraphic);
 
         /* update page number field */
-        DebugCheck (txtboxID != NULL);
+        DebugCheck (TxtboxID != NULL);
 
         sprintf (stmp,"PG %d/%d",
                  G_currentJournalPage,
                  StatsGetNumberOfNotes());
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
     }
     else
     {
         GrDrawRectangle(214,16,314,127,75);
-        TxtboxSetData(txtboxID,"NO PAGES");
+        TxtboxSetData(TxtboxID,"NO PAGES");
     }
 
     DebugEnd();

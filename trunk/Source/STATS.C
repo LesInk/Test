@@ -1759,7 +1759,7 @@ T_void StatsUpdateCreateCharacterUI (T_void)
 {
     T_byte8 stmp[64];
     T_word16 i;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_buttonID buttonID;
     T_byte8 *description;
     T_resource res;
@@ -1769,42 +1769,42 @@ T_void StatsUpdateCreateCharacterUI (T_void)
     StatsCalcClassStats();
 
     /* set up description field */
-    txtboxID=FormGetObjID (500);
+    TxtboxID=FormGetObjID (500);
 
     sprintf (stmp,"UI/CREATEC/DESC%2.2d.TXT",StatsGetPlayerClassType());
     description=PictureLockData (stmp,&res);
-    TxtboxSetNData (txtboxID,description,ResourceGetSize(res));
+    TxtboxSetNData (TxtboxID,description,ResourceGetSize(res));
     PictureUnlockAndUnfind (res);
 
     /* set up attribute fields */
-    txtboxID=FormGetObjID (503);
+    TxtboxID=FormGetObjID (503);
     sprintf (stmp,"%d",StatsGetPlayerStrength());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (504);
+    TxtboxID=FormGetObjID (504);
     sprintf (stmp,"%d",StatsGetPlayerConstitution());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (505);
+    TxtboxID=FormGetObjID (505);
     sprintf (stmp,"%d",StatsGetPlayerAccuracy());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (506);
+    TxtboxID=FormGetObjID (506);
     sprintf (stmp,"%d",StatsGetPlayerSpeed());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (507);
+    TxtboxID=FormGetObjID (507);
     sprintf (stmp,"%d",StatsGetPlayerMagic());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
-    txtboxID=FormGetObjID (508);
+    TxtboxID=FormGetObjID (508);
     sprintf (stmp,"%d",StatsGetPlayerStealth());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
     /* set up title field */
-    txtboxID=FormGetObjID (509);
+    TxtboxID=FormGetObjID (509);
     sprintf (stmp,"%s",StatsGetPlayerClassName());
-    TxtboxSetData (txtboxID,stmp);
+    TxtboxSetData (TxtboxID,stmp);
 
 
     /* load picture for this class */
@@ -1867,7 +1867,7 @@ T_void StatsCreateCharacterUIInit(T_void)
 {
 
     T_word16 i;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_screen tempscreen;
 
     DebugRoutine ("StatsCreateCharacterUIInit");
@@ -1936,24 +1936,24 @@ T_void StatsCreateCharacterUIInit(T_void)
 T_void StatsDisplayStatisticsPage (T_void)
 {
    T_byte8 stmp[64];
-   T_txtboxID txtboxID;
+   T_TxtboxID TxtboxID;
    T_sword16 mod;
 
    DebugRoutine ("StatsDisplayStaticsticsPage");
 
    /* note, routine expects statistics form to be active */
    /* set name */
-   txtboxID=FormGetObjID(500);
+   TxtboxID=FormGetObjID(500);
    sprintf (stmp,"%s",StatsGetName());
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set level */
-   txtboxID=FormGetObjID(501);
+   TxtboxID=FormGetObjID(501);
    sprintf (stmp,"%d",StatsGetPlayerLevel());
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set strength */
-   txtboxID=FormGetObjID(502);
+   TxtboxID=FormGetObjID(502);
 
    mod=StatsGetPlayerAttributeMod (ATTRIBUTE_STRENGTH);
    /* set field color to green for positive modification */
@@ -1963,10 +1963,10 @@ T_void StatsDisplayStatisticsPage (T_void)
    else strcpy (stmp,"^007");
 
    sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH));
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set constitution */
-   txtboxID=FormGetObjID(503);
+   TxtboxID=FormGetObjID(503);
 
    mod=StatsGetPlayerAttributeMod (ATTRIBUTE_CONSTITUTION);
    if (mod > 0) strcpy (stmp,"^009");
@@ -1974,10 +1974,10 @@ T_void StatsDisplayStatisticsPage (T_void)
    else strcpy (stmp,"^007");
 
    sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_CONSTITUTION));
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set accuracy */
-   txtboxID=FormGetObjID(504);
+   TxtboxID=FormGetObjID(504);
 
    mod=StatsGetPlayerAttributeMod (ATTRIBUTE_ACCURACY);
    if (mod > 0) strcpy (stmp,"^009");
@@ -1985,10 +1985,10 @@ T_void StatsDisplayStatisticsPage (T_void)
    else strcpy (stmp,"^007");
 
    sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY));
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set stealth*/
-   txtboxID=FormGetObjID(505);
+   TxtboxID=FormGetObjID(505);
 
    mod=StatsGetPlayerAttributeMod (ATTRIBUTE_STEALTH);
    if (mod > 0) strcpy (stmp,"^009");
@@ -1996,10 +1996,10 @@ T_void StatsDisplayStatisticsPage (T_void)
    else strcpy (stmp,"^007");
 
    sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_STEALTH));
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set magic */
-   txtboxID=FormGetObjID(506);
+   TxtboxID=FormGetObjID(506);
 
    mod=StatsGetPlayerAttributeMod (ATTRIBUTE_MAGIC);
    if (mod > 0) strcpy (stmp,"^009");
@@ -2007,10 +2007,10 @@ T_void StatsDisplayStatisticsPage (T_void)
    else strcpy (stmp,"^007");
 
    sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_MAGIC));
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set speed */
-   txtboxID=FormGetObjID(507);
+   TxtboxID=FormGetObjID(507);
 
    mod=StatsGetPlayerAttributeMod (ATTRIBUTE_SPEED);
    if (mod > 0) strcpy (stmp,"^009");
@@ -2018,27 +2018,27 @@ T_void StatsDisplayStatisticsPage (T_void)
    else strcpy (stmp,"^007");
 
    sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_SPEED));
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set class name */
-   txtboxID=FormGetObjID(508);
+   TxtboxID=FormGetObjID(508);
    sprintf (stmp,"%s",StatsGetPlayerClassName());
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set class title */
-   txtboxID=FormGetObjID(509);
+   TxtboxID=FormGetObjID(509);
    sprintf (stmp,"%s",StatsGetPlayerClassTitle());
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set exp gained */
-   txtboxID=FormGetObjID(510);
+   TxtboxID=FormGetObjID(510);
    sprintf (stmp,"%d",StatsGetPlayerExperience());
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 
    /* set exp needed */
-   txtboxID=FormGetObjID(511);
+   TxtboxID=FormGetObjID(511);
    sprintf (stmp,"%d",StatsGetPlayerExpNeeded());
-   TxtboxSetData(txtboxID,stmp);
+   TxtboxSetData(TxtboxID,stmp);
 /* moved to banner.c */
 #if 0
    /* display the character graphic */
@@ -3155,7 +3155,7 @@ T_void StatsLoadCharacterControl (E_formObjectType objtype,
 
 T_void StatsLoadCharacterUIInit (T_void)
 {
-    T_txtboxID txtboxID=NULL;
+    T_TxtboxID TxtboxID=NULL;
     T_byte8 *data;
     T_word16 i;
     T_screen tempscreen;
@@ -3171,54 +3171,54 @@ T_void StatsLoadCharacterUIInit (T_void)
     /* set up some fields */
     /* set up name field */
     sprintf (tempstr,"%s",StatsGetName());
-    txtboxID=FormGetObjID(500);
-    DebugCheck (txtboxID != NULL);
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxID=FormGetObjID(500);
+    DebugCheck (TxtboxID != NULL);
+    TxtboxSetData (TxtboxID,tempstr);
 
     /* set up attribute fields */
-    txtboxID=FormGetObjID(502);
+    TxtboxID=FormGetObjID(502);
     sprintf (tempstr,"%d",StatsGetPlayerLevel());
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(503);
+    TxtboxID=FormGetObjID(503);
     sprintf (tempstr,"%d",StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH));
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(504);
+    TxtboxID=FormGetObjID(504);
     sprintf (tempstr,"%d",StatsGetPlayerAttribute(ATTRIBUTE_CONSTITUTION));
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(505);
+    TxtboxID=FormGetObjID(505);
     sprintf (tempstr,"%d",StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY));
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(506);
+    TxtboxID=FormGetObjID(506);
     sprintf (tempstr,"%d",StatsGetPlayerAttribute(ATTRIBUTE_STEALTH));
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(507);
+    TxtboxID=FormGetObjID(507);
     sprintf (tempstr,"%d",StatsGetPlayerAttribute(ATTRIBUTE_MAGIC));
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(508);
+    TxtboxID=FormGetObjID(508);
     sprintf (tempstr,"%d",StatsGetPlayerAttribute(ATTRIBUTE_SPEED));
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(509);
+    TxtboxID=FormGetObjID(509);
     sprintf (tempstr,"%s",StatsGetPlayerClassName());
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(510);
+    TxtboxID=FormGetObjID(510);
     sprintf (tempstr,"%s",StatsGetPlayerClassTitle());
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(511);
+    TxtboxID=FormGetObjID(511);
     sprintf (tempstr,"%d",StatsGetPlayerExperience());
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
-    txtboxID=FormGetObjID(512);
+    TxtboxID=FormGetObjID(512);
     sprintf (tempstr,"%d",StatsGetPlayerExpNeeded());
-    TxtboxSetData (txtboxID,tempstr);
+    TxtboxSetData (TxtboxID,tempstr);
 
     /* temporarily disable mail button */
 //    buttonID=FormGetObjID(LOAD_CHARACTER_MAIL_BUTTON);
@@ -3400,7 +3400,7 @@ T_void StatsCreateCharacterControl (E_formObjectType objtype,
 					            	T_word16 objstatus,
 					             	T_word32 objID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 curclass;
     T_word16 i;
 
@@ -3433,10 +3433,10 @@ T_void StatsCreateCharacterControl (E_formObjectType objtype,
         else if (objID==303)
         {
             /* Get character name */
-            txtboxID=FormGetObjID (501);
+            TxtboxID=FormGetObjID (501);
 
             /* Is there a name */
-            if (strlen(TxtboxGetData(txtboxID)) == 0)  {
+            if (strlen(TxtboxGetData(TxtboxID)) == 0)  {
                 /* Character has no name */
                 /* Put up a "that's bad prompt" */
                 PromptDisplayMessage("Please enter a character name") ;
@@ -3447,7 +3447,7 @@ T_void StatsCreateCharacterControl (E_formObjectType objtype,
                 /* character accepted */
 
                 /* set character name */
-                StatsSetName (TxtboxGetData(txtboxID));
+                StatsSetName (TxtboxGetData(TxtboxID));
 
                 /* set character default inventory */
                 InventorySetDefaultInventoryForClass();

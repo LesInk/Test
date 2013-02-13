@@ -4,9 +4,9 @@
 #include "standard.h"
 
 static T_graphicID G_backgroundPic=NULL;
-static T_txtboxID  G_financeDisplays[4];
-static T_txtboxID  G_ownedByDisplay=NULL;
-static T_txtboxID  G_salePriceDisplay=NULL;
+static T_TxtboxID  G_financeDisplays[4];
+static T_TxtboxID  G_ownedByDisplay=NULL;
+static T_TxtboxID  G_salePriceDisplay=NULL;
 static T_buttonID  G_actionButton=NULL;
 static T_buttonID  G_forSaleToggle=NULL;
 static T_buttonID  G_increasePriceButton=NULL;
@@ -47,8 +47,8 @@ T_void HouseUIStart  (T_word32 formNum)
                                           0,
                                           0,
                                           TRUE,
-                                          TXTBOX_JUSTIFY_CENTER,
-                                          TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                          Txtbox_JUSTIFY_CENTER,
+                                          Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                           NULL);
 
         sprintf (stmp,"%d",StatsGetPlayerCoins(3-i));
@@ -65,8 +65,8 @@ T_void HouseUIStart  (T_word32 formNum)
                                   0,
                                   0,
                                   FALSE,
-                                  TXTBOX_JUSTIFY_CENTER,
-                                  TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                  Txtbox_JUSTIFY_CENTER,
+                                  Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                   NULL);
     TxtboxSetData (G_ownedByDisplay,"");
 
@@ -80,8 +80,8 @@ T_void HouseUIStart  (T_word32 formNum)
                                     0,
                                     0,
                                     FALSE,
-                                    TXTBOX_JUSTIFY_CENTER,
-                                    TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                    Txtbox_JUSTIFY_CENTER,
+                                    Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                     NULL);
     TxtboxSetData (G_salePriceDisplay,"");
 

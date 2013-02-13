@@ -51,7 +51,7 @@ T_void MainUIControl (E_formObjectType objtype,
     T_statsSavedCharacterID* chardata;
     T_byte8 password[14];
     T_byte8 passwordval[14];
-	T_txtboxID txtboxID,showwindowID;
+	T_TxtboxID TxtboxID,showwindowID;
     T_buttonID buttonID;
 
 	DebugRoutine ("MainUIControl");
@@ -187,25 +187,25 @@ T_void MainUIControl (E_formObjectType objtype,
     }
 #if 0
     else if (objID == MAINUI_BULLETIN_LIST &&
-             objstatus == TXTBOX_ACTION_SELECTION_CHANGED)
+             objstatus == Txtbox_ACTION_SELECTION_CHANGED)
     {
         /* load new bulletin */
-        txtboxID=FormGetObjID (MAINUI_BULLETIN_LIST);
+        TxtboxID=FormGetObjID (MAINUI_BULLETIN_LIST);
         showwindowID=FormGetObjID (MAINUI_BULLETIN_TEXT);
-        DebugCheck (txtboxID != NULL);
+        DebugCheck (TxtboxID != NULL);
         DebugCheck (showwindowID != NULL);
-        G_bulletinSelected=TxtboxGetSelectionNumber(txtboxID);
+        G_bulletinSelected=TxtboxGetSelectionNumber(TxtboxID);
         MainUIShowBulletin (showwindowID,G_bulletinSelected);
     }
 #endif
     else if (objID == MAINUI_CHARACTER_LIST &&
-             objstatus == TXTBOX_ACTION_SELECTION_CHANGED)
+             objstatus == Txtbox_ACTION_SELECTION_CHANGED)
     {
         /* character selected changed */
-        txtboxID=FormGetObjID (MAINUI_CHARACTER_LIST);
-        DebugCheck (txtboxID != NULL);
+        TxtboxID=FormGetObjID (MAINUI_CHARACTER_LIST);
+        DebugCheck (TxtboxID != NULL);
 
-        selected=TxtboxGetSelectionNumber(txtboxID);
+        selected=TxtboxGetSelectionNumber(TxtboxID);
         if (G_characterSelected != selected)
         {
             G_characterSelected=selected;
@@ -263,7 +263,7 @@ T_void MainUIControl (E_formObjectType objtype,
 /*                                                                          */
 /****************************************************************************/
 #if 0
-T_void MainUISetUpBulletins (T_txtboxID bulletinID)
+T_void MainUISetUpBulletins (T_TxtboxID bulletinID)
 {
     T_byte8 bulltitle[512];
 
@@ -280,7 +280,7 @@ T_void MainUISetUpBulletins (T_txtboxID bulletinID)
 #endif
 
 #if 0
-T_void MainUIShowBulletin (T_txtboxID showwindowID, T_word16 number)
+T_void MainUIShowBulletin (T_TxtboxID showwindowID, T_word16 number)
 {
     FILE *fp;
     T_byte8 tempstr[130];
@@ -330,8 +330,8 @@ T_void MainUIShowBulletin (T_txtboxID showwindowID, T_word16 number)
 
 T_void MainUIInit (T_void)
 {
-    T_txtboxID txtboxID;
-    T_txtboxID showwindowID;
+    T_TxtboxID TxtboxID;
+    T_TxtboxID showwindowID;
     T_word16 i;
     T_screen tempscreen;
     T_statsSavedCharacterID* chardata;
@@ -347,18 +347,18 @@ T_void MainUIInit (T_void)
     /* set up windows */
 
     /* show initial (greeting) bulletin page */
-/*    txtboxID=FormGetObjID (MAINUI_BULLETIN_TEXT);
-    if (txtboxID != NULL)
+/*    TxtboxID=FormGetObjID (MAINUI_BULLETIN_TEXT);
+    if (TxtboxID != NULL)
     {
-        MainUIShowBulletin (txtboxID, 0);
+        MainUIShowBulletin (TxtboxID, 0);
     }
 */
     /* bulletin listing */
-/*    txtboxID=FormGetObjID (MAINUI_BULLETIN_LIST);
-    if (txtboxID != NULL)
+/*    TxtboxID=FormGetObjID (MAINUI_BULLETIN_LIST);
+    if (TxtboxID != NULL)
     {
-        MainUISetUpBulletins(txtboxID);
-        TxtboxCursSetRow (txtboxID,G_bulletinSelected);
+        MainUISetUpBulletins(TxtboxID);
+        TxtboxCursSetRow (TxtboxID,G_bulletinSelected);
         showwindowID=FormGetObjID (MAINUI_BULLETIN_TEXT);
         MainUIShowBulletin (showwindowID,G_bulletinSelected);
     }
@@ -368,9 +368,9 @@ T_void MainUIInit (T_void)
     GraphicUpdateAllGraphics();
 
     /* character selected changed */
-    txtboxID=FormGetObjID (MAINUI_CHARACTER_LIST);
-    DebugCheck (txtboxID != NULL);
-    TxtboxCursSetRow (txtboxID,G_characterSelected);
+    TxtboxID=FormGetObjID (MAINUI_CHARACTER_LIST);
+    DebugCheck (TxtboxID != NULL);
+    TxtboxCursSetRow (TxtboxID,G_characterSelected);
 
     /* LES:  Make the selected item the active one. */
     StatsMakeActive(G_characterSelected);
@@ -394,28 +394,28 @@ T_void MainUIInit (T_void)
 static T_void MainUIUpdateCharacterListing (T_void)
 {
     T_word16 i;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_statsSavedCharacterID* charID;
     DebugRoutine ("MainUIUpdateCharacterListing");
 
 
-    txtboxID=FormGetObjID (MAINUI_CHARACTER_LIST);
+    TxtboxID=FormGetObjID (MAINUI_CHARACTER_LIST);
 
-    if (txtboxID != NULL)
+    if (TxtboxID != NULL)
     {
         /* loop through list of saved character slots */
         /* and create listing */
-        TxtboxSetData (txtboxID,"");
-        TxtboxCursTop (txtboxID);
+        TxtboxSetData (TxtboxID,"");
+        TxtboxCursTop (TxtboxID);
 
         for (i=0;i<MAX_CHARACTERS_PER_SERVER;i++)
         {
             charID=StatsGetSavedCharacterIDStruct(i);
-            TxtboxAppendString (txtboxID,charID->name);
-            TxtboxAppendKey (txtboxID,'\r');
+            TxtboxAppendString (TxtboxID,charID->name);
+            TxtboxAppendKey (TxtboxID,'\r');
         }
-        TxtboxBackSpace (txtboxID);
-        TxtboxCursTop (txtboxID);
+        TxtboxBackSpace (TxtboxID);
+        TxtboxCursTop (TxtboxID);
     }
 
     DebugEnd();

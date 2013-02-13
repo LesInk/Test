@@ -4,7 +4,10 @@
 
 #include "standard.h"
 
-#if defined(DOS32)
+#ifdef WIN32
+#include "direct.h"
+#endif
+
 /* Flag that determines if the mouse module has been initialized. */
 static T_byte8 F_MouseIsInitialized = FALSE ;
 
@@ -72,9 +75,10 @@ T_void IMouseInstallCallback(T_void) ;
 T_void IMouseUninstallCallback(T_void) ;
 
 //static T_void _interrupt _loadds far IMouseCallback(T_word32 max, T_word32 mcx, T_word32 mdx) ;
+#ifdef WATCOM
 #pragma aux IMouseCallback parm [EAX] [ECX] [EDX]
-//static T_void __interrupt __far IMouseCallback(T_word32 max, T_word32 mcx, T_word32 mdx) ;
 static T_void _loadds __far IMouseCallback(T_word32 max, T_word32 mcx, T_word32 mdx) ;
+#endif
 
 static T_sword16 G_interX = 0 ;
 static T_sword16 G_interY = 0 ;
@@ -156,7 +160,9 @@ T_void MouseInitialize(T_void)
     /* Allocate a place to put stuff behind the mouse. */
     G_mouseScreen = GrScreenAlloc() ;
 
-//    IMouseInstallCallback() ;
+#ifdef DOS32
+    IMouseInstallCallback() ;
+#endif
 
     G_eventStack = DoubleLinkListCreate() ;
     DebugCheck(G_eventStack != DOUBLE_LINK_LIST_BAD) ;
@@ -317,6 +323,7 @@ T_void MouseSetEventOptions(T_byte8 f_options)
 
 E_Boolean MouseCheckInstalled(T_void)
 {
+#ifdef DOS32
     E_Boolean f_installed ;
     union REGPACK regs;
 
@@ -333,6 +340,9 @@ E_Boolean MouseCheckInstalled(T_void)
     DebugEnd() ;
 
     return(f_installed);
+#else
+    return TRUE ;
+#endif
 }
 
 /****************************************************************************/
@@ -509,6 +519,7 @@ T_void MouseHide(T_void)
 
 T_void MouseMoveTo(T_word16 x, T_word16 y)
 {
+#ifdef DOS32
     union REGPACK regs;
 
     DebugRoutine("MouseMoveTo") ;
@@ -528,6 +539,7 @@ T_void MouseMoveTo(T_word16 x, T_word16 y)
     G_mouseLastY = y ;
 
     DebugEnd() ;
+#endif
 }
 
 /****************************************************************************/
@@ -582,6 +594,7 @@ T_void MouseSetBounds(
            T_word16 right,
            T_word16 bottom)
 {
+#ifdef DOS32
     union REGPACK regs;
 
     DebugRoutine("MouseSetBounds") ;
@@ -606,6 +619,7 @@ T_void MouseSetBounds(
     intr(0x33,&regs);
 
     DebugEnd() ;
+#endif
 }
 
 /****************************************************************************/
@@ -654,6 +668,7 @@ T_void MouseSetPicture(
           T_word16 hot_spot_y,
           T_mousePicture picture)
 {
+#ifdef DOS32
 //    union REGPACK regs;
     struct SREGS sregs ;
     union REGS inregs ;
@@ -688,6 +703,7 @@ T_void MouseSetPicture(
 #endif
 
     DebugEnd() ;
+#endif
 }
 
 /****************************************************************************/
@@ -1006,9 +1022,9 @@ T_void MouseFinish(T_void)
 
     /* Free up the mouse background screen. */
     GrScreenFree(G_mouseScreen) ;
-
+#ifdef DOS32
     IMouseUninstallCallback() ;
-
+#endif
     DebugEnd() ;
 }
 
@@ -1101,6 +1117,7 @@ T_void MouseReleaseBounds(T_void)
 
 static T_word16 IMouseGetButtonStatus(T_void)
 {
+#if DOS32
     union REGPACK regs;
     T_word16 buttonStatus ;
 
@@ -1115,6 +1132,9 @@ static T_word16 IMouseGetButtonStatus(T_void)
 
     DebugEnd() ;
     return buttonStatus ;
+#else
+    return DirectMouseGetButton() ;
+#endif
 }
 
 /****************************************************************************/
@@ -1160,6 +1180,7 @@ static T_word16 IMouseGetButtonStatus(T_void)
 
 static T_void IMouseGetMousePosition(T_word16 *xPos, T_word16 *yPos)
 {
+#ifdef DOS32
     union REGPACK regs;
 
     DebugRoutine("IMouseGetMousePosition") ;
@@ -1177,6 +1198,10 @@ static T_void IMouseGetMousePosition(T_word16 *xPos, T_word16 *yPos)
     *yPos = G_interY ;
 */
     DebugEnd() ;
+#else
+    extern void OutsideMouseDriverGet(T_word16 *xPos, T_word16 *yPos);
+    OutsideMouseDriverGet(xPos, yPos);
+#endif
 }
 
 /****************************************************************************/
@@ -1635,7 +1660,7 @@ T_void MouseUseDefaultBitmap()
 /*    LES  07/15/94  Created                                                */
 /*                                                                          */
 /****************************************************************************/
-
+#ifdef DOS32
 T_void IMouseInstallCallback(T_void)
 {
     struct SREGS sregs ;
@@ -1749,6 +1774,7 @@ static T_void _loadds __far IMouseCallback(T_word32 max, T_word32 mcx, T_word32 
 }
 
 #pragma on (check_stack)
+#endif
 
 /****************************************************************************/
 /*  Routine:  MouseSetColorize                                              */
@@ -1926,7 +1952,6 @@ T_void MousePushEventHandler(T_mouseEventHandler mouseEventHandler)
 
     DebugEnd() ;
 }
-#endif
 
 /****************************************************************************/
 /*    END OF FILE:  MOUSEMOD.C                                              */

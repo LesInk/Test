@@ -56,6 +56,7 @@
 	#define __interrupt
 	#define __far
 	#define __near
+	#define COMPILE_OPTION_DIRECT_TALK_IS_DOS32
 #else
 	#define COMPILE_OPTION_DIRECT_TALK_IS_DOS32
 #endif
@@ -128,7 +129,7 @@ typedef T_directTalkUniqueAddress T_gameGroupID ;
 #  include "button.h"
 #  include "control.h"
 #  include "txtfld.h"
-#  include "txtbox.h"
+#  include "Txtbox.h"
 #  include "slidr.h"
 #  include "comwin.h"
 

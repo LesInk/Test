@@ -19,7 +19,8 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>NotSet</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -38,36 +39,49 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\lshields\AA\AA\Lib\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\lshields\AA\AA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\lshields\AA\AA\Include;C:\lshields\AA\AA\Lib\SDL-1.2.15\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAsManaged>false</CompileAsManaged>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);WIN32;NO_ASSEMBLY</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <FloatingPointExceptions>
+      </FloatingPointExceptions>
       <CreateHotpatchableImage>false</CreateHotpatchableImage>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <BrowseInformation>true</BrowseInformation>
       <ShowIncludes>false</ShowIncludes>
       <DisableSpecificWarnings>4200;4100</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ShowProgress>NotSet</ShowProgress>
       <GenerateMapFile>true</GenerateMapFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalDependencies>kernel32.lib;SDL.lib;SDLmain.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <NoEntryPoint>false</NoEntryPoint>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -111,7 +125,6 @@
     <ClCompile Include="..\..\..\..\Source\3D_VIEW.C" />
     <ClCompile Include="..\..\..\..\Source\ACCOUNT.C" />
     <ClCompile Include="..\..\..\..\Source\ACTIVITY.C" />
-    <ClCompile Include="..\..\..\..\Source\ARCTAN.C" />
     <ClCompile Include="..\..\..\..\Source\AREASND.C" />
     <ClCompile Include="..\..\..\..\Source\BANKUI.C" />
     <ClCompile Include="..\..\..\..\Source\BANNER.C" />
@@ -208,7 +221,6 @@
     <ClCompile Include="..\..\..\..\Source\SYNCTIME.C" />
     <ClCompile Include="..\..\..\..\Source\TEXT.C" />
     <ClCompile Include="..\..\..\..\Source\TICKER.C" />
-    <ClCompile Include="..\..\..\..\Source\TOSDATA.C" />
     <ClCompile Include="..\..\..\..\Source\TOWNUI.C" />
     <ClCompile Include="..\..\..\..\Source\TXTBOX.C" />
     <ClCompile Include="..\..\..\..\Source\TXTFLD.C" />
@@ -218,6 +230,10 @@
     <ClCompile Include="..\..\..\..\Source\UPDATE.C" />
     <ClCompile Include="..\..\..\..\Source\VIEW.C" />
     <ClCompile Include="..\..\..\..\Source\VM.C" />
+    <ClCompile Include="debugcpp.cpp" />
+    <ClCompile Include="direct.cpp" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="misc.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Include\3D_COLLI.H" />
@@ -358,6 +374,54 @@
     <ClInclude Include="..\..\..\..\Include\VIEWFILE.H" />
     <ClInclude Include="..\..\..\..\Include\VIEWREGN.H" />
     <ClInclude Include="..\..\..\..\Include\VM.H" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\begin_code.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\close_code.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_active.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_audio.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_byteorder.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_cdrom.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_dreamcast.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_macos.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_macosx.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_minimal.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_nds.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_os2.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_symbian.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_win32.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_copying.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_cpuinfo.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_endian.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_error.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_events.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_getenv.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_joystick.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_keyboard.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_keysym.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_loadso.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_main.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_mouse.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_mutex.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_name.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_opengl.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_platform.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_quit.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_rwops.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_stdinc.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_syswm.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_thread.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_timer.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_types.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_version.h" />
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_video.h" />
+    <ClInclude Include="debug.hpp" />
+    <ClInclude Include="DIRECT.H" />
+    <ClInclude Include="options.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDL.lib" />
+    <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDLmain.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

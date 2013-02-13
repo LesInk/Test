@@ -30,7 +30,7 @@ T_void LookUpdateCreatureInfo (T_3dObject *p_obj)
     T_byte8 charIn;
     T_byte8 iteration=0;
     T_resource res;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
 
     DebugRoutine ("LookUpdateCreatureInfo");
     DebugCheck(p_obj != NULL) ;
@@ -80,14 +80,14 @@ T_void LookUpdateCreatureInfo (T_3dObject *p_obj)
                     if (iteration==0)
                     {
                         /* store stmp in name field */
-                        txtboxID=FormGetObjID(500);
-                        TxtboxSetData(txtboxID,stmp);
+                        TxtboxID=FormGetObjID(500);
+                        TxtboxSetData(TxtboxID,stmp);
                     }
                     else if (iteration==1)
                     {
                         /* store stmp in description field */
-                        txtboxID=FormGetObjID(501);
-                        TxtboxSetData(txtboxID,stmp);
+                        TxtboxID=FormGetObjID(501);
+                        TxtboxSetData(TxtboxID,stmp);
                         /* exit, we are done */
                         break;
                     }
@@ -98,11 +98,11 @@ T_void LookUpdateCreatureInfo (T_3dObject *p_obj)
         }
         else
         {
-            txtboxID=FormGetObjID(500);
-            TxtboxSetData(txtboxID,"Unknown Creature");
+            TxtboxID=FormGetObjID(500);
+            TxtboxSetData(TxtboxID,"Unknown Creature");
 
-            txtboxID=FormGetObjID(501);
-            TxtboxSetData(txtboxID,"No other information available.");
+            TxtboxID=FormGetObjID(501);
+            TxtboxSetData(TxtboxID,"No other information available.");
         }
     }
 
@@ -114,14 +114,14 @@ T_void LookUpdateCreatureInfo (T_3dObject *p_obj)
 /* routine is called to request player info from server */
 T_void LookRequestPlayerInfo  (T_3dObject *p_obj)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
 
     DebugRoutine ("LookRequestPlayerInfo");
     DebugCheck (BannerFormIsOpen(BANNER_FORM_LOOK));
 
     /* get name/title field pointer */
-    txtboxID=FormGetObjID(500);
-    TxtboxSetData (txtboxID,"Retrieving info..");
+    TxtboxID=FormGetObjID(500);
+    TxtboxSetData (TxtboxID,"Retrieving info..");
 
     DebugEnd();
 }
@@ -129,16 +129,16 @@ T_void LookRequestPlayerInfo  (T_3dObject *p_obj)
 
 T_void LookUpdatePlayerInfo (T_lookDataStruct *p_lookData)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     DebugRoutine ("LookUpdatePlayerInfo");
     /* in case banner was abruptly closed */
     if (BannerFormIsOpen(BANNER_FORM_LOOK))
     {
-        txtboxID=FormGetObjID(500);
-        TxtboxSetData(txtboxID,p_lookData->name);
+        TxtboxID=FormGetObjID(500);
+        TxtboxSetData(TxtboxID,p_lookData->name);
 
-        txtboxID=FormGetObjID(501);
-        TxtboxSetData(txtboxID,p_lookData->description);
+        TxtboxID=FormGetObjID(501);
+        TxtboxSetData(TxtboxID,p_lookData->description);
 
         /* draw player picture here */
         /* must fit in bounds 215,16 to 314,85 */

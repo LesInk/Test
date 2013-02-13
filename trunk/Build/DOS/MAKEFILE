@@ -12,7 +12,7 @@ DEBUG_ASM_FLAGS = -oi /m3 /zi
 TEST_C_FLAGS   =  /3r /7 /zp1 /we /oc /oi /ol /or /ot /s /d2 /zw /i=include
 TEST_ASM_FLAGS = -oi /m3
 
-CFLAGS    = $($(VERSION)_C_FLAGS)
+CFLAGS    = $($(VERSION)_C_FLAGS) /DUSE_SOS_LIBRARY /DDOS32 /DWATCOM
 ASMFLAGS  = $($(VERSION)_ASM_FLAGS)
 #LFLAGS    = option map=map.map system dos4g option stub=wstub.exe option stack=40000 debug watcom all
 LFLAGS    = option map=map.map system dos4g option stack=40000 debug watcom all

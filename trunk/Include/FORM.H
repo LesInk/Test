@@ -90,8 +90,8 @@ T_formObjectID FormAddTextBox     (T_word16  x1,
                                    T_word32  maxlength,
                                    T_byte8   hotkey,
                                    E_Boolean numericonly,
-                                   E_txtboxJustify justify,
-                                   E_txtboxMode boxmode,
+                                   E_TxtboxJustify justify,
+                                   E_TxtboxMode boxmode,
 								   T_word32  idnum);
 
 T_formObjectID FormAddSlider (T_word16 x1,
@@ -101,7 +101,7 @@ T_formObjectID FormAddSlider (T_word16 x1,
 
 T_void FormReportButton (T_buttonID buttonID);
 T_void FormReportField (T_TxtfldID TxtfldID);
-T_void FormReportTextBox (T_txtboxID txtboxID);
+T_void FormReportTextBox (T_TxtboxID TxtboxID);
 T_void FormReportSlider (T_sliderID sliderID);
 
 T_void FormLoadFromFile (T_byte8 *filename);

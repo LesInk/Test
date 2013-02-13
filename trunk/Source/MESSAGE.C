@@ -10,7 +10,7 @@
 #define MAX_VIEWED_MESSAGES 4
 
 static E_Boolean G_alternateOutput=FALSE;
-static T_txtboxID G_altOutputBox = NULL;
+static T_TxtboxID G_altOutputBox = NULL;
 
 T_byte8 G_extendedColors[MAX_EXTENDED_COLORS]=
   {0,   /* 000 = black */
@@ -20,7 +20,7 @@ T_byte8 G_extendedColors[MAX_EXTENDED_COLORS]=
    164, /* 004 = dk yellow */
    144, /* 005 = bt red */
    148, /* 006 = dk red */
-   211, /* 007 = lt brown (default text on display txtboxes) */
+   211, /* 007 = lt brown (default text on display Txtboxes) */
    82,  /* 008 = dk brown */
    128, /* 009 = lt green */
    132, /* 010 = dk green */
@@ -508,7 +508,7 @@ T_void MessageDisplayMessage (T_word16 messagenum)
         memcpy (desc2,desc1,size);
         desc2[size-1]='\0';
         MessageAdd (desc2);
-        memfree (desc2);
+        MemFree (desc2);
         PictureUnlockAndUnfind(res) ;
     }
 
@@ -550,8 +550,8 @@ T_void MessageSetAlternateOutputOn(T_void)
                                         0,
                                         0,
                                         FALSE,
-                                        TXTBOX_JUSTIFY_CENTER,
-                                        TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                        Txtbox_JUSTIFY_CENTER,
+                                        Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                         NULL);
 
         TxtboxSetData(G_altOutputBox,"");

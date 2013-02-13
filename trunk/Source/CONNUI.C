@@ -52,7 +52,7 @@ T_void ConnMainUIControl (E_formObjectType objtype,
 					  T_word16 objstatus,
 					  T_word32 objID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 init[64],dial[64];
     T_connUIStruct server ;
     T_word16 selectnum;
@@ -71,12 +71,12 @@ T_void ConnMainUIControl (E_formObjectType objtype,
             /* call dialin with init and dial strings */
 //            G_mainExit = ClientDialIn (G_currentModemInit,G_currentServerNumber);
 
-//            txtboxID=FormGetObjID(CONNUI_INIT_TEXT);
-//            strcpy (server.servinit,TxtboxGetData (txtboxID));
-//            txtboxID=FormGetObjID(CONNUI_DIAL_TEXT);
-//            strcpy (server.servphone,TxtboxGetData (txtboxID));
-//            txtboxID=FormGetObjID(CONNUI_SERVER_NAME_TEXT);
-//            strcpy (server.servname,TxtboxGetData (txtboxID));
+//            TxtboxID=FormGetObjID(CONNUI_INIT_TEXT);
+//            strcpy (server.servinit,TxtboxGetData (TxtboxID));
+//            TxtboxID=FormGetObjID(CONNUI_DIAL_TEXT);
+//            strcpy (server.servphone,TxtboxGetData (TxtboxID));
+//            TxtboxID=FormGetObjID(CONNUI_SERVER_NAME_TEXT);
+//            strcpy (server.servname,TxtboxGetData (TxtboxID));
 //          strcpy (server.servinit,G_currentModemInit);
             strcpy (server.servphone,G_currentServerNumber);
             strcpy (server.servname,G_currentServerName);
@@ -125,22 +125,22 @@ T_void ConnMainUIControl (E_formObjectType objtype,
         }
         else if (objID==501)
         {
-            txtboxID=FormGetObjID(501);
-            strcpy (G_currentServerName,TxtboxGetData(txtboxID));
+            TxtboxID=FormGetObjID(501);
+            strcpy (G_currentServerName,TxtboxGetData(TxtboxID));
         }
         else if (objID==502)
         {
             /* server number field changed */
-            txtboxID=FormGetObjID(502);
-            strcpy (G_currentServerNumber,TxtboxGetData(txtboxID));
+            TxtboxID=FormGetObjID(502);
+            strcpy (G_currentServerNumber,TxtboxGetData(TxtboxID));
         }
         else if (objID==503)
         {
             /* modem init string changed */
 
             /* update data */
-            txtboxID=FormGetObjID(503);
-            strcpy (G_currentModemInit,TxtboxGetData(txtboxID));
+            TxtboxID=FormGetObjID(503);
+            strcpy (G_currentModemInit,TxtboxGetData(TxtboxID));
         }
     }
 
@@ -152,7 +152,7 @@ T_void ConnMainUIControl (E_formObjectType objtype,
 T_void ConnMainUIInit (T_void)
 {
     T_doubleLinkListElement temp;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 *data;
     T_byte8 tempstr[60];
     T_byte8 name[64];
@@ -253,7 +253,7 @@ static T_void ConnUIUpdate (T_void)
     T_byte8 stmp[128];
     T_byte8 *seldata;
     T_word32 datalen=0;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_connUIStruct *p_conn;
     T_word16 selnum;
     T_word16 i;
@@ -281,19 +281,19 @@ static T_void ConnUIUpdate (T_void)
 
     /* copy data into text boxes */
     /* copy name field */
-    txtboxID=FormGetObjID(501);
-    TxtboxSetData (txtboxID,G_currentServerName);
+    TxtboxID=FormGetObjID(501);
+    TxtboxSetData (TxtboxID,G_currentServerName);
     /* copy phone field */
-    txtboxID=FormGetObjID(502);
-    TxtboxSetData (txtboxID,G_currentServerNumber);
+    TxtboxID=FormGetObjID(502);
+    TxtboxSetData (TxtboxID,G_currentServerNumber);
     /* copy modem init field */
-    txtboxID=FormGetObjID(503);
-    TxtboxSetData (txtboxID,G_currentModemInit);
+    TxtboxID=FormGetObjID(503);
+    TxtboxSetData (TxtboxID,G_currentModemInit);
 
     /* clean out current selection list */
-    txtboxID=FormGetObjID(500);
-    TxtboxSetData(txtboxID,"");
-    TxtboxCursTop (txtboxID);
+    TxtboxID=FormGetObjID(500);
+    TxtboxSetData(TxtboxID,"");
+    TxtboxCursTop (TxtboxID);
 
     /* create selection list of servers */
     element=DoubleLinkListGetFirst(G_connUIServerList);
@@ -314,9 +314,9 @@ static T_void ConnUIUpdate (T_void)
         element=DoubleLinkListElementGetNext(element);
     }
 
-    TxtboxSetData (txtboxID,seldata);
+    TxtboxSetData (TxtboxID,seldata);
     MemFree (seldata);
-    TxtboxCursSetRow (txtboxID,selnum);
+    TxtboxCursSetRow (TxtboxID,selnum);
 
     DebugEnd();
 }
@@ -325,7 +325,7 @@ static T_void ConnUIUpdate (T_void)
 /* routine returns pointer to 'selected' server structure */
 static T_doubleLinkListElement ConnUIGetActiveServerElement (T_void)
 {
-    T_txtboxID *txtboxID;
+    T_TxtboxID *TxtboxID;
     T_word16 selectnumber;
     T_word16 cnt;
     T_doubleLinkListElement element=DOUBLE_LINK_LIST_ELEMENT_BAD;
@@ -334,11 +334,11 @@ static T_doubleLinkListElement ConnUIGetActiveServerElement (T_void)
     DebugRoutine ("ConnUIGetActiveServerElement");
 
     /* get selection number */
-    txtboxID=FormGetObjID(500);
-    DebugCheck (txtboxID != NULL);
+    TxtboxID=FormGetObjID(500);
+    DebugCheck (TxtboxID != NULL);
 
     /* get current selection number of textbox */
-    selectnumber=TxtboxGetSelectionNumber (txtboxID);
+    selectnumber=TxtboxGetSelectionNumber (TxtboxID);
     cnt=0;
 
     /* get list of server names */

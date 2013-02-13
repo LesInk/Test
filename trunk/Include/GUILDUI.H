@@ -34,7 +34,7 @@ T_void GuildUIRemovePlayer (T_byte8 *playerName);
 T_void GuildUIClearPlayers (T_void) ;
 
 T_void GuildUIConfirmCreateGame (T_void);
-T_void GuilDUIConfirmJoinGame (T_void);
+T_void GuildUIConfirmJoinGame (T_void);
 T_void GuildUICancelJoinGame (T_buttonID buttonID);
 
 T_void GuildUIGetSelectedGame(

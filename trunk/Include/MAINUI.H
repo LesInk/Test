@@ -10,8 +10,8 @@ T_void MainUIControl (E_formObjectType objtype,
 					  T_word16 objstatus,
 					  T_word32 objID);
 
-T_void MainUISetUpBulletins(T_txtboxID txtboxID);
-T_void MainUIShowBulletin (T_txtboxID txtboxID, T_word16 number);
+T_void MainUISetUpBulletins(T_TxtboxID TxtboxID);
+T_void MainUIShowBulletin (T_TxtboxID TxtboxID, T_word16 number);
 T_void MainUIInit (T_void);
 
 

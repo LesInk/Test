@@ -891,7 +891,7 @@ static T_void ControlExamineObject (T_3dObject *p_obj)
                 {
                     MessagePrintf ("^001%s",desc2);
                 }
-                memfree (desc2);
+                MemFree (desc2);
                 PictureUnlockAndUnfind(res) ;
             }
             else
@@ -939,7 +939,7 @@ static T_void ControlExamineObject (T_3dObject *p_obj)
                         MessagePrintf ("^007%s",desc2);
                     }
                 }
-                memfree (desc2);
+                MemFree (desc2);
                 PictureUnlockAndUnfind(res) ;
             }
             else
@@ -1059,7 +1059,7 @@ static T_void ControlColorizeLookString (T_byte8 *string)
 /* Called from BannerOpen                       */
 T_void ControlDisplayControlPage (T_void)
 {
-    T_txtboxID *windowID=NULL;
+    T_TxtboxID *windowID=NULL;
     FILE *fp;
     T_byte8 tempstr[140];
 

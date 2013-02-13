@@ -1976,7 +1976,7 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
     T_word16 angle ;
     T_sword16 height ;
     T_sword32 zoom ;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     static T_word32 lastTime = 0 ;
     T_word16 action ;
     T_3dObject *p_obj ;
@@ -1993,8 +1993,8 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
     if (ComwinIsOpen() && ClientIsInView())
     {
       /* pass key to comm window */
-      txtboxID=FormGetObjID(501);
-      if (TxtboxIsSelected (txtboxID))
+      TxtboxID=FormGetObjID(501);
+      if (TxtboxIsSelected (TxtboxID))
       {
           TxtboxKeyControl (event,scankey);
       }

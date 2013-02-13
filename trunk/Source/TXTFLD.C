@@ -790,9 +790,9 @@ E_Boolean TxtfldUseKey (T_TxtfldID TxtfldID, T_byte8 key)
 							  p_graphic->locy+p_graphic->height,
 							  p_Txtfld->fcolor);
 		TxtfldRedraw (TxtfldID);
-		sound (1000);
+		//TODO: sound (1000);
 		delay (10);
-		nosound();
+		//TODO: nosound();
 	}
 //	printf ("key=%d\r",key);
 //	fflush (stdout);

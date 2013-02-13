@@ -16,6 +16,21 @@
     <Filter Include="Include">
       <UniqueIdentifier>{d4fdfb23-8189-49aa-8557-f5843307f971}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{44989457-16cf-4a12-a79e-969ab22e69cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\SDL">
+      <UniqueIdentifier>{69d3ed87-7ddb-4628-9e6d-afbb806116bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\SDL\lib">
+      <UniqueIdentifier>{f4e311f3-42b4-4c0f-bddc-167e7aec6f0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\SDL\include">
+      <UniqueIdentifier>{db30ae2b-43cd-4b4f-905c-9684741786b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Win32">
+      <UniqueIdentifier>{781aa6aa-f37f-4068-98cd-2b9a736bf846}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Source\3D_COLLI.C">
@@ -34,9 +49,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Source\ACTIVITY.C">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Source\ARCTAN.C">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Source\AREASND.C">
@@ -327,9 +339,6 @@
     <ClCompile Include="..\..\..\..\Source\TICKER.C">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Source\TOSDATA.C">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Source\TOWNUI.C">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -356,6 +365,18 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Source\VM.C">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="direct.cpp">
+      <Filter>Source Files\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="debugcpp.cpp">
+      <Filter>Source Files\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="misc.c">
+      <Filter>Source Files\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>Source Files\Win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -773,5 +794,145 @@
     <ClInclude Include="..\..\..\..\Include\VM.H">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\begin_code.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\close_code.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_active.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_audio.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_byteorder.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_cdrom.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_dreamcast.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_macos.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_macosx.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_minimal.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_nds.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_os2.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_symbian.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_config_win32.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_copying.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_cpuinfo.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_endian.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_error.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_events.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_getenv.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_joystick.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_keyboard.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_keysym.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_loadso.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_main.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_mouse.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_mutex.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_name.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_opengl.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_platform.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_quit.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_rwops.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_stdinc.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_syswm.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_thread.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_timer.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_types.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_version.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_video.h">
+      <Filter>Lib\SDL\include</Filter>
+    </ClInclude>
+    <ClInclude Include="DIRECT.H">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="options.hpp">
+      <Filter>Source Files\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.hpp">
+      <Filter>Source Files\Win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDL.lib">
+      <Filter>Lib\SDL\lib</Filter>
+    </Library>
+    <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDLmain.lib">
+      <Filter>Lib\SDL\lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>

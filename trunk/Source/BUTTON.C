@@ -1164,11 +1164,11 @@ T_void ButtonSetSubData (T_buttonID buttonID, T_word32 newdata)
 
 
 
-T_void ButtonSetCallBacks (T_buttonID buttonID, T_buttonHandler cb1, T_buttonHandler cb2)
+T_void ButtonSetCallbacks (T_buttonID buttonID, T_buttonHandler cb1, T_buttonHandler cb2)
 {
     T_buttonStruct *p_button;
 
-    DebugRoutine ("ButtonSetCallBacks");
+    DebugRoutine ("ButtonSetCallbacks");
     DebugCheck (buttonID != NULL);
 
     p_button=(T_buttonStruct *)buttonID;

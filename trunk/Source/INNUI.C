@@ -5,8 +5,8 @@
 
 static T_graphicID G_backgroundPic=NULL;
 static T_buttonID  G_rentButtons[4];
-static T_txtboxID  G_financeDisplays[4];
-static T_txtboxID  G_rentCostDisplays[4];
+static T_TxtboxID  G_financeDisplays[4];
+static T_TxtboxID  G_rentCostDisplays[4];
 
 /* internal routine prototypes */
 static T_void InnUIRent (T_buttonID buttonID);
@@ -51,8 +51,8 @@ T_void InnUIStart  (T_word32 formNum)
                                           0,
                                           0,
                                           TRUE,
-                                          TXTBOX_JUSTIFY_CENTER,
-                                          TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                          Txtbox_JUSTIFY_CENTER,
+                                          Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                           NULL);
 
         /* set up current funds display */
@@ -64,8 +64,8 @@ T_void InnUIStart  (T_word32 formNum)
                                           0,
                                           0,
                                           TRUE,
-                                          TXTBOX_JUSTIFY_CENTER,
-                                          TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                          Txtbox_JUSTIFY_CENTER,
+                                          Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                           NULL);
 
 

@@ -6,6 +6,7 @@
 
 #include "keys.h"         // Include #define's for keyboard commands
 
+#ifdef USE_SOS_LIBRARY
 #include "sos.h"
 #include "sosm.h"
 #include "sosez.h"
@@ -1889,6 +1890,142 @@ T_sword16 SoundPlayByNameWithDetails(
 
     return bufferId ;
 }
+
+#else
+
+/* No sound! */
+E_Boolean SoundIsOn()
+{
+    return FALSE ;
+}
+
+T_void SoundInitialize(T_void)
+{
+}
+
+T_void SoundFinish(T_void)
+{
+}
+
+T_void SoundSetBackgroundMusic(T_byte8 *filename)
+{
+}
+
+T_sword16 SoundPlayByName(T_byte8 *filename, T_word16 volume)
+{
+    return SOUND_BAD ;
+}
+
+T_sword16 SoundPlayByNumber(T_word16 num, T_word16 volume)
+{
+    return SOUND_BAD ;
+}
+
+T_sword16 SoundPlayByNumberWithCallback(
+              T_word16 num,
+              T_word16 volume,
+              T_soundDoneCallback callback,
+              T_void *p_data)
+{
+    return SOUND_BAD ;
+}
+
+T_sword16 SoundPlayLoopByNumberWithCallback(
+              T_word16 num,
+              T_word16 volume,
+              T_soundDoneCallback callback,
+              T_void *p_data)
+{
+    return SOUND_BAD ;
+}
+
+T_void SoundSetBackgroundVolume(T_byte8 volume)
+{
+}
+
+T_byte8 SoundGetBackgroundVolume(T_void)
+{
+    return 0 ;
+}
+
+T_sword16 SoundPlayLoopByNumber(T_word16 soundNum, T_word16 volume)
+{
+    return SOUND_BAD ;
+}
+
+T_word16 SoundGetEffectsVolume(T_void) 
+{
+    return 0 ;
+}
+
+T_void SoundSetEffectsVolume(T_word16 vol) 
+{
+}
+
+T_void SoundUpdate(T_void) 
+{
+}
+
+T_void SoundStopAllSounds(T_void) 
+{
+}
+
+E_Boolean SoundIsDone(T_sword16 bufferId) 
+{
+    return TRUE;
+}
+
+T_void SoundSetVolume(T_sword16 bufferId, T_word16 volume) 
+{
+}
+
+T_void SoundSetStereoPanLocation(T_sword16 bufferId, T_word16 panLocation)
+{
+}
+
+T_void SoundStop(T_sword16 bufferId) 
+{
+}
+
+E_Boolean SoundGetAllowFreqShift(T_void) 
+{
+    return FALSE ;
+}
+
+T_void SoundSetAllowFreqShift(E_Boolean newAllow) 
+{
+}
+
+T_void SoundUpdateOften(T_void) 
+{
+}
+
+T_void SoundStopBackgroundMusic(T_void) 
+{
+}
+
+T_sword16 SoundPlayByNameWithDetails(
+              T_byte8 *filename,
+              T_word16 volume,
+              T_word16 frequency,
+              T_word16 bits,
+              E_Boolean isStereo) 
+{
+    return SOUND_BAD ;
+}
+
+T_sword16 SoundPlayByNumberWithDetails(
+             T_word16 num,
+             T_word16 volume,
+             T_word16 frequency,
+             T_word16 bits,
+             E_Boolean isStereo) 
+{
+    return SOUND_BAD ;
+}
+
+#endif
+
 
 /****************************************************************************/
 /*    END OF FILE:  SOUND.C                                                 */

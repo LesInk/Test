@@ -18,14 +18,14 @@ static T_buttonID  G_userNextButton=NULL;
 static T_buttonID  G_userLastButton=NULL;
 static T_graphicID G_userScrollBar=NULL;
 static T_graphicID G_userScrollBar2=NULL;
-static T_txtboxID  G_userListBox=NULL;
-static T_txtboxID  G_chatBox=NULL;
-static T_txtboxID  G_listenBox=NULL;
-static T_txtboxID  G_titleBox=NULL;
-static T_txtboxID  G_goalBox=NULL;
-static T_txtboxID  G_goldBox=NULL;
-static T_txtboxID  G_expBox=NULL;
-static T_txtboxID  G_descriptionBox=NULL;
+static T_TxtboxID  G_userListBox=NULL;
+static T_TxtboxID  G_chatBox=NULL;
+static T_TxtboxID  G_listenBox=NULL;
+static T_TxtboxID  G_titleBox=NULL;
+static T_TxtboxID  G_goalBox=NULL;
+static T_TxtboxID  G_goldBox=NULL;
+static T_TxtboxID  G_expBox=NULL;
+static T_TxtboxID  G_descriptionBox=NULL;
 static E_Boolean   G_townIsOpen=FALSE;
 static T_byte8*    G_messages[TOWN_NUM_MESSAGES];
 static T_byte8     G_messageLine;
@@ -37,7 +37,7 @@ static E_Boolean G_adventureComplete=FALSE;
 static T_void TownUIUpdateGraphics (T_void);
 static T_void TownUIGotoPlace (T_buttonID buttonID);
 static T_void TownRedrawChatList (T_void);
-static T_void TownUISendChatMessage (T_txtboxID txtboxID);
+static T_void TownUISendChatMessage (T_TxtboxID TxtboxID);
 static T_void TownUIUpdateQuestInfo (T_void);
 static T_void TownUINextQuest (T_buttonID buttonID);
 static T_void TownUILastQuest (T_buttonID buttonID);
@@ -144,8 +144,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    0,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_CENTER,
-                                   TXTBOX_MODE_VIEW_SCROLL_FORM,
+                                   Txtbox_JUSTIFY_CENTER,
+                                   Txtbox_MODE_VIEW_SCROLL_FORM,
                                    NULL);
         TxtboxSetData(G_userListBox,"");
 
@@ -157,8 +157,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    40,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_LEFT,
-                                   TXTBOX_MODE_FIXED_WIDTH_FIELD,
+                                   Txtbox_JUSTIFY_LEFT,
+                                   Txtbox_MODE_FIXED_WIDTH_FIELD,
                                    TownUISendChatMessage);
         TxtboxSetData(G_chatBox,"");
 
@@ -171,8 +171,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    0,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_LEFT,
-                                   TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                   Txtbox_JUSTIFY_LEFT,
+                                   Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                    NULL);
         TxtboxSetData(G_listenBox,"");
 
@@ -238,8 +238,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    0,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_CENTER,
-                                   TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                   Txtbox_JUSTIFY_CENTER,
+                                   Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                    NULL);
 
         G_goalBox =   TxtboxCreate(61,
@@ -250,8 +250,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    0,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_CENTER,
-                                   TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                   Txtbox_JUSTIFY_CENTER,
+                                   Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                    NULL);
 
         G_goldBox =   TxtboxCreate(82,
@@ -262,8 +262,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    0,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_CENTER,
-                                   TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                   Txtbox_JUSTIFY_CENTER,
+                                   Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                    NULL);
 
         G_expBox =    TxtboxCreate(156,
@@ -274,8 +274,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    0,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_CENTER,
-                                   TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                   Txtbox_JUSTIFY_CENTER,
+                                   Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                    NULL);
 
         G_descriptionBox =TxtboxCreate(6,
@@ -286,8 +286,8 @@ T_void TownUIStart  (T_word32 formNum)
                                    0,
                                    0,
                                    FALSE,
-                                   TXTBOX_JUSTIFY_LEFT,
-                                   TXTBOX_MODE_VIEW_SCROLL_FORM,
+                                   Txtbox_JUSTIFY_LEFT,
+                                   Txtbox_MODE_VIEW_SCROLL_FORM,
                                    NULL);
 
         /* set up scroll buttons */
@@ -739,14 +739,14 @@ T_void TownUIAddMessage (T_byte8 *playerName, T_byte8 *message)
 }
 
 
-static T_void TownUISendChatMessage (T_txtboxID txtboxID)
+static T_void TownUISendChatMessage (T_TxtboxID TxtboxID)
 {
-    E_txtboxAction action;
+    E_TxtboxAction action;
     DebugRoutine ("TownUISendChatMessage");
     DebugCheck (G_isOnePlayer==FALSE);
 
     action=TxtboxGetAction();
-    if (action==TXTBOX_ACTION_ACCEPTED)
+    if (action==Txtbox_ACTION_ACCEPTED)
     {
         /* send message to server */
         /* fake for now */

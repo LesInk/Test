@@ -88,7 +88,7 @@ T_void ButtonSetPicture (T_buttonID buttonID, T_byte8 *picname);
 T_word32 ButtonGetData (T_buttonID buttonID);
 T_word32 ButtonGetSubData (T_buttonID buttonID);
 T_void ButtonSetFont (T_buttonID buttonID, T_byte8 *fntname);
-T_void ButtonSetCallBacks (T_buttonID buttonID, T_buttonHandler callback1, T_buttonHandler callback2);
+T_void ButtonSetCallbacks (T_buttonID buttonID, T_buttonHandler callback1, T_buttonHandler callback2);
 E_buttonAction ButtonGetAction (T_void);
 E_Boolean ButtonIsMouseOverButton (T_void);
 

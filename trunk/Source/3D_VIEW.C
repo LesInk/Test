@@ -32,6 +32,7 @@ static T_word16 G_textureSideNum ;
 #endif
 
 #if defined(WIN32)
+/*
 T_sword32 MultAndShift4(
            T_sword32 a,
            T_sword32 b) ;
@@ -47,6 +48,13 @@ T_sword32 MultAndShift22(
 T_sword32 MultAndShift32(
            T_sword32 a,
            T_sword32 b) ;
+*/
+#define MultAndShift32(a, b)  ((T_sword32)(((((double)(a)) * ((double)(b))) / 65536.0) / 65536.0))
+#define MultAndShift22(a, b)  ((T_sword32)((((double)(a)) * ((double)(b))) / 4194304.0))
+#define MultAndShift16(a, b)  ((T_sword32)((((double)(a)) * ((double)(b))) / 65536.0))
+#define MultAndShift6(a, b)  ((T_sword32)((((double)(a)) * ((double)(b))) / 64.0))
+#define MultAndShift4(a, b)  ((T_sword32)((((double)(a)) * ((double)(b))) / 16.0))
+#define Div32by32To1616Asm(a, b)  ((T_sword32)( (((double)(a)) * 65536.0) / ((double)(b))) )
 #else
 /* f(a, b) = (a * b) >> 4 */
 T_sword32 MultAndShift6(
@@ -621,10 +629,10 @@ T_void DrawTransRowAsm256(
 #if defined(WATCOM)
 //#pragma aux Div32by32To1616Asm parm [EAX] [EBX]
 #endif
+#if defined(WATCOM)
 T_sword32 Div32by32To1616Asm(
            T_sword32 dividend,
            T_sword32 divider) ;
-#if defined(WATCOM)
 #pragma aux Div32by32To1616Asm = \
             "cdq" \
             "shld edx, eax, 16" \
@@ -8276,6 +8284,458 @@ T_word16 View3dFindSide(T_sword16 x, T_sword16 y)
 
     return View3dGetSide(line, x, y) ;
 }
+
+#ifdef NO_ASSEMBLY
+T_void DrawObjectColumnAsm(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel)
+{
+}
+
+T_void DrawTranslucentObjectColumnAsm(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm1(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm2(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm4(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm8(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm16(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm32(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm64(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm128(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureColumnAsm256(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm1(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm2(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm4(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm8(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm16(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm32(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm64(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm128(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransparentColumnAsm256(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm1(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm2(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm4(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm8(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm16(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm32(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm64(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm128(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTranslucentColumnAsm256(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm1(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm2(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm4(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm8(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm16(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm32(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm64(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm128(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTextureRowAsm256(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransColumnAsm(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 textureStep,
+           T_sword32 textureOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm1(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm2(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm4(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm8(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm16(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm32(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm64(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm128(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+
+T_void DrawTransRowAsm256(
+           T_byte8 *p_shade,
+           T_word32 count,
+           T_sword32 xOffset,
+           T_sword32 yOffset,
+           T_byte8 *p_pixel) 
+{
+}
+#endif
 
 /****************************************************************************/
 /*    END OF FILE:  3D_VIEW.C                                               */

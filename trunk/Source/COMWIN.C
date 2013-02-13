@@ -156,19 +156,19 @@ T_void ComwinInitCommunicatePage(T_void)
 
 T_void ComwinDisplayCommunicatePage(T_void)
 {
-   T_txtboxID txtboxID;
+   T_TxtboxID TxtboxID;
    T_buttonID buttonID;
 
    DebugRoutine ("ComwinDisplayCommunicatePage");
 
    G_comwinIsOpen=TRUE;
 
-   txtboxID=FormGetObjID(500);
-   TxtboxSetData(txtboxID,G_fielddata);
+   TxtboxID=FormGetObjID(500);
+   TxtboxSetData(TxtboxID,G_fielddata);
 
    /* attach buttons */
    buttonID=FormGetObjID(301);
-   ButtonSetCallBacks (buttonID,NULL,ComwinSay);
+   ButtonSetCallbacks (buttonID,NULL,ComwinSay);
 
    DebugEnd();
 }
@@ -188,7 +188,7 @@ E_Boolean ComwinIsOpen (T_void)
 
 T_void ComwinSay (T_buttonID buttonID)
 {
-   T_txtboxID txtboxID, txtboxID2;
+   T_TxtboxID TxtboxID, TxtboxID2;
    T_word16 saynum;
    T_byte8 *tosay;
    E_statsClassType playerclass;
@@ -199,8 +199,8 @@ T_void ComwinSay (T_buttonID buttonID)
    playerclass=StatsGetPlayerClassType();
    sampleset=G_characterSampleMaps[playerclass];
 
-   txtboxID=FormGetObjID(501);
-   tosay=TxtboxGetData(txtboxID);
+   TxtboxID=FormGetObjID(501);
+   tosay=TxtboxGetData(TxtboxID);
 
    if (strcmp(tosay,"\0")!=0 && strcmp(tosay,"\r\0")!=0)
    {
@@ -210,8 +210,8 @@ T_void ComwinSay (T_buttonID buttonID)
    }
    else
    {
-      txtboxID2=FormGetObjID(500);
-      saynum=TxtboxGetSelectionNumber (txtboxID2);
+      TxtboxID2=FormGetObjID(500);
+      saynum=TxtboxGetSelectionNumber (TxtboxID2);
       if (sampleset > 0)
       {
          saynum=saynum+G_sampleSetMarkers[sampleset-1];
@@ -228,7 +228,7 @@ T_void ComwinSay (T_buttonID buttonID)
 //    SoundPlayByNumber(saynum, 255) ;
    }
 
-   TxtboxSetData(txtboxID,"\0");
+   TxtboxSetData(TxtboxID,"\0");
 
    DebugEnd();
 }

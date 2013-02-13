@@ -53,7 +53,7 @@ static T_byte8 G_stringIn[60];
 T_void    PromptStatusBarInit (T_byte8 *prompt, T_word16 baserange)
 {
     T_graphicID backgraphic;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
 
     DebugRoutine ("PromptStatusBarInit");
     G_statBaseRange=baserange;
@@ -71,19 +71,19 @@ T_void    PromptStatusBarInit (T_byte8 *prompt, T_word16 baserange)
     /* set up graphics */
 
     backgraphic=GraphicCreate (26,70,"UI/PROMPT/STAT_BK");
-    txtboxID=TxtboxCreate (129,86,
+    TxtboxID=TxtboxCreate (129,86,
                            279,96,
                            "FontMedium",
                            0,
                            0,
                            FALSE,
-                           TXTBOX_JUSTIFY_CENTER,
-                           TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                           Txtbox_JUSTIFY_CENTER,
+                           Txtbox_MODE_VIEW_NOSCROLL_FORM,
                            NULL);
 
     G_bargraphic=GraphicCreate(39,105,"UI/PROMPT/STAT_GR");
 
-    TxtboxSetData (txtboxID,prompt);
+    TxtboxSetData (TxtboxID,prompt);
 
     /* draw background */
     GraphicUpdateAllGraphics();
@@ -93,7 +93,7 @@ T_void    PromptStatusBarInit (T_byte8 *prompt, T_word16 baserange)
     /* free background graphic */
     GraphicDelete (backgraphic);
     /* free textbox */
-    TxtboxDelete (txtboxID);
+    TxtboxDelete (TxtboxID);
 
     DebugEnd();
 }
@@ -239,7 +239,7 @@ T_void    PromptStatusBarClose (T_void)
 /****************************************************************************/
 E_Boolean PromptForBoolean (T_byte8 *prompt, E_Boolean defaultvalue)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
 
     DebugRoutine ("PromptForBoolean");
@@ -256,8 +256,8 @@ E_Boolean PromptForBoolean (T_byte8 *prompt, E_Boolean defaultvalue)
 	FormLoadFromFile ("PMPTBOOL.FRM");
 
     /* set up windows */
-    txtboxID=FormGetObjID (500);
-    if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID (500);
+    if (TxtboxID != NULL) TxtboxSetData (TxtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);
@@ -318,7 +318,7 @@ E_Boolean PromptForBoolean (T_byte8 *prompt, E_Boolean defaultvalue)
 /****************************************************************************/
 T_void PromptNotify (T_byte8 *prompt)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
 
     DebugRoutine ("PromptNotify");
@@ -331,8 +331,8 @@ T_void PromptNotify (T_byte8 *prompt)
 	FormLoadFromFile ("PMPTNTFY.FRM");
 
     /* set up windows */
-    txtboxID=FormGetObjID (500);
-    if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID (500);
+    if (TxtboxID != NULL) TxtboxSetData (TxtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);
@@ -394,7 +394,7 @@ T_word16 PromptForInteger  (T_byte8 *prompt,
                             T_word16 min,
                             T_word16 max)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
 
     DebugRoutine ("PromptForInteger");
@@ -407,12 +407,12 @@ T_word16 PromptForInteger  (T_byte8 *prompt,
 	FormLoadFromFile ("PMPTINTG.FRM");
 
     /* set up windows */
-    txtboxID=FormGetObjID (500);
-    if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID (500);
+    if (TxtboxID != NULL) TxtboxSetData (TxtboxID,prompt);
 
     /* set entry field to be numeric only */
-    txtboxID=FormGetObjID (501);
-    TxtboxSetNumericOnlyFlag (txtboxID,TRUE);
+    TxtboxID=FormGetObjID (501);
+    TxtboxSetNumericOnlyFlag (TxtboxID,TRUE);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);
@@ -479,7 +479,7 @@ T_void PromptControl (E_formObjectType objtype,
 					  T_word16 objstatus,
 					  T_word32 objID)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
 	DebugRoutine ("PromptControl");
 
     if (objtype==FORM_OBJECT_BUTTON)
@@ -506,11 +506,11 @@ T_void PromptControl (E_formObjectType objtype,
         {
             /* copy entered data into global field */
             /* for later usage */
-            txtboxID=FormGetObjID(501);
-            if (txtboxID != NULL)
+            TxtboxID=FormGetObjID(501);
+            if (TxtboxID != NULL)
             {
-                strncpy (G_stringIn,TxtboxGetData(txtboxID),TxtboxGetDataLength(txtboxID));
-                G_stringIn[TxtboxGetDataLength(txtboxID)+1]='\0';
+                strncpy (G_stringIn,TxtboxGetData(TxtboxID),TxtboxGetDataLength(TxtboxID));
+                G_stringIn[TxtboxGetDataLength(TxtboxID)+1]='\0';
             }
         }
     }
@@ -521,7 +521,7 @@ T_void PromptControl (E_formObjectType objtype,
 
 T_void PromptDisplayMessage (T_byte8 *prompt)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
 
     DebugRoutine ("Prompt DisplayMessage");
@@ -540,8 +540,8 @@ T_void PromptDisplayMessage (T_byte8 *prompt)
 	FormLoadFromFile ("PMPTMESG.FRM");
 
     /* set up windows */
-    txtboxID=FormGetObjID (500);
-    if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID (500);
+    if (TxtboxID != NULL) TxtboxSetData (TxtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);
@@ -560,7 +560,7 @@ T_void PromptDisplayMessage (T_byte8 *prompt)
 
 T_void PromptDisplayBulletin (T_byte8 *prompt)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
 
     DebugRoutine ("PromptDisplayBulletin");
@@ -579,8 +579,8 @@ T_void PromptDisplayBulletin (T_byte8 *prompt)
 	FormLoadFromFile ("PMPTBULL.FRM");
 
     /* set up windows */
-    txtboxID=FormGetObjID (500);
-    if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID (500);
+    if (TxtboxID != NULL) TxtboxSetData (TxtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);
@@ -598,7 +598,7 @@ T_void PromptDisplayBulletin (T_byte8 *prompt)
 
 E_Boolean PromptDisplayDialogue (T_byte8 *prompt)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
 
     DebugRoutine ("PromptDisplayDialogue");
@@ -617,8 +617,8 @@ E_Boolean PromptDisplayDialogue (T_byte8 *prompt)
 	FormLoadFromFile ("PMPTDLG.FRM");
 
     /* set up windows */
-    txtboxID=FormGetObjID (500);
-    if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID (500);
+    if (TxtboxID != NULL) TxtboxSetData (TxtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);
@@ -640,7 +640,7 @@ E_Boolean PromptDisplayDialogue (T_byte8 *prompt)
 
 E_Boolean PromptDisplayContinue (T_byte8 *prompt)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
 
     DebugRoutine ("PromptDisplayContinue");
@@ -659,8 +659,8 @@ E_Boolean PromptDisplayContinue (T_byte8 *prompt)
 	FormLoadFromFile ("PMPTCONT.FRM");
 
     /* set up windows */
-    txtboxID=FormGetObjID (500);
-    if (txtboxID != NULL) TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID (500);
+    if (TxtboxID != NULL) TxtboxSetData (TxtboxID,prompt);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);
@@ -727,7 +727,7 @@ E_Boolean PromptForString  (T_byte8 *prompt,
                             T_byte8 *data)
 {
 
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_word16 i;
     E_Boolean accept=FALSE;
 
@@ -748,14 +748,14 @@ E_Boolean PromptForString  (T_byte8 *prompt,
 	FormLoadFromFile ("PMPTSTRN.FRM");
 
     /* display the prompt */
-    txtboxID=FormGetObjID(500);
-    DebugCheck (txtboxID != NULL);
-    TxtboxSetData (txtboxID,prompt);
+    TxtboxID=FormGetObjID(500);
+    DebugCheck (TxtboxID != NULL);
+    TxtboxSetData (TxtboxID,prompt);
 
     /* set maximum length of enterable field */
-    txtboxID=FormGetObjID(501);
-    DebugCheck (txtboxID != NULL);
-    TxtboxSetMaxLength (txtboxID,maxlen);
+    TxtboxID=FormGetObjID(501);
+    DebugCheck (TxtboxID != NULL);
+    TxtboxSetMaxLength (TxtboxID,maxlen);
 
 	/* set the form callback routine to MainUIControl */
 	FormSetCallbackRoutine (PromptControl);

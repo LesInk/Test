@@ -29,7 +29,7 @@ static E_Boolean G_bannerUIMode=FALSE;
 static E_Boolean G_bannerIsOpen=FALSE;
 static E_bannerFormType G_currentBannerFormType=BANNER_FORM_INVENTORY;
 static E_bannerFormType G_bannerLastForm=BANNER_FORM_UNKNOWN;
-static T_txtboxID G_bannerStatBoxes[5];
+static T_TxtboxID G_bannerStatBoxes[5];
 #define NUMBER_BANNER_BUTTONS 11
 #define NUMBER_RUNE_BUTTONS 9
 static E_Boolean G_bannerButtonsCreated = FALSE ;
@@ -324,7 +324,7 @@ T_void BannerOpenForm (E_bannerFormType formtype)
     T_word16 i;
     T_buttonID buttonID;
     T_sliderID sliderID;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_byte8 credits[2048];
 
     DebugRoutine ("BannerOpenForm");
@@ -404,7 +404,7 @@ T_void BannerOpenForm (E_bannerFormType formtype)
         SliderSetValue (sliderID,G_sfxVol);
         buttonID=FormGetObjID (301);
 
-        txtboxID=FormGetObjID (500);
+        TxtboxID=FormGetObjID (500);
 
         /* set up credits list */
         strcpy (credits,"\r^036   Amulets and Armor  \r\r");
@@ -481,8 +481,8 @@ T_void BannerOpenForm (E_bannerFormType formtype)
         strcat (credits,"^011    (C)1996 LDS AND CO.\r");
         strcat (credits,"^011   ALL RIGHTS RESERVED");
 
-        TxtboxSetData(txtboxID,credits);
-        TxtboxCursTop (txtboxID);
+        TxtboxSetData(TxtboxID,credits);
+        TxtboxCursTop (TxtboxID);
 
         break;
 
@@ -520,9 +520,9 @@ T_void BannerOpenForm (E_bannerFormType formtype)
         {
             buttonID=FormGetObjID(301+i);
 //            ButtonSetSelectPic (buttonID,"UI/3DUI/AMMSELDN");
-            ButtonSetCallBacks (buttonID,BannerSelectAmmo,ButtonDownNoAction);
+            ButtonSetCallbacks (buttonID,BannerSelectAmmo,ButtonDownNoAction);
             buttonID=FormGetObjID(308+i);
-            ButtonSetCallBacks (buttonID,NULL,BannerGetAmmo);
+            ButtonSetCallbacks (buttonID,NULL,BannerGetAmmo);
         }
         BannerDisplayAmmoPage();
         break;
@@ -612,7 +612,7 @@ T_void BannerCloseForm (T_void)
     /* restore the display screen to full view */
 
     View3dClipCenter(312) ;
-    if (HardformIsOpen()==TRUE)
+    if (HardFormIsOpen()==TRUE)
     {
         graphic=GraphicCreate (209,0,"UI/3DUI/CLOSEDBA");
         GraphicUpdateAllGraphics();
@@ -1390,7 +1390,7 @@ T_void BannerStatusBarInit (T_void)
                                        0,
                                        FALSE,
                                        TRUE,
-                                       TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                       Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                        NULL);
 
    G_bannerStatBoxes[1]= TxtboxCreate (140,
@@ -1402,7 +1402,7 @@ T_void BannerStatusBarInit (T_void)
                                        0,
                                        FALSE,
                                        TRUE,
-                                       TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                       Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                        NULL);
 
 
@@ -1415,7 +1415,7 @@ T_void BannerStatusBarInit (T_void)
                                        0,
                                        FALSE,
                                        TRUE,
-                                       TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                       Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                        NULL);
 
    G_bannerStatBoxes[3]= TxtboxCreate (140,
@@ -1427,7 +1427,7 @@ T_void BannerStatusBarInit (T_void)
                                        0,
                                        FALSE,
                                        TRUE,
-                                       TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                       Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                        NULL);
 
    G_bannerStatBoxes[4]= TxtboxCreate (140,
@@ -1439,7 +1439,7 @@ T_void BannerStatusBarInit (T_void)
                                        0,
                                        FALSE,
                                        TRUE,
-                                       TXTBOX_MODE_VIEW_NOSCROLL_FORM,
+                                       Txtbox_MODE_VIEW_NOSCROLL_FORM,
                                        NULL);
 
 
@@ -1510,7 +1510,7 @@ T_void BannerStatusBarUpdate (T_void)
       Health=StatsGetPlayerHealth();
       HealthMax=StatsGetPlayerMaxHealth();
       sprintf (stmp,"%d/%d",((Health+99)/100),((HealthMax+99)/100));
-      TxtBoxSetData (G_bannerStatBoxes[0],stmp);
+      TxtboxSetData (G_bannerStatBoxes[0],stmp);
 
       Mana=StatsGetPlayerMana();
       ManaMax=StatsGetPlayerMaxMana();
@@ -1810,72 +1810,72 @@ E_Boolean BannerFormIsOpen (E_bannerFormType formtype)
 
 T_void BannerDisplayFinancesPage (T_void)
 {
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_buttonID buttonID;
     T_byte8 stmp[16];
     DebugRoutine ("BannerDisplayFinancesPage");
 
-    /* get txtbox ID's for finances form */
+    /* get Txtbox ID's for finances form */
     /* and fill them out */
 
     if (BannerFormIsOpen (BANNER_FORM_FINANCES))
     {
-        txtboxID=FormGetObjID(500);
+        TxtboxID=FormGetObjID(500);
         sprintf (stmp,"%d",StatsGetPlayerCoins(COIN_TYPE_PLATINUM));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
-        txtboxID=FormGetObjID(501);
+        TxtboxID=FormGetObjID(501);
         sprintf (stmp,"%d",StatsGetPlayerCoins(COIN_TYPE_GOLD));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
-        txtboxID=FormGetObjID(502);
+        TxtboxID=FormGetObjID(502);
         sprintf (stmp,"%d",StatsGetPlayerCoins(COIN_TYPE_SILVER));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
-        txtboxID=FormGetObjID(503);
+        TxtboxID=FormGetObjID(503);
         sprintf (stmp,"%d",StatsGetPlayerCoins(COIN_TYPE_COPPER));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
-        txtboxID=FormGetObjID(504);
+        TxtboxID=FormGetObjID(504);
         sprintf (stmp,"%d",StatsGetPlayerSavedCoins(COIN_TYPE_PLATINUM));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
-        txtboxID=FormGetObjID(505);
+        TxtboxID=FormGetObjID(505);
         sprintf (stmp,"%d",StatsGetPlayerSavedCoins(COIN_TYPE_GOLD));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
-        txtboxID=FormGetObjID(506);
+        TxtboxID=FormGetObjID(506);
         sprintf (stmp,"%d",StatsGetPlayerSavedCoins(COIN_TYPE_SILVER));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
-        txtboxID=FormGetObjID(507);
+        TxtboxID=FormGetObjID(507);
         sprintf (stmp,"%d",StatsGetPlayerSavedCoins(COIN_TYPE_COPPER));
-        TxtboxSetData (txtboxID,stmp);
+        TxtboxSetData (TxtboxID,stmp);
 
         /* set callbacks for buttons */
         buttonID=FormGetObjID(301);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_PLATINUM);
         buttonID=FormGetObjID(302);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_GOLD);
         buttonID=FormGetObjID(303);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_SILVER);
         buttonID=FormGetObjID(304);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_COPPER);
         buttonID=FormGetObjID(305);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_FIVE+COIN_TYPE_PLATINUM);
         buttonID=FormGetObjID(306);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_FIVE+COIN_TYPE_GOLD);
         buttonID=FormGetObjID(307);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_FIVE+COIN_TYPE_SILVER);
         buttonID=FormGetObjID(308);
-        ButtonSetCallBacks (buttonID,NULL,BannerGetCoin);
+        ButtonSetCallbacks (buttonID,NULL,BannerGetCoin);
         ButtonSetData (buttonID,COIN_TYPE_FIVE+COIN_TYPE_COPPER);
     }
 
@@ -1893,7 +1893,7 @@ T_void BannerDisplayAmmoPage(T_void)
     T_byte8 slotcount=0;
     T_byte8 stmp[64];
     const T_byte8 dy=19;
-    T_txtboxID txtboxID;
+    T_TxtboxID TxtboxID;
     T_buttonID buttonID;
     T_graphicID graphicID[NUM_AMMO_SLOTS];
     T_word16 lastBoltType = 0 ;
@@ -1936,13 +1936,13 @@ T_void BannerDisplayAmmoPage(T_void)
                 break;
             }
 
-            txtboxID=FormGetObjID(500+slotcount);
-            TxtboxSetData (txtboxID,stmp);
+            TxtboxID=FormGetObjID(500+slotcount);
+            TxtboxSetData (TxtboxID,stmp);
 
             /* set the field data for the number of ammo field */
             sprintf (stmp,"%d",StatsGetPlayerBolts(i));
-            txtboxID=FormGetObjID(507+slotcount);
-            TxtboxSetData (txtboxID,stmp);
+            TxtboxID=FormGetObjID(507+slotcount);
+            TxtboxSetData (TxtboxID,stmp);
 
             /* push selected button down, otherwise up */
             buttonID=FormGetObjID(301+slotcount);
@@ -1980,11 +1980,11 @@ T_void BannerDisplayAmmoPage(T_void)
     /* 'erase' the empty slots */
     for (i=slotcount;i<NUM_AMMO_SLOTS;i++)
     {
-        txtboxID=FormGetObjID(500+i);
-        TxtboxSetData (txtboxID,"");
+        TxtboxID=FormGetObjID(500+i);
+        TxtboxSetData (TxtboxID,"");
 
-        txtboxID=FormGetObjID(507+i);
-        TxtboxSetData (txtboxID,"");
+        TxtboxID=FormGetObjID(507+i);
+        TxtboxSetData (TxtboxID,"");
 
         buttonID=FormGetObjID(301+i);
         if (ButtonIsEnabled(buttonID))
@@ -1993,7 +1993,7 @@ T_void BannerDisplayAmmoPage(T_void)
         buttonID=FormGetObjID(308+i);
         if (ButtonIsEnabled(buttonID))
           ButtonDisable (buttonID);
-//        ButtonSetCallBacks (buttonID,NULL,NULL);
+//        ButtonSetCallbacks (buttonID,NULL,NULL);
         if (G_ammoSelected==i)
         {
             /* move selected button */
