@@ -93,6 +93,8 @@ E_Boolean PlayerJustTeleported(T_void) ;
 
 T_void PlayerTeleported(T_void) ;
 
+T_void PlayerUpdate(T_word32 delta);
+
 /****************************************************************************/
 /*    END OF FILE: PLAYER.H                                                 */
 /****************************************************************************/

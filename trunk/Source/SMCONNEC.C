@@ -93,6 +93,7 @@ T_void SMClientConnectLogoutAndHangup(
 T_void SMClientConnectWaitForStart(
            T_stateMachineHandle handle,
            T_word32 extraData) ;
+extern void HangUp(void);
 
 static T_stateMachineHandle G_smClientHandle ;
 static E_Boolean G_init = FALSE ;

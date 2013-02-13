@@ -118,7 +118,7 @@
 //#define COMPILE_OPTION_RECORD_CSYNC_DAT_FILE
 
 /* Option to turn on copy protection */
-#define COMPILE_OPTION_COPY_PROTECTION_ON
+//#define COMPILE_OPTION_COPY_PROTECTION_ON
 
 #ifdef WIN32
 #pragma warning(disable:4200)

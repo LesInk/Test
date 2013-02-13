@@ -238,7 +238,7 @@ T_void DirectTalkFinish(T_directTalkHandle handle)
 T_void DirectTalkSendData(T_void *p_data, T_byte8 size)
 {
 #ifdef ALLOW_DOS_DITALK
-    const union REGS regs ;
+    union REGS regs ;
 
     DebugRoutine("DirectTalkSendData") ;
 
@@ -272,7 +272,7 @@ T_void DirectTalkSendData(T_void *p_data, T_byte8 size)
 T_void DirectTalkPollData(T_void)
 {
 #ifdef ALLOW_DOS_DITALK
-    const union REGS regs ;
+    union REGS regs ;
 
     DebugRoutine("DirectTalkPollData") ;
 
@@ -312,7 +312,7 @@ T_void DirectTalkPollData(T_void)
 T_void DirectTalkConnect(T_byte8 *p_address)
 {
 #ifdef ALLOW_DOS_DITALK
-    const union REGS regs ;
+    union REGS regs ;
 
     DebugRoutine("DirectTalkConnect") ;
 
@@ -337,7 +337,7 @@ T_void DirectTalkConnect(T_byte8 *p_address)
 T_void DirectTalkDisconnect(T_void)
 {
 #ifdef ALLOW_DOS_DITALK
-    const union REGS regs ;
+    union REGS regs ;
 
     DebugRoutine("DirectTalkDisconnect") ;
 

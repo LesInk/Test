@@ -331,7 +331,7 @@ E_Boolean MouseCheckInstalled(T_void)
 
     memset(&regs,0,sizeof(union REGPACK));
     intr(0x33,&regs);
-    if (regs.w.ax == -1)
+    if (regs.w.ax == ((T_word16)-1))
         f_installed = TRUE ;
     else
         f_installed = FALSE ;

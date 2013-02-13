@@ -3,6 +3,7 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include <ctype.h>
 
 #define INIFILE_TAG               (*((T_word32 *)"iNiF"))
 #define INIFILE_DEAD_TAG          (*((T_word32 *)"DinI"))

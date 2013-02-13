@@ -1,7 +1,10 @@
 # *********************************************************************
 # Date          : 08/17/96
 # *******************************************************************
-VERSION = DEBUG
+# NOTE: This make file only works with Open Watcom v1.9 for Windows
+VERSION = PRODSYM
+PRODSYM_C_FLAGS    = /d2 /3r /zp1 /we /oc /oi /ol /or /ot -s /DNDEBUG /i=include
+PRODSYM_ASM_FLAGS  = 
 PROD_C_FLAGS    = /3r /7 /zp1 /we /oc /oi /ol /or /ot -s /DNDEBUG /i=include
 PROD_ASM_FLAGS  = 
 DEBUGLOW_C_FLAGS   = /3r /7 /zp1 /we /d3 /i=include -s
@@ -12,18 +15,18 @@ DEBUG_ASM_FLAGS = -oi /m3 /zi
 TEST_C_FLAGS   =  /3r /7 /zp1 /we /oc /oi /ol /or /ot /s /d2 /zw /i=include
 TEST_ASM_FLAGS = -oi /m3
 
-CFLAGS    = $($(VERSION)_C_FLAGS) /DUSE_SOS_LIBRARY /DDOS32 /DWATCOM
+CFLAGS    = $($(VERSION)_C_FLAGS) /DUSE_SOS_LIBRARY /DDOS32 /DWATCOM /i=$(INCPATH)
 ASMFLAGS  = $($(VERSION)_ASM_FLAGS)
 #LFLAGS    = option map=map.map system dos4g option stub=wstub.exe option stack=40000 debug watcom all
 LFLAGS    = option map=map.map system dos4g option stack=40000 debug watcom all
 CC        = wcl386 /c
-ML        = tasm
+ML	= wasm /3r
 NAME      = testme
 
 OBJPATH = OBJS
 LIBPATH = LIB
-SRCPATH = SOURCE
-INCPATH = SOURCE
+SRCPATH = C:\lshields\AA\AA\Source
+INCPATH = C:\lshields\AA\AA\Include
 
 .obj : $(OBJPATH)
 
@@ -342,7 +345,7 @@ $(LNK)               : makefile.
                 @for %i in ($(LIBS)) do @%append $(LNK) library %i
 	@%append $(LNK) option eliminate option oneautodata option protmode segment _BSS shared
 .c.obj     :
-        $(CC) $(CFLAGS) $[*.c -fo$^*.obj
+        $(CC) $(CFLAGS) $[*.c -fo$^*.obj 
 
 .asm.obj     :
-                $(ML) $(ASMFLAGS) $[*.asm ,$^*.obj
+                $(ML) $(ASMFLAGS) $[*.asm -fo=$^*.obj

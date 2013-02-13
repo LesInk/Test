@@ -60,13 +60,13 @@ T_void SoundUpdate(T_void) ;
 
 T_void SoundStopAllSounds(T_void) ;
 
-E_Boolean SoundIsDone(T_sword16 bufferId) ;
+E_Boolean SoundIsDone(T_word16 bufferId) ;
 
-T_void SoundSetVolume(T_sword16 bufferId, T_word16 volume) ;
+T_void SoundSetVolume(T_word16 bufferId, T_word16 volume) ;
 
-T_void SoundSetStereoPanLocation(T_sword16 bufferId, T_word16 panLocation) ;
+T_void SoundSetStereoPanLocation(T_word16 bufferId, T_word16 panLocation) ;
 
-T_void SoundStop(T_sword16 bufferId) ;
+T_void SoundStop(T_word16 bufferId) ;
 
 E_Boolean SoundGetAllowFreqShift(T_void) ;
 

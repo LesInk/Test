@@ -3,6 +3,7 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include "client.h"
 
 #define MAX_HISTORY_PACKETS  100
 #define MAX_SYNC_PLAYERS     8

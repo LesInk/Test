@@ -27,5 +27,6 @@ T_void ComWinCloseCommunicatePage(T_void);
 E_Boolean ComwinIsOpen (T_void);
 T_void ComwinSay (T_buttonID buttonID);
 T_void ComwinSayNth(T_word16 saynum) ;
+T_void ComwinCloseCommunicatePage (T_void);
 
 #endif

@@ -535,6 +535,9 @@ E_Boolean ObjectCheckCollideAny(
 
 T_3dObject *ObjectFindBodyPartHead(T_3dObject *p_part) ;
 
+T_void ObjectsDoToAll(T_objectDoToAllCallback p_callback, T_word32 data);
+
+T_void ObjectsUnload(T_void);
 
 /****************************************************************************/
 /*    END OF FILE:  OBJECT.H                                                */

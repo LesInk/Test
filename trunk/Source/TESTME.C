@@ -20,6 +20,10 @@ static T_void IShowScreenNextPage (E_mouseEvent event,
                          T_buttonClick button);
 static E_Boolean G_mouseClicked=FALSE;
 
+void HangUp(void)
+{
+}
+
 #ifdef COMPILER_WATCOM
 T_sword32 SetEAX(T_void) ;
 #pragma aux SetEAX = \

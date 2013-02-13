@@ -4333,10 +4333,17 @@ static T_void IExplodeSelf(
 }
 
 
+#ifdef SERVER_ONLY
 T_3dObject *CreatureLookForPlayer(T_3dObject *p_obj)
 {
     return NULL ;
 }
+#else
+T_word16 CreatureLookForPlayer(T_3dObject *p_obj)
+{
+    return 0;  // TODO: Is this right?
+}
+#endif
 
 T_void CreaturePlayerGone(T_player player)
 {
@@ -5224,7 +5231,7 @@ static T_void CreatureTakeSectorDamage(
         damage = G_3dSectorInfoArray[areaSector].damage ;
         damageType = G_3dSectorInfoArray[areaSector].damageType ;
 
-        if ((damage != 0) && (damage != ((T_sword16)0x8000)))  {
+        if ((damage != 0) && (damage != ((T_word16)0x8000)))  {
             if ((ObjectGetZ16(p_obj)) <= G_3dSectorArray[areaSector].floorHt) {
                 if (damageType == EFFECT_DAMAGE_UNKNOWN)
                     damageType = EFFECT_DAMAGE_FIRE ;

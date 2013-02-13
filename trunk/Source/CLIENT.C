@@ -5,6 +5,7 @@
 #include "standard.h"
 #include <ctype.h>
 #include <malloc.h>
+#include "memory.h"
 
 #define PLAYER_ATTACK_HEIGHT      30
 #define PLAYER_ATTACK_DISTANCE    40
@@ -2461,7 +2462,8 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
 
                 if (G_msgOn==FALSE)
                 {
-				    if (scankey == KEY_SCAN_CODE_M)
+#ifndef NDEBUG
+                    if (scankey == KEY_SCAN_CODE_M)
                     {
                         sprintf(buffer, "%ld alloc'd, %ld max, %ld free",
                             MemGetAllocated(),
@@ -2469,14 +2471,16 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                             FreeMemory()) ;
                         MessageAdd(buffer) ;
 				    }
+#endif
                     if (scankey == KEY_SCAN_CODE_E)
                     {
                         StatsChangePlayerExperience (10000);
                     }
 
+#ifndef NDEBUG
 				    if (scankey == KEY_SCAN_CODE_P)
                     {
-                        MessageAdd("Purging free memory") ;
+				        MessageAdd("Purging free memory") ;
                         puts("Purge") ;
                         if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)  {
                             /* ALT-P not only purges but produces a report */
@@ -2490,6 +2494,7 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                         MessageAdd(buffer) ;
                         fflush(stdout) ;
 				    }
+#endif
 				    /* Check to see if ALT-R is hit.  This */
 				    /* outputs the resource file */
 				    if (scankey == KEY_SCAN_CODE_R)

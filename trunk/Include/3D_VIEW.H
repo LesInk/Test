@@ -119,6 +119,15 @@ T_word16 View3dFindSide(T_sword16 x, T_sword16 y) ;
 
 T_void View3dCheckObjectListEmpty(T_void) ;
 
+T_void View3dFinish(T_void);
+
+T_void View3dSetDarknessAdjustment(T_sbyte8 darkAdjust);
+
+T_void View3dRemapSectors(T_void);
+
+T_void View3dUnmapSectors(T_void);
+
+
 #endif
 
 /****************************************************************************/

@@ -277,6 +277,8 @@ T_void GrInvalidateRectClipped(
                   T_sword16 x_right,
                   T_sword16 y_bottom) ;
 
+T_void GrActivateColumn(T_word16 x);
+
 #endif
 #endif
 

@@ -1,14 +1,14 @@
 
-	IDEAL
-	JUMPS
-	P386
-	P387		; Allow 386 processor
+	;IDEAL
+	;JUMPS
+	;P386
+	;P387		; Allow 386 processor
 
 
-	MASM
+	;MASM
 	.MODEL FLAT	;32-bit OS/2 model
 	.CODE
-	IDEAL
+	;IDEAL
 
 ; EAX = working variable (pixel in use)
 ; EBX = look-up table for shading (p_shade)
@@ -133,7 +133,7 @@
 ;       ret
 ; EndP
 
-Proc DrawObjectColumnAsmSolid_ Near
+DrawObjectColumnAsmSolid_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 10
@@ -150,7 +150,7 @@ dtca_loop:
        loop dtca_loop
        pop ebp
        ret
- EndP
+DrawObjectColumnAsmSolid_ EndP
 
 DOCA_16:
        xor eax, eax           ; Clear out ax
@@ -445,7 +445,7 @@ DOCA_Table      dd DOCA_0
                 dd DOCA_15
 
 
-Proc DrawObjectColumnAsm_ Near
+DrawObjectColumnAsm_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 doca_preloop:
@@ -473,9 +473,9 @@ doca_next:
 doca_end:
        pop ebp                ; restore the valuable ebp register
        ret
- EndP
+DrawObjectColumnAsm_ EndP
 
-Proc DrawObjectColumnAsmOld_ Near
+DrawObjectColumnAsmOld_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 docao_preloop:
@@ -509,9 +509,9 @@ docao_skip:
 docao_end:
        pop ebp                ; restore the valuable ebp register
        ret
- EndP
+DrawObjectColumnAsmOld_ EndP
 
-Proc DrawTranslucentObjectColumnAsm_ Near
+DrawTranslucentObjectColumnAsm_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dotca_preloop:
@@ -553,9 +553,9 @@ dotca_skip:
 dotca_end:
        pop ebp                ; restore the valuable ebp register
        ret
- EndP
+DrawTranslucentObjectColumnAsm_ EndP
 
-Proc DrawTextureColumnAsm1_ Near
+DrawTextureColumnAsm1_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 16
@@ -570,9 +570,9 @@ dtca_loop1:
        loop dtca_loop1
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm1_ EndP
 
-Proc DrawTextureColumnAsm2_ Near
+DrawTextureColumnAsm2_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 15
@@ -588,9 +588,9 @@ dtca_loop2:
        loop dtca_loop2
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm2_ EndP
 
-Proc DrawTextureColumnAsm4_ Near
+DrawTextureColumnAsm4_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 14
@@ -606,9 +606,9 @@ dtca_loop4:
        loop dtca_loop4
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm4_ EndP
 
-Proc DrawTextureColumnAsm8_ Near
+DrawTextureColumnAsm8_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 13
@@ -624,9 +624,9 @@ dtca_loop8:
        loop dtca_loop8
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm8_ EndP
 
-Proc DrawTextureColumnAsm16_ Near
+DrawTextureColumnAsm16_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 12
@@ -642,9 +642,9 @@ dtca_loop16:
        loop dtca_loop16
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm16_ EndP
 
-Proc DrawTextureColumnAsm32_ Near
+DrawTextureColumnAsm32_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 11
@@ -660,7 +660,7 @@ dtca_loop32:
        loop dtca_loop32
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm32_ EndP
 
 DTCA64_16:
        xor eax, eax
@@ -811,7 +811,7 @@ DTCA64_Table      dd DTCA64_0
                   dd DTCA64_15
                   dd DTCA64_16
 
-Proc DrawTextureColumnAsm64_ Near
+DrawTextureColumnAsm64_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 10
@@ -834,9 +834,9 @@ dtca64_loop2:
 dtca64_end:
        pop ebp
        ret
-EndP
+DrawTextureColumnAsm64_ EndP
 
-Proc DrawTextureColumnAsm128_ Near
+DrawTextureColumnAsm128_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 9
@@ -852,9 +852,9 @@ dtca_loop128:
        loop dtca_loop128
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm128_ EndP
 
-Proc DrawTextureColumnAsm256_ Near
+DrawTextureColumnAsm256_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 8
@@ -870,7 +870,7 @@ dtca_loop256:
        loop dtca_loop256
        pop ebp
        ret
- EndP
+DrawTextureColumnAsm256_ EndP
 
 ;Proc DrawTextureColumnAsm_ Near
 ;       push ebp
@@ -891,7 +891,7 @@ dtca_loop256:
 ;       pop ebp
 ;       ret
 
- EndP
+; EndP
 
 ; Algorithm:
 ; ----------
@@ -917,7 +917,7 @@ dtca_loop256:
 ; EDX = y Position
 ; EDI = screen position (p_pixel)
 
-Proc DrawTextureRowAsm_ Near
+DrawTextureRowAsm_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop:
@@ -941,9 +941,9 @@ dtra_loop:
        loop dtra_loop
        pop ebp
        ret
- EndP
+DrawTextureRowAsm_ EndP
 
-Proc DrawTextureRowAsm1_ Near
+DrawTextureRowAsm1_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
       xor edx, edx
@@ -966,9 +966,9 @@ dtra_loop1:
        loop dtra_loop1
        pop ebp
        ret
- EndP
+DrawTextureRowAsm1_ EndP
 
-Proc DrawTextureRowAsm2_ Near
+DrawTextureRowAsm2_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop2:
@@ -990,9 +990,9 @@ dtra_loop2:
        loop dtra_loop2
        pop ebp
        ret
- EndP
+DrawTextureRowAsm2_ EndP
 
-Proc DrawTextureRowAsm4_ Near
+DrawTextureRowAsm4_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop4:
@@ -1014,9 +1014,9 @@ dtra_loop4:
        loop dtra_loop4
        pop ebp
        ret
- EndP
+DrawTextureRowAsm4_ EndP
 
-Proc DrawTextureRowAsm8_ Near
+DrawTextureRowAsm8_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop8:
@@ -1038,9 +1038,9 @@ dtra_loop8:
        loop dtra_loop8
        pop ebp
        ret
- EndP
+DrawTextureRowAsm8_ EndP
 
-Proc DrawTextureRowAsm16_ Near
+DrawTextureRowAsm16_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop16:
@@ -1062,9 +1062,9 @@ dtra_loop16:
        loop dtra_loop16
        pop ebp
        ret
- EndP
+DrawTextureRowAsm16_ EndP
 
-Proc DrawTextureRowAsm32_ Near
+DrawTextureRowAsm32_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop32:
@@ -1086,7 +1086,7 @@ dtra_loop32:
        loop dtra_loop32
        pop ebp
        ret
- EndP
+DrawTextureRowAsm32_ EndP
 
  ; Solid fill -- best speed?
 ;Proc DrawTextureRowAsm64_ Near
@@ -1274,7 +1274,7 @@ DTRA64_Table dd DTRA64_0
              dd DTRA64_14
              dd DTRA64_15
 
-Proc DrawTextureRowAsm64_ Near
+DrawTextureRowAsm64_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 10
@@ -1298,9 +1298,9 @@ dtra64_loop2:
        call [dword ptr DTRA64_Table + eax*4]
        pop ebp
        ret
-EndP
+DrawTextureRowAsm64_ EndP
 
-Proc DrawTextureRowAsm128_ Near
+DrawTextureRowAsm128_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop128:
@@ -1322,9 +1322,9 @@ dtra_loop128:
        loop dtra_loop128
        pop ebp
        ret
- EndP
+DrawTextureRowAsm128_ EndP
 
-Proc DrawTextureRowAsm256_ Near
+DrawTextureRowAsm256_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dtra_loop256:
@@ -1346,9 +1346,9 @@ dtra_loop256:
        loop dtra_loop256
        pop ebp
        ret
- EndP
+DrawTextureRowAsm256_ EndP
 
-Proc GraphicsMode13X_ Near
+GraphicsMode13X_ PROC Near
         mov ax, 013h
         int 10h
 
@@ -1404,9 +1404,9 @@ Proc GraphicsMode13X_ Near
         xor eax, eax
         rep stosd
         ret
-    EndP
+GraphicsMode13X_    EndP
 
-Proc DrawTransRowAsm1_ Near
+DrawTransRowAsm1_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
       xor edx, edx
@@ -1433,9 +1433,9 @@ dttra_skip1:
        loop dttra_loop1
        pop ebp
        ret
- EndP
+DrawTransRowAsm1_ EndP
 
-Proc DrawTransRowAsm2_ Near
+DrawTransRowAsm2_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop2:
@@ -1461,9 +1461,9 @@ dttra_skip2:
        loop dttra_loop2
        pop ebp
        ret
- EndP
+DrawTransRowAsm2_ EndP
 
-Proc DrawTransRowAsm4_ Near
+DrawTransRowAsm4_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop4:
@@ -1489,9 +1489,9 @@ dttra_skip4:
        loop dttra_loop4
        pop ebp
        ret
- EndP
+DrawTransRowAsm4_ EndP
 
-Proc DrawTransRowAsm8_ Near
+DrawTransRowAsm8_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop8:
@@ -1517,9 +1517,9 @@ dttra_skip8:
        loop dttra_loop8
        pop ebp
        ret
- EndP
+DrawTransRowAsm8_ EndP
 
-Proc DrawTransRowAsm16_ Near
+DrawTransRowAsm16_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop16:
@@ -1545,9 +1545,9 @@ dttra_skip16:
        loop dttra_loop16
        pop ebp
        ret
- EndP
+DrawTransRowAsm16_ EndP
 
-Proc DrawTransRowAsm32_ Near
+DrawTransRowAsm32_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop32:
@@ -1573,9 +1573,9 @@ dttra_skip32:
        loop dttra_loop32
        pop ebp
        ret
- EndP
+DrawTransRowAsm32_ EndP
 
-Proc DrawTransRowAsm64_ Near
+DrawTransRowAsm64_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop64:
@@ -1601,9 +1601,9 @@ dttra_skip64:
        loop dttra_loop64
        pop ebp
        ret
- EndP
+DrawTransRowAsm64_ EndP
 
-Proc DrawTransRowAsm128_ Near
+DrawTransRowAsm128_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop128:
@@ -1629,9 +1629,9 @@ dttra_skip128:
        loop dttra_loop128
        pop ebp
        ret
- EndP
+DrawTransRowAsm128_ EndP
 
-Proc DrawTransRowAsm256_ Near
+DrawTransRowAsm256_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
 dttra_loop256:
@@ -1657,9 +1657,9 @@ dttra_skip256:
        loop dttra_loop256
        pop ebp
        ret
- EndP
+DrawTransRowAsm256_ EndP
 
-Proc Div32by32To1616Asm_ Near
+Div32by32To1616Asm_ PROC Near
        push edx
        push ebx
 
@@ -1671,9 +1671,9 @@ Proc Div32by32To1616Asm_ Near
        pop ebx            ; Restore everyone except the answer in eax
        pop edx
        ret
-EndP
+Div32by32To1616Asm_ EndP
 
-Proc FindInterXAsm_ Near
+FindInterXAsm_ PROC Near
        ; eax = deltaZ
        ; ebx = tanViewAngle
        ; esi = deltaX
@@ -1715,9 +1715,9 @@ fi_skip2:
        pop esi
        pop ebx
        ret
-EndP
+FindInterXAsm_ EndP
 
-Proc ClearSampleAsm_ Near
+ClearSampleAsm_ PROC Near
      push eax
      push edi
      push ecx
@@ -1739,11 +1739,11 @@ _ClearVar1     db 000h
      pop edi
      pop eax
      ret
-EndP
+ClearSampleAsm_ EndP
 
-OldZ     dd (?)
+OldZ     dd 0 ; (?)
 
-Proc DivZOn_ Near
+DivZOn_ PROC Near
      push ebx
      xor ebx, ebx
      mov eax, [ebx]
@@ -1752,26 +1752,26 @@ Proc DivZOn_ Near
      mov [ebx], eax
      pop ebx
      ret
-EndP
+DivZOn_ EndP
 
-Proc DivZOff_ Near
+DivZOff_ PROC Near
      push ebx
      xor ebx, ebx
      mov eax, [dword ptr OldZ]
      mov [ebx], eax
      pop ebx
      ret
-EndP
+DivZOff_ EndP
 
-Proc DivZ_ Near
+DivZ_ PROC Near
      xor eax, eax
      xor edx, edx
      dec eax
      dec edx
      iret
-EndP
+DivZ_ EndP
 
-Proc DrawTransparentColumnAsm1_ Near
+DrawTransparentColumnAsm1_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 16
@@ -1789,9 +1789,9 @@ dtransca_skip1:
        loop dtransca_loop1
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm1_ EndP
 
-Proc DrawTransparentColumnAsm2_ Near
+DrawTransparentColumnAsm2_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 15
@@ -1810,9 +1810,9 @@ dtransca_skip2:
        loop dtransca_loop2
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm2_ EndP
 
-Proc DrawTransparentColumnAsm4_ Near
+DrawTransparentColumnAsm4_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 14
@@ -1831,9 +1831,9 @@ dtransca_skip3:
        loop dtransca_loop4
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm4_ EndP
 
-Proc DrawTransparentColumnAsm8_ Near
+DrawTransparentColumnAsm8_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 13
@@ -1852,9 +1852,9 @@ dtransca_skip4:
        loop dtransca_loop8
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm8_ EndP
 
-Proc DrawTransparentColumnAsm16_ Near
+DrawTransparentColumnAsm16_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 12
@@ -1873,9 +1873,9 @@ dtransca_skip5:
        loop dtransca_loop16
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm16_ EndP
 
-Proc DrawTransparentColumnAsm32_ Near
+DrawTransparentColumnAsm32_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 11
@@ -1894,9 +1894,9 @@ dtransca_skip6:
        loop dtransca_loop32
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm32_ EndP
 
-Proc DrawTransparentColumnAsm64_ Near
+DrawTransparentColumnAsm64_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 10
@@ -1915,9 +1915,9 @@ dtransca_skip7:
        loop dtransca_loop64
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm64_ EndP
 
-Proc DrawTransparentColumnAsm128_ Near
+DrawTransparentColumnAsm128_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 9
@@ -1936,9 +1936,9 @@ dtransca_skip8:
        loop dtransca_loop128
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm128_ EndP
 
-Proc DrawTransparentColumnAsm256_ Near
+DrawTransparentColumnAsm256_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 8
@@ -1957,9 +1957,9 @@ dtransca_skip9:
        loop dtransca_loop256
        pop ebp
        ret
- EndP
+DrawTransparentColumnAsm256_ EndP
 
-Proc DrawTranslucentColumnAsm1_ Near
+DrawTranslucentColumnAsm1_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 16
@@ -1985,9 +1985,9 @@ dlucentca_skip1:
        loop dlucentca_loop1
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm1_ EndP
 
-Proc DrawTranslucentColumnAsm2_ Near
+DrawTranslucentColumnAsm2_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 15
@@ -2013,9 +2013,9 @@ dlucentca_skip2:
        loop dlucentca_loop2
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm2_ EndP
 
-Proc DrawTranslucentColumnAsm4_ Near
+DrawTranslucentColumnAsm4_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 14
@@ -2041,9 +2041,9 @@ dlucentca_skip3:
        loop dlucentca_loop4
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm4_ EndP
 
-Proc DrawTranslucentColumnAsm8_ Near
+DrawTranslucentColumnAsm8_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 13
@@ -2069,9 +2069,9 @@ dlucentca_skip4:
        loop dlucentca_loop8
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm8_ EndP
 
-Proc DrawTranslucentColumnAsm16_ Near
+DrawTranslucentColumnAsm16_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 12
@@ -2097,9 +2097,9 @@ dlucentca_skip5:
        loop dlucentca_loop16
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm16_ EndP
 
-Proc DrawTranslucentColumnAsm32_ Near
+DrawTranslucentColumnAsm32_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 11
@@ -2125,7 +2125,7 @@ dlucentca_skip6:
        loop dlucentca_loop32
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm32_ EndP
 
 DTlCA_16:
        xor eax, eax
@@ -2372,7 +2372,7 @@ DTlCA_Table dd DTlCA_0
             dd DTlCA_15
             dd DTlCA_16
 
-Proc DrawTranslucentColumnAsm64_ Near
+DrawTranslucentColumnAsm64_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 10
@@ -2392,9 +2392,9 @@ dtlca64_last:
        call [dword ptr DTlCA_Table+eax*4]
        pop ebp
        ret
-EndP
+DrawTranslucentColumnAsm64_ EndP
 
-Proc DrawTranslucentColumnAsm64Old_ Near
+DrawTranslucentColumnAsm64Old_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 10
@@ -2420,9 +2420,9 @@ dlucentca_skip7:
        loop dlucentca_loop64
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm64Old_ EndP
 
-Proc DrawTranslucentColumnAsm128_ Near
+DrawTranslucentColumnAsm128_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 9
@@ -2448,9 +2448,9 @@ dlucentca_skip8:
        loop dlucentca_loop128
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm128_ EndP
 
-Proc DrawTranslucentColumnAsm256_ Near
+DrawTranslucentColumnAsm256_ PROC Near
        push ebp
        mov ebp, [dword ptr _G_CurrentTexturePos]
        shl esi, 8
@@ -2476,9 +2476,9 @@ dlucentca_skip9:
        loop dlucentca_loop256
        pop ebp
        ret
- EndP
+DrawTranslucentColumnAsm256_ EndP
 
-Proc DrawTranslucentAsm_ Near
+DrawTranslucentAsm_ PROC Near
        ; ecx = count
        ; esi = source
        ; edi = destination
@@ -2496,9 +2496,9 @@ dtl_loop:
        loop dtl_loop
        pop ebx
        ret
-EndP
+DrawTranslucentAsm_ EndP
 
-Proc DrawTranslucentSeeThroughAsm_ Near
+DrawTranslucentSeeThroughAsm_ PROC Near
        ; ecx = count
        ; esi = source
        ; edi = destination
@@ -2519,9 +2519,9 @@ dtlst_skip:
        loop dtlst_loop
        pop ebx
        ret
-EndP
+DrawTranslucentSeeThroughAsm_ EndP
 
-Proc DrawSeeThroughAsm_ Near
+DrawSeeThroughAsm_ PROC Near
        ; ecx = count
        ; esi = source
        ; edi = destination
@@ -2540,9 +2540,9 @@ dst_skip:
        loop dst_loop
        pop ebx
        ret
-EndP
+DrawSeeThroughAsm_ EndP
 
-Proc ColorizeMemAsm_ Near
+ColorizeMemAsm_ PROC Near
      ; ecx = count
      ; esi = source
      ; edi = destination (can be the same as esi
@@ -2553,9 +2553,9 @@ colorize_loop:
        stosb
        loop colorize_loop
        ret
-EndP
+ColorizeMemAsm_ EndP
 
-Proc ShadeMemAsm_ Near
+ShadeMemAsm_ PROC Near
      ; ecx = count
      ; esi = source
      ; edi = destination
@@ -2566,7 +2566,7 @@ shade_loop:
        stosb
        loop shade_loop
        ret
-EndP
+ShadeMemAsm_ EndP
 
 End
 

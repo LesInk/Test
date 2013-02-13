@@ -2478,7 +2478,7 @@ angle = (2+angle) & 7 ;
         part = ordering[(angle-1)&7][i] ;
         partNumber = ((T_word16 *)((p_objType->p_parts)))[part] ;
         /* Don't do parts that are declared missing. */
-        if (partNumber != -1)  {
+        if (partNumber != (T_word16)-1)  { // TODO: Is this comparison correct?
             sprintf(partName, "/Parts/%02d/%05d/%02d%02d%d",
                 part,
                 partNumber,

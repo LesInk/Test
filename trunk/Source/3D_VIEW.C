@@ -6711,7 +6711,7 @@ T_word16 IFindSectorNum(T_sword16 x, T_sword16 y)
         index = 1+G_3dBlockMapHeader->blockIndexes[index] ;
 
         /* Loop until we end the list of lines in that block */
-        while ((line = G_3dBlockMapArray[index]) != -1)  {
+        while ((line = G_3dBlockMapArray[index]) != ((T_word16)-1))  {
             /* Get a quick pointer to the line. */
             p_line = G_3dLineArray+line ;
 

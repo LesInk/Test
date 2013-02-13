@@ -354,7 +354,7 @@ T_void TownUIStart  (T_word32 formNum)
 
         if (iSucceeded)  {
             advNum = 1+StatsGetCurrentQuestNumber() ;
-            if (advNum != -1)  {
+            if (advNum != (T_word16)-1)  { // TODO: Is this comparison correct?
                 if ((advNum > StatsGetCompletedAdventure()) &&
                     (advNum < ADVENTURE_UNKNOWN))  {
                     StatsSetCompletedAdventure(advNum);

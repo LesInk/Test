@@ -58,7 +58,7 @@ typedef struct  {
     T_byte8   upperTx[8]     PACK;
     T_byte8   lowerTx[8]     PACK;
     T_byte8   mainTx[8]      PACK;
-    T_sword16 sector         PACK;
+    T_word16  sector         PACK;
 } T_3dSide ;
 
 typedef struct  {

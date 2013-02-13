@@ -46,6 +46,14 @@ T_void CreatureGoSplat(
            T_word16 amount,
            T_word16 damageType) ;
 
+T_void CreaturesAllOnOneTarget(T_word16 targetId);
+
+#ifdef SERVER_ONLY
+T_3dObject *CreatureLookForPlayer(T_3dObject *p_obj);
+#else
+T_word16 CreatureLookForPlayer(T_3dObject *p_obj);
+#endif
+
 #ifndef NDEBUG
 T_void CreaturesCheck(T_void) ;
 #else

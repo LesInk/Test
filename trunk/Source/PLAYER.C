@@ -49,7 +49,7 @@ static T_word16 G_lastSector = 0 ;
 /* to check next. */
 static E_Boolean G_playerIsStealthy = FALSE ;
 static T_word32 G_nextStealthCheck = 0 ;
-T_void IPlayerUpdateStealth(T_void) ;
+static T_void IPlayerUpdateStealth(T_void) ;
 
 static E_Boolean G_playerTeleported = TRUE ;
 

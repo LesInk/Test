@@ -39,6 +39,11 @@ T_void PeopleHereRequestJoin(
         T_directTalkUniqueAddress uniqueAddress,
         T_gameGroupID groupID,
         T_word16 adventure) ;
+T_void PeopleHereRespondToJoin(
+           T_directTalkUniqueAddress uniqueAddress,
+           T_gameGroupID groupID,
+           T_word16 adventure,
+           E_respondJoin response);
 #endif
 
 /****************************************************************************/

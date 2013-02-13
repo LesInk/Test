@@ -542,7 +542,7 @@ T_void *ResourceLock(T_resource resource)
 printf("!A %ld lock_%s\n", p_resource->size, p_resource->p_resourceName) ;
 #endif
             /* skip past the entry reference. */
-            ((T_byte8 *)p_resource->p_data) += sizeof(T_resourceEntry *) ;
+            p_resource->p_data += sizeof(T_resourceEntry *) ;
 
             /* Then get the file location of where the resource is */
             /* stored. */

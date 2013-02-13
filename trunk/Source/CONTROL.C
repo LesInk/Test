@@ -3,6 +3,8 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include <ctype.h>
+
 #define JUMP_RESET_TIME 20
 
 //#undef DebugRoutine

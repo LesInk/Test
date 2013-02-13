@@ -33,6 +33,7 @@ T_void SMCLeaveLeaveCompleteEnter(
 /* Internal global variables: */
 static T_stateMachineHandle G_smHandle ;
 static E_Boolean G_init = FALSE ;
+extern void HangUp(void);
 
 
 /****************************************************************************/

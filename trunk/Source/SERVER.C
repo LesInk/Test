@@ -21,7 +21,7 @@ T_sword32 G_sourceX, G_sourceY, G_sourceZ ;
 static T_word32 G_serverID = 1 ;
 
 /* Internal prototypes: */
-T_void IServerCheckSectorSoundsForObject(T_3dObject *p_obj, T_word32 data) ;
+E_Boolean IServerCheckSectorSoundsForObject(T_3dObject *p_obj, T_word32 data) ;
 
 static T_void IServerDataBlockSentNowFree(
                   T_void *p_data,
@@ -868,7 +868,7 @@ T_void ServerCheckSectorSounds(T_void)
 /*                                                                          */
 /****************************************************************************/
 
-T_void IServerCheckSectorSoundsForObject(T_3dObject *p_obj, T_word32 data)
+E_Boolean IServerCheckSectorSoundsForObject(T_3dObject *p_obj, T_word32 data)
 {
     T_word16 i, sound1=0, sound2 ;
     T_word16 sector ;
@@ -926,6 +926,8 @@ T_void IServerCheckSectorSoundsForObject(T_3dObject *p_obj, T_word32 data)
     }
 
     DebugEnd() ;
+
+    return FALSE;
 }
 
 /****************************************************************************/

@@ -73,6 +73,9 @@ extern T_byte8 G_keyMap[256] ;
 
 #define KEYMAP_GAMMA_CORRECT                58
 
+T_void KeyMapInitialize(T_iniFile iniFile);
+T_void KeyMapFinish(T_void);
+
 /****************************************************************************/
 /*    END OF FILE:  KEYMAP.H                                                */
 /****************************************************************************/

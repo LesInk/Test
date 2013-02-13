@@ -208,9 +208,7 @@ T_void ClientMakeObjectGoSplat(
            E_effectDamageType defenseType,
            E_bloodEffect bloodType);
 
-#ifndef NDEBUG
 T_void ClientSetClientSyncStatus(T_byte8 *p_msg);
-#endif
 
 /* returns TRUE if the banner is up */
 E_Boolean ClientIsInGame(T_void);
@@ -228,6 +226,10 @@ E_Boolean ClientIsPaused(T_void);
 E_Boolean ClientIsDead(void);
 
 T_void ClientSetAdventureNumber(T_word16 adventureNum);
+
+T_void ClientDied(T_void);
+
+T_void ClientDoSteal(T_void);
 
 #endif
 

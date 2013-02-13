@@ -154,6 +154,11 @@ T_word32 MapGetMapSpecial(T_void) ;
 
 E_Boolean MapIsDay(T_void) ;
 
+E_Boolean MapCheckCrushByFloor(T_word16 sector, T_sword16 newHeight);
+
+E_Boolean MapCheckCrushByCeiling(T_word16 sector, T_sword16 newHeight);
+
+
 /****************************************************************************/
 /*    END OF FILE:  MAP.H                                                   */
 /****************************************************************************/

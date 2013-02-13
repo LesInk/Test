@@ -16,7 +16,7 @@
 /* Use the following compile option to output sound lists */
 //#ifdef COMPILE_OPTION_SOUND_CHECK_LIST
 
-#define BUFFER_ID_BAD -1
+#define BUFFER_ID_BAD ((T_word16)0xFFFF)
 //#define COMPILE_OPTION_OUTPUT_BAD_SOUNDS
 #define MUSICVOLUME 192
 #define MAX_SOUND_CHANNELS 32
@@ -82,7 +82,7 @@ static E_Boolean G_is16BitSound = FALSE ;
 /* Internal prototypes: */
 static T_sword16 IAllocateBuffer(T_resource res) ;
 
-static T_void IFreeBuffer(T_sword16 bufferId) ;
+static T_void IFreeBuffer(T_word16 bufferId) ;
 
 static T_void ISoundStopAtExit(T_void) ;
 
@@ -420,7 +420,7 @@ T_sword16 SoundPlayByName(T_byte8 *filename, T_word16 volume)
     T_word32 newVolume ;
     _SOS_SAMPLE *p_sample ;
     W32 hSample;
-    T_sword16 bufferId = BUFFER_ID_BAD ;
+    T_word16 bufferId = BUFFER_ID_BAD ;
     T_soundBuffer *p_buffer ;
 
     DebugRoutine("PlaySoundByName") ;
@@ -548,7 +548,7 @@ T_sword16 SoundPlayLoopByNumber(T_word16 soundNum, T_word16 volume)
     T_word32 newVolume ;
     _SOS_SAMPLE *p_sample ;
     W32 hSample;
-    T_sword16 bufferId = BUFFER_ID_BAD ;
+    T_word16 bufferId = BUFFER_ID_BAD ;
     T_soundBuffer *p_buffer ;
     T_byte8 filename[20] ;
 
@@ -676,7 +676,7 @@ T_sword16 SoundPlayLoopByNumber(T_word16 soundNum, T_word16 volume)
 T_sword16 SoundPlayByNumber(T_word16 num, T_word16 volume)
 {
     char buffer[20] ;
-    T_sword16 bufferId = BUFFER_ID_BAD ;
+    T_word16 bufferId = BUFFER_ID_BAD ;
 
     DebugRoutine("PlaySoundByNumber") ;
 
@@ -870,7 +870,7 @@ T_void SoundSetEffectsVolume(T_word16 volume)
 {
     T_word16 i ;
     T_word16 vol ;
-    T_sword16 bufferId ;
+    T_word16 bufferId ;
     T_soundBuffer *p_buffer ;
 
     DebugRoutine("SoundSetEffectsVolume") ;
@@ -1023,7 +1023,7 @@ T_void ISoundStopAtExit(T_void)
 
 T_void SoundUpdate(T_void)
 {
-    T_sword16 bufferId ;
+    T_word16 bufferId ;
     T_soundBuffer *p_buffer ;
     T_sword16 nextId ;
 
@@ -1107,7 +1107,7 @@ T_void SoundUpdate(T_void)
 
 T_void SoundStopAllSounds(T_void)
 {
-    T_sword16 bufferId ;
+    T_word16 bufferId ;
     T_soundBuffer *p_buffer ;
 
     DebugRoutine("SoundStopAllSounds") ;
@@ -1147,7 +1147,7 @@ T_void SoundStopAllSounds(T_void)
 /*                                                                          */
 /*  Inputs:                                                                 */
 /*                                                                          */
-/*    T_sword16 bufferId           -- Channel/handle of previous sound.      */
+/*    T_word16 bufferId           -- Channel/handle of previous sound.      */
 /*                                                                          */
 /*                                                                          */
 /*  Outputs:                                                                */
@@ -1168,7 +1168,7 @@ T_void SoundStopAllSounds(T_void)
 /*                                                                          */
 /****************************************************************************/
 
-E_Boolean SoundIsDone(T_sword16 bufferId)
+E_Boolean SoundIsDone(T_word16 bufferId)
 {
     E_Boolean isDone ;
     T_soundBuffer *p_buffer ;
@@ -1209,7 +1209,7 @@ E_Boolean SoundIsDone(T_sword16 bufferId)
 /*                                                                          */
 /*  Inputs:                                                                 */
 /*                                                                          */
-/*    T_sword16 bufferId           -- Channel/handle of previous sound.      */
+/*    T_word16 bufferId           -- Channel/handle of previous sound.      */
 /*                                                                          */
 /*    T_word16 volume             -- Volume of 0-255 to change to.          */
 /*                                                                          */
@@ -1232,7 +1232,7 @@ E_Boolean SoundIsDone(T_sword16 bufferId)
 /*                                                                          */
 /****************************************************************************/
 
-T_void SoundSetVolume(T_sword16 bufferId, T_word16 volume)
+T_void SoundSetVolume(T_word16 bufferId, T_word16 volume)
 {
     T_soundBuffer *p_buffer ;
 
@@ -1273,7 +1273,7 @@ T_void SoundSetVolume(T_sword16 bufferId, T_word16 volume)
 /*                                                                          */
 /*  Inputs:                                                                 */
 /*                                                                          */
-/*    T_sword16 bufferId           -- Channel/handle of previous sound.      */
+/*    T_word16 bufferId           -- Channel/handle of previous sound.      */
 /*                                                                          */
 /*    T_word16 panLocation        -- Pan is 0 if all on left, 0x8000 if     */
 /*                                   centered, and 0xFFFF if all on right.  */
@@ -1297,7 +1297,7 @@ T_void SoundSetVolume(T_sword16 bufferId, T_word16 volume)
 /*                                                                          */
 /****************************************************************************/
 
-T_void SoundSetStereoPanLocation(T_sword16 bufferId, T_word16 panLocation)
+T_void SoundSetStereoPanLocation(T_word16 bufferId, T_word16 panLocation)
 {
     T_soundBuffer *p_buffer ;
 
@@ -1329,7 +1329,7 @@ T_sword16 SoundPlayByNumberWithCallback(
               T_void *p_data)
 {
     T_soundBuffer *p_buffer ;
-    T_sword16 bufferId ;
+    T_word16 bufferId ;
 
     DebugRoutine("SoundPlayByNumberWithCallback") ;
 
@@ -1359,7 +1359,7 @@ T_sword16 SoundPlayLoopByNumberWithCallback(
               T_void *p_data)
 {
     T_soundBuffer *p_buffer ;
-    T_sword16 bufferId ;
+    T_word16 bufferId ;
 
     DebugRoutine("SoundPlayLoopByNumberWithCallback") ;
 
@@ -1410,7 +1410,7 @@ T_sword16 SoundPlayLoopByNumberWithCallback(
 
 static T_sword16 IAllocateBuffer(T_resource res)
 {
-    T_sword16 bufferId ;
+    T_word16 bufferId ;
     T_soundBuffer *p_buffer ;
 
     DebugRoutine("IAllocateBuffer") ;
@@ -1478,7 +1478,7 @@ static T_sword16 IAllocateBuffer(T_resource res)
 /*                                                                          */
 /****************************************************************************/
 
-static T_void IFreeBuffer(T_sword16 bufferId)
+static T_void IFreeBuffer(T_word16 bufferId)
 {
     T_soundBuffer *p_buffer ;
 
@@ -1547,7 +1547,7 @@ static T_void IFreeBuffer(T_sword16 bufferId)
 /*                                                                          */
 /****************************************************************************/
 
-T_void SoundStop(T_sword16 bufferId)
+T_void SoundStop(T_word16 bufferId)
 {
     T_soundBuffer *p_buffer ;
 
@@ -1572,7 +1572,7 @@ T_void SoundStop(T_sword16 bufferId)
 static T_void ICheckLists(T_void)
 {
     T_soundBuffer *p_buffer ;
-    T_sword16 bufferId ;
+    T_word16 bufferId ;
 
     DebugRoutine("ICheckLists") ;
 
@@ -1790,7 +1790,7 @@ T_sword16 SoundPlayByNumberWithDetails(
              E_Boolean isStereo)
 {
     char buffer[20] ;
-    T_sword16 bufferId = BUFFER_ID_BAD ;
+    T_word16 bufferId = BUFFER_ID_BAD ;
 
     DebugRoutine("PlaySoundByNumberWithDetails") ;
 
@@ -1825,7 +1825,7 @@ T_sword16 SoundPlayByNameWithDetails(
     T_word32 newVolume ;
     _SOS_SAMPLE *p_sample ;
     W32 hSample;
-    T_sword16 bufferId = BUFFER_ID_BAD ;
+    T_word16 bufferId = BUFFER_ID_BAD ;
     T_soundBuffer *p_buffer ;
 
     DebugRoutine("PlaySoundByNameWithDetails") ;
@@ -1970,20 +1970,20 @@ T_void SoundStopAllSounds(T_void)
 {
 }
 
-E_Boolean SoundIsDone(T_sword16 bufferId) 
+E_Boolean SoundIsDone(T_word16 bufferId)
 {
     return TRUE;
 }
 
-T_void SoundSetVolume(T_sword16 bufferId, T_word16 volume) 
+T_void SoundSetVolume(T_word16 bufferId, T_word16 volume)
 {
 }
 
-T_void SoundSetStereoPanLocation(T_sword16 bufferId, T_word16 panLocation)
+T_void SoundSetStereoPanLocation(T_word16 bufferId, T_word16 panLocation)
 {
 }
 
-T_void SoundStop(T_sword16 bufferId) 
+T_void SoundStop(T_word16 bufferId)
 {
 }
 

@@ -3,6 +3,7 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include <direct.h>
 
 static E_Boolean G_exit=FALSE;
 static E_Boolean G_statsLCExit=FALSE;
