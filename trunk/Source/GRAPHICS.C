@@ -1009,6 +1009,13 @@ T_void GrGraphicsOn(T_void)
     DebugRoutine("GrGraphicsOn") ;
     DebugCheck(G_GraphicsIsOn == FALSE) ;
     G_GraphicsIsOn = TRUE ;
+    //G_ActiveScreen = GRAPHICS_ACTUAL_SCREEN = GrScreenAlloc() ;
+    G_verticalCount = 0 ;
+//IInstallVerticalInterrupt() ;
+
+    G_screenStack = DoubleLinkListCreate() ;
+
+    IResetLeftsAndRights() ;
     DebugEnd() ;
 #endif
 }
@@ -1558,6 +1565,7 @@ T_void GrSetPalette(
 #endif
 
 #ifdef WIN32
+        extern void _cdecl WindowsUpdate(char *p_screen, unsigned char *palette);
     T_word16 i ;
     /* See if the palette is changing. */
     i = start_color*3 ;
@@ -1619,6 +1627,7 @@ T_void GrGetPalette(
            T_word16 number_colors,
            T_palette p_palette)
 {
+#ifdef DOS32
     T_word16 i ;
     T_color color ;
 
@@ -1638,6 +1647,16 @@ T_void GrGetPalette(
         p_palette[color][2] = inp(0x03C9) ;
     }
     DebugEnd() ;
+#else
+    int i;
+
+    for (i=0; i<number_colors; i++) {
+        p_palette[start_color+i][0] = G_lastPalette[start_color+i][0] & 63;
+        p_palette[start_color+i][1] = G_lastPalette[start_color+i][1] & 63;
+        p_palette[start_color+i][2] = G_lastPalette[start_color+i][2] & 63;
+    }
+    //memcpy(p_palette+(start_color*3), &G_lastPalette[start_color][0], (number_colors*3)) ;
+#endif
 }
 
 /****************************************************************************/
@@ -2446,19 +2465,21 @@ T_void GrSetVisualPage(T_word16 page)
 {
     DebugRoutine("GrSetWorkingPage") ;
     DebugCheck(page < MAX_PAGES) ;
-
+#ifdef DOS32
     outp(0x3D4, 0xC) ;
     outp(0x3D5, (page<<14)) ;
-
+#endif
     DebugEnd() ;
 }
 
 T_void GrSelectPlanes(T_word16 planes)
 {
+#ifdef DOS32
     planes <<= 8 ;
     planes |= 2 ;
 
     outpw(0x3C4, planes) ;
+#endif
 }
 
 T_void GrActivateColumn(T_word16 x)
@@ -3312,21 +3333,28 @@ static T_void ITransferPalette(T_void)
 
     p_color = G_palette ;
 
+#ifdef DOS32
     _disable() ;
     outp(0x3C8, 0) ;
     for (i=0; i<768; i++)
         outp(0x03C9, *(p_color++)) ;
     _enable() ;
+#endif
 }
 
 static T_void IConfirmPaletteChange(T_void)
 {
+#ifdef DOS32
     if (G_paletteChanged)  {
         if (inp(0x03DA) & 8)  {
             ITransferPalette() ;
         }
     }
-
+#else
+    if (G_paletteChanged)  {
+        ITransferPalette() ;
+    }
+#endif
 }
 
 /****************************************************************************/
@@ -3644,7 +3672,9 @@ T_void GrActualScreenPop(T_void)
     p_screen = (T_byte8 *)DoubleLinkListElementGetData(element) ;
 
     if (p_screen)  {
+#ifdef DOS32
         memcpy(((char *)0xA0000), p_screen, 64000) ;
+#endif
         memcpy((char *)GRAPHICS_ACTUAL_SCREEN, p_screen, 64000) ;
         MemFree(p_screen) ;
     }

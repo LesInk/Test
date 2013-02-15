@@ -250,7 +250,11 @@ T_void PullOut(T_void)
 }
 #endif
 
+#ifdef WIN32
+T_void game_main(T_word16 argc, char *argv[])
+#else
 T_void main(T_word16 argc, char *argv[])
+#endif
 {
     T_resource r1 ;
     T_resource r2 ;
@@ -263,9 +267,9 @@ T_void main(T_word16 argc, char *argv[])
     T_directTalkHandle handle ;
 //    void (__interrupt __far *oldbreak)(); /* interrupt function pointer */
 
-#ifdef COMPILER_MSVC
+#ifdef WIN32
     /* Redirect the standard output to a file */
-    freopen("stdout.out", "w", stdout) ;
+//    freopen("stdout.out", "w", stdout) ;
 #endif
     TICKER_TIME_ROUTINE_PREPARE() ;
 
@@ -294,7 +298,7 @@ T_void main(T_word16 argc, char *argv[])
         exit(1) ;
     }
 
-#ifndef COMPILER_MSVC
+#ifndef WIN32
     if (argc != 2)  {
         puts("USAGE: GAME <Direct Talk Handle>") ;
         DebugEnd() ;
@@ -303,6 +307,8 @@ T_void main(T_word16 argc, char *argv[])
 
     sscanf(argv[1], "%lX", &handle) ;
 //    printf("DirectTalk Handle: 0x%08lX\n", handle) ;
+#else
+    handle = 0;
 #endif
 
     DirectTalkInit(

@@ -78,6 +78,8 @@ T_sword16 PacketGet(T_packetLong *p_packet) ;
 
 T_void PacketSetId (T_packetEitherShortOrLong *p_packet, T_word32 packetID);
 
+T_void PacketReceiveData(T_void *p_data, T_byte8 size);
+
 /* !!! Needs to be moved! */
 typedef struct {
     T_byte8 command              PACK;

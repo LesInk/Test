@@ -14,10 +14,12 @@ static T_word16 G_mouseY = 0 ;
 
 T_void DirectMouseSet(T_word16 newX, T_word16 newY)
 {
-    if (newX > 320)
-        newX = 320  ;
-    if (newY > 200)
-        newY = 200 ;
+newX >>= 1;
+newY >>= 1; // scale for large screen
+    if (newX > 319)
+        newX = 319  ;
+    if (newY > 199)
+        newY = 199 ;
     G_mouseX = newX ;
     G_mouseY = newY ;
 }
@@ -39,7 +41,7 @@ T_buttonClick DirectMouseGetButton(T_void)
     return G_mouseButton ;
 }
 
-#if 0
+#if 0 // Old Windows version
 extern void KeyboardUpdate(E_Boolean updateBuffers) ;
 
 void _cdecl DirectDrawOn(void)
@@ -115,9 +117,7 @@ void _cdecl WindowsUpdate(char *p_screen, char *palette)
     KeyboardUpdate(TRUE) ;
 }
 #else
-void _cdecl WindowsUpdate(char *p_screen, char *palette)
-{
-}
+extern void _cdecl WindowsUpdate(char *p_screen, char *palette);
 #endif
 
 #ifdef __cplusplus

@@ -219,6 +219,7 @@
     <ClCompile Include="..\..\..\..\Source\STOREDB.C" />
     <ClCompile Include="..\..\..\..\Source\SYNCMEM.C" />
     <ClCompile Include="..\..\..\..\Source\SYNCTIME.C" />
+    <ClCompile Include="..\..\..\..\Source\TESTME.C" />
     <ClCompile Include="..\..\..\..\Source\TEXT.C" />
     <ClCompile Include="..\..\..\..\Source\TICKER.C" />
     <ClCompile Include="..\..\..\..\Source\TOWNUI.C" />

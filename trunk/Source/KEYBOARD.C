@@ -1418,8 +1418,8 @@ T_void KeyboardUpdate(E_Boolean updateBuffers)
     keys = SDL_GetKeyState(NULL);
 
     /* Only care about up/down status */
-    for (scanCode=0; scanCode<256; scanCode++)
-        keys[scanCode] &= KEY_IS_DOWN ;
+//    for (scanCode=0; scanCode<256; scanCode++)
+//        keys[scanCode] &= KEY_IS_DOWN ;
 
     if (updateBuffers)  {
         for (i=1; i<256; i++)  {

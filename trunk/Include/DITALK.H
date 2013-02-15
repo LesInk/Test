@@ -6,6 +6,9 @@
 /* routines.                                                                */
 /****************************************************************************/
 
+#ifndef _DITALK_H_
+#define _DITALK_H_
+
 typedef T_void (*T_directTalkReceiveCallback)(
                     T_void *p_data,
                     T_byte8 size) ;
@@ -90,6 +93,8 @@ T_void DirectTalkSetDestination(T_directTalkUniqueAddress *p_dest) ;
 T_void DirectTalkSetDestinationAll(T_void) ;
 
 T_byte8 *DirectTalkGetDestination(T_void) ;
+
+#endif // _DITALK_H_
 
 /****************************************************************************/
 /*    END OF FILE:  DITALK.H                                                */

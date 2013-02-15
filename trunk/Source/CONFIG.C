@@ -165,6 +165,7 @@ T_void ConfigLoad(T_void)
     T_word16 neededResolution ;
     T_byte8 *p_stepdown ;
     T_word16 stepdown = 0 ;
+    char *p_value;
 
     DebugRoutine("ConfigLoad") ;
     DebugCheck(G_configLoaded == FALSE) ;
@@ -216,8 +217,13 @@ stepdown = (*p_stepdown) - '0' ;
     G_configLoaded = TRUE ;
 
     /* Load the bob off flag */
-    if (atoi(INIFileGet(G_configINIFile, "options", "boboff"))==1)  {
-        G_bobOffFlag = TRUE ;
+    p_value = INIFileGet(G_configINIFile, "options", "boboff");
+    if (p_value) {
+        if (atoi(p_value)==1)  {
+            G_bobOffFlag = TRUE ;
+        } else {
+            G_bobOffFlag = FALSE ;
+        }
     } else {
         G_bobOffFlag = FALSE ;
     }

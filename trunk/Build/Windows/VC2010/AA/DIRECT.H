@@ -4,7 +4,7 @@ extern "C" {
 
 void DirectDrawOn(void) ;
 void DirectDrawOff(void) ;
-void _cdecl WindowsUpdate(char *p_screen, char * palette) ;
+void _cdecl WindowsUpdate(char *p_screen, unsigned char * palette) ;
 void OutsideMouseDriverGet(T_word16 *xPos, T_word16 *yPos);
 T_void DirectMouseSet(T_word16 newX, T_word16 newY) ;
 T_buttonClick DirectMouseGetButton(T_void) ;

@@ -409,7 +409,7 @@ T_void ColorUpdate (T_word16 delta)
 	T_byte8 tempcolors[768];
 	T_palette p;
 	T_word16 i;
-	T_sword16 tempr,tempg,tempb;
+	T_word16 tempr,tempg,tempb;
 	static T_sword32 glowupdatetime=0;
     static T_word32 lastTime = 0 ;
 

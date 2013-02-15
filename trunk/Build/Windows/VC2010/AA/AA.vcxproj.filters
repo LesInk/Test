@@ -306,9 +306,6 @@
     <ClCompile Include="..\..\..\..\Source\SMMAIN.C">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Source\SOSEZ.C">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Source\SOUND.C">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -377,6 +374,12 @@
     </ClCompile>
     <ClCompile Include="main.c">
       <Filter>Source Files\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\SOSEZ.C">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\TESTME.C">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

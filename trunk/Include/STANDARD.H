@@ -6,7 +6,7 @@
 #define _STANDARD_H_
 
 #ifndef USE_SOS_LIBRARY
-#define USE_SOS_LIBRARY 1
+//#define USE_SOS_LIBRARY 1
 #endif
 
 /** CONTROL DEFINES **/
