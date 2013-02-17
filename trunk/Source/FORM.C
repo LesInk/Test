@@ -468,6 +468,8 @@ T_void FormReportTextBox (T_TxtboxID TxtboxID)
 	for (i=0;i<MAX_FORM_OBJECTS;i++)
 	{
 		p_object=(T_formObjectStruct*)G_formObjectArray[i];
+        if (!p_object)
+            continue;
 		if (p_object->objtype==FORM_OBJECT_TEXTBOX)
 		{
 			if ((T_TxtboxID)p_object->objID==TxtboxID)

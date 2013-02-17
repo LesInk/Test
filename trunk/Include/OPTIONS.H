@@ -8,6 +8,10 @@
 /* All the following options are turned on and off by commenting out the */
 /* #define. */
 
+#ifndef WIN32
+#define WIN32 // TEMP for Eclipse
+#endif
+
 /* Flag that determines if this is the shareware version */
 //#define COMPILE_OPTION_SHAREWARE_DEMO
 

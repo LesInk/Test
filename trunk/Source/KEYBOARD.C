@@ -3,6 +3,8 @@
 /****************************************************************************/
 
 #include "standard.h"
+#include <SDL.h>
+#include <string.h>
 
 #ifdef WATCOM
 #define ALLOW_KEYBOARD_INTERRUPT
@@ -1397,10 +1399,367 @@ E_Boolean KeyboardBufferReady(T_void)
 
 
 #ifdef WIN32
+
+// This maps the SDL keysym list to the list of scancodes in the original game
+const uint8_t G_sdlToScancode[] = {
+        0, // 0
+        0, // 1
+        0, // 2
+        0, // 3
+        0, // 4
+        0, // 5
+        0, // 6
+        0, // 7
+        KEY_SCAN_CODE_BACKSPACE, // SDLK_BACKSPACE		= 8,
+        KEY_SCAN_CODE_TAB, // SDLK_TAB		= 9,
+        0, // 10
+        0, // 11
+        0, // SDLK_CLEAR		= 12,
+        KEY_SCAN_CODE_ENTER, // SDLK_RETURN		= 13,
+        0, // 14
+        0, // 15
+        0, // 16
+        0, // 17
+        0, // 18
+        KEY_SCAN_CODE_PAUSE, // SDLK_PAUSE		= 19,
+        0, // 20
+        0, // 21
+        0, // 22
+        0, // 23
+        0, // 24
+        0, // 25
+        0, // 26
+        KEY_SCAN_CODE_ESC, // SDLK_ESCAPE		= 27,
+        0, // 28
+        0, // 29
+        0, // 30
+        0, // 31
+        KEY_SCAN_CODE_SPACE, // SDLK_SPACE		= 32,
+        0, // SDLK_EXCLAIM		= 33,
+        0, // SDLK_QUOTEDBL		= 34,
+        0, // SDLK_HASH		= 35,
+        0, // SDLK_DOLLAR		= 36,
+        0, // 37
+        0, // SDLK_AMPERSAND		= 38,
+        0, // SDLK_QUOTE		= 39,
+        0, // SDLK_LEFTPAREN		= 40,
+        0, // SDLK_RIGHTPAREN		= 41,
+        0, // SDLK_ASTERISK		= 42,
+        0, // SDLK_PLUS		= 43,
+        KEY_SCAN_CODE_COMMA, // SDLK_COMMA		= 44,
+        KEY_SCAN_CODE_MINUS, // SDLK_MINUS		= 45,
+        KEY_SCAN_CODE_PERIOD, // SDLK_PERIOD		= 46,
+        KEY_SCAN_CODE_SLASH, // SDLK_SLASH		= 47,
+        KEY_SCAN_CODE_0, // SDLK_0			= 48,
+        KEY_SCAN_CODE_1, // SDLK_1			= 49,
+        KEY_SCAN_CODE_2, // SDLK_2          = 50,
+        KEY_SCAN_CODE_3, // SDLK_3          = 51,
+        KEY_SCAN_CODE_4, // SDLK_4          = 52,
+        KEY_SCAN_CODE_5, // SDLK_5          = 53,
+        KEY_SCAN_CODE_6, // SDLK_6          = 54,
+        KEY_SCAN_CODE_7, // SDLK_7          = 55,
+        KEY_SCAN_CODE_8, // SDLK_8          = 56,
+        KEY_SCAN_CODE_9, // SDLK_9          = 57,
+        0, // SDLK_COLON		= 58,
+        KEY_SCAN_CODE_SEMI_COLON, // SDLK_SEMICOLON		= 59,
+        0, // SDLK_LESS		= 60,
+        KEY_SCAN_CODE_EQUAL, // SDLK_EQUALS		= 61,
+        0, // SDLK_GREATER		= 62,
+        0, // SDLK_QUESTION		= 63,
+        0, // SDLK_AT			= 64,
+        0, // 65
+        0, // 66
+        0, // 67
+        0, // 68
+        0, // 69
+        0, // 70
+        0, // 71
+        0, // 72
+        0, // 73
+        0, // 74
+        0, // 75
+        0, // 76
+        0, // 77
+        0, // 78
+        0, // 79
+        0, // 80
+        0, // 81
+        0, // 82
+        0, // 83
+        0, // 84
+        0, // 85
+        0, // 86
+        0, // 87
+        0, // 88
+        0, // 89
+        0, // 90
+	/* 
+	   Skip uppercase letters
+	 */
+        KEY_SCAN_CODE_SB_OPEN, // SDLK_LEFTBRACKET	= 91,
+        KEY_SCAN_CODE_BACKSLASH, // SDLK_BACKSLASH		= 92,
+        KEY_SCAN_CODE_SB_CLOSE, // SDLK_RIGHTBRACKET	= 93,
+        0, // SDLK_CARET		= 94,
+        0, // SDLK_UNDERSCORE		= 95,
+        KEY_SCAN_CODE_GRAVE, // SDLK_BACKQUOTE		= 96,
+        KEY_SCAN_CODE_A, // SDLK_a			= 97,
+        KEY_SCAN_CODE_B, // SDLK_b			= 98,
+        KEY_SCAN_CODE_C, // SDLK_c			= 99,
+        KEY_SCAN_CODE_D, // SDLK_d			= 100,
+        KEY_SCAN_CODE_E, // SDLK_e			= 101,
+        KEY_SCAN_CODE_F, // SDLK_f			= 102,
+        KEY_SCAN_CODE_G, // SDLK_g			= 103,
+        KEY_SCAN_CODE_H, // SDLK_h			= 104,
+        KEY_SCAN_CODE_I, // SDLK_i			= 105,
+        KEY_SCAN_CODE_J, // SDLK_j			= 106,
+        KEY_SCAN_CODE_K, // SDLK_k			= 107,
+        KEY_SCAN_CODE_L, // SDLK_l			= 108,
+        KEY_SCAN_CODE_M, // SDLK_m			= 109,
+        KEY_SCAN_CODE_N, // SDLK_n			= 110,
+        KEY_SCAN_CODE_O, // SDLK_o			= 111,
+        KEY_SCAN_CODE_P, // SDLK_p			= 112,
+        KEY_SCAN_CODE_Q, // SDLK_q			= 113,
+        KEY_SCAN_CODE_R, // SDLK_r			= 114,
+        KEY_SCAN_CODE_S, // SDLK_s			= 115,
+        KEY_SCAN_CODE_T, // SDLK_t			= 116,
+        KEY_SCAN_CODE_U, // SDLK_u			= 117,
+        KEY_SCAN_CODE_V, // SDLK_v			= 118,
+        KEY_SCAN_CODE_W, // SDLK_w			= 119,
+        KEY_SCAN_CODE_X, // SDLK_x			= 120,
+        KEY_SCAN_CODE_Y, // SDLK_y			= 121,
+        KEY_SCAN_CODE_Z, // SDLK_z			= 122,
+        0, // 123
+        0, // 124
+        0, // 125
+        0, // 126
+        KEY_SCAN_CODE_DELETE, // SDLK_DELETE		= 127,
+        0, // 128
+        0, // 129
+        0, // 130
+        0, // 131
+        0, // 132
+        0, // 133
+        0, // 134
+        0, // 135
+        0, // 136
+        0, // 137
+        0, // 138
+        0, // 139
+        0, // 140
+        0, // 141
+        0, // 142
+        0, // 143
+        0, // 144
+        0, // 145
+        0, // 146
+        0, // 147
+        0, // 148
+        0, // 149
+        0, // 150
+        0, // 151
+        0, // 152
+        0, // 153
+        0, // 154
+        0, // 155
+        0, // 156
+        0, // 157
+        0, // 158
+        0, // 159
+	/* End of ASCII mapped keysyms */
+        /*@}*/
+
+	/** @name International keyboard syms */
+        /*@{*/
+	0, // SDLK_WORLD_0		= 160,		/* 0xA0 */
+	0, // SDLK_WORLD_1		= 161,
+	0, // SDLK_WORLD_2		= 162,
+	0, // SDLK_WORLD_3		= 163,
+	0, // SDLK_WORLD_4		= 164,
+	0, // SDLK_WORLD_5		= 165,
+	0, // SDLK_WORLD_6		= 166,
+	0, // SDLK_WORLD_7		= 167,
+	0, // SDLK_WORLD_8		= 168,
+	0, // SDLK_WORLD_9		= 169,
+	0, // SDLK_WORLD_10		= 170,
+	0, // SDLK_WORLD_11		= 171,
+	0, // SDLK_WORLD_12		= 172,
+	0, // SDLK_WORLD_13		= 173,
+	0, // SDLK_WORLD_14		= 174,
+	0, // SDLK_WORLD_15		= 175,
+	0, // SDLK_WORLD_16		= 176,
+	0, // SDLK_WORLD_17		= 177,
+	0, // SDLK_WORLD_18		= 178,
+	0, // SDLK_WORLD_19		= 179,
+	0, // SDLK_WORLD_20		= 180,
+	0, // SDLK_WORLD_21		= 181,
+	0, // SDLK_WORLD_22		= 182,
+	0, // SDLK_WORLD_23		= 183,
+	0, // SDLK_WORLD_24		= 184,
+	0, // SDLK_WORLD_25		= 185,
+	0, // SDLK_WORLD_26		= 186,
+	0, // SDLK_WORLD_27		= 187,
+	0, // SDLK_WORLD_28		= 188,
+	0, // SDLK_WORLD_29		= 189,
+	0, // SDLK_WORLD_30		= 190,
+	0, // SDLK_WORLD_31		= 191,
+	0, // SDLK_WORLD_32		= 192,
+	0, // SDLK_WORLD_33		= 193,
+	0, // SDLK_WORLD_34		= 194,
+	0, // SDLK_WORLD_35		= 195,
+	0, // SDLK_WORLD_36		= 196,
+	0, // SDLK_WORLD_37		= 197,
+	0, // SDLK_WORLD_38		= 198,
+	0, // SDLK_WORLD_39		= 199,
+	0, // SDLK_WORLD_40		= 200,
+	0, // SDLK_WORLD_41		= 201,
+	0, // SDLK_WORLD_42		= 202,
+	0, // SDLK_WORLD_43		= 203,
+	0, // SDLK_WORLD_44		= 204,
+	0, // SDLK_WORLD_45		= 205,
+	0, // SDLK_WORLD_46		= 206,
+	0, // SDLK_WORLD_47		= 207,
+	0, // SDLK_WORLD_48		= 208,
+	0, // SDLK_WORLD_49		= 209,
+	0, // SDLK_WORLD_50		= 210,
+	0, // SDLK_WORLD_51		= 211,
+	0, // SDLK_WORLD_52		= 212,
+	0, // SDLK_WORLD_53		= 213,
+	0, // SDLK_WORLD_54		= 214,
+	0, // SDLK_WORLD_55		= 215,
+	0, // SDLK_WORLD_56		= 216,
+	0, // SDLK_WORLD_57		= 217,
+	0, // SDLK_WORLD_58		= 218,
+	0, // SDLK_WORLD_59		= 219,
+	0, // SDLK_WORLD_60		= 220,
+	0, // SDLK_WORLD_61		= 221,
+	0, // SDLK_WORLD_62		= 222,
+	0, // SDLK_WORLD_63		= 223,
+	0, // SDLK_WORLD_64		= 224,
+	0, // SDLK_WORLD_65		= 225,
+	0, // SDLK_WORLD_66		= 226,
+	0, // SDLK_WORLD_67		= 227,
+	0, // SDLK_WORLD_68		= 228,
+	0, // SDLK_WORLD_69		= 229,
+	0, // SDLK_WORLD_70		= 230,
+	0, // SDLK_WORLD_71		= 231,
+	0, // SDLK_WORLD_72		= 232,
+	0, // SDLK_WORLD_73		= 233,
+	0, // SDLK_WORLD_74		= 234,
+	0, // SDLK_WORLD_75		= 235,
+	0, // SDLK_WORLD_76		= 236,
+	0, // SDLK_WORLD_77		= 237,
+	0, // SDLK_WORLD_78		= 238,
+	0, // SDLK_WORLD_79		= 239,
+	0, // SDLK_WORLD_80		= 240,
+	0, // SDLK_WORLD_81		= 241,
+	0, // SDLK_WORLD_82		= 242,
+	0, // SDLK_WORLD_83		= 243,
+	0, // SDLK_WORLD_84		= 244,
+	0, // SDLK_WORLD_85		= 245,
+	0, // SDLK_WORLD_86		= 246,
+	0, // SDLK_WORLD_87		= 247,
+	0, // SDLK_WORLD_88		= 248,
+	0, // SDLK_WORLD_89		= 249,
+	0, // SDLK_WORLD_90		= 250,
+	0, // SDLK_WORLD_91		= 251,
+	0, // SDLK_WORLD_92		= 252,
+	0, // SDLK_WORLD_93		= 253,
+	0, // SDLK_WORLD_94		= 254,
+	0, // SDLK_WORLD_95		= 255,		/* 0xFF */
+        /*@}*/
+
+	/** @name Numeric keypad */
+        /*@{*/
+	KEY_SCAN_CODE_KEYPAD_0, // SDLK_KP0		= 256,
+	KEY_SCAN_CODE_KEYPAD_1, // SDLK_KP1		= 257,
+	KEY_SCAN_CODE_KEYPAD_2, // SDLK_KP2		= 258,
+	KEY_SCAN_CODE_KEYPAD_3, // SDLK_KP3		= 259,
+	KEY_SCAN_CODE_KEYPAD_4, // SDLK_KP4		= 260,
+	KEY_SCAN_CODE_KEYPAD_5, // SDLK_KP5		= 261,
+	KEY_SCAN_CODE_KEYPAD_6, // SDLK_KP6		= 262,
+	KEY_SCAN_CODE_KEYPAD_7, // SDLK_KP7		= 263,
+	KEY_SCAN_CODE_KEYPAD_8, // SDLK_KP8		= 264,
+	KEY_SCAN_CODE_KEYPAD_0, // SDLK_KP9		= 265,
+	KEY_SCAN_CODE_KEYPAD_PERIOD, // SDLK_KP_PERIOD		= 266,
+	KEY_SCAN_CODE_KEYPAD_SLASH, // SDLK_KP_DIVIDE		= 267,
+	KEY_SCAN_CODE_KEYPAD_STAR, // SDLK_KP_MULTIPLY	= 268,
+	KEY_SCAN_CODE_KEYPAD_MINUS, // SDLK_KP_MINUS		= 269,
+	KEY_SCAN_CODE_KEYPAD_PLUS, // SDLK_KP_PLUS		= 270,
+	KEY_SCAN_CODE_KEYPAD_ENTER, // SDLK_KP_ENTER		= 271,
+	0, // SDLK_KP_EQUALS		= 272,
+        /*@}*/
+
+	/** @name Arrows + Home/End pad */
+        /*@{*/
+	KEY_SCAN_CODE_UP, // SDLK_UP			= 273,
+	KEY_SCAN_CODE_DOWN, // SDLK_DOWN		= 274,
+	KEY_SCAN_CODE_RIGHT, // SDLK_RIGHT		= 275,
+	KEY_SCAN_CODE_LEFT, // SDLK_LEFT		= 276,
+	KEY_SCAN_CODE_INSERT, // SDLK_INSERT		= 277,
+	KEY_SCAN_CODE_HOME, // SDLK_HOME		= 278,
+	KEY_SCAN_CODE_END, // SDLK_END		= 279,
+	KEY_SCAN_CODE_PGUP, // SDLK_PAGEUP		= 280,
+	KEY_SCAN_CODE_PGDN, // SDLK_PAGEDOWN		= 281,
+        /*@}*/
+
+	/** @name Function keys */
+        /*@{*/
+	KEY_SCAN_CODE_F1, // SDLK_F1			= 282,
+	KEY_SCAN_CODE_F2, // SDLK_F2			= 283,
+	KEY_SCAN_CODE_F3, // SDLK_F3			= 284,
+	KEY_SCAN_CODE_F4, // SDLK_F4			= 285,
+	KEY_SCAN_CODE_F5, // SDLK_F5			= 286,
+	KEY_SCAN_CODE_F6, // SDLK_F6			= 287,
+	KEY_SCAN_CODE_F7, // SDLK_F7			= 288,
+	KEY_SCAN_CODE_F8, // SDLK_F8			= 289,
+	KEY_SCAN_CODE_F9, // SDLK_F9			= 290,
+	KEY_SCAN_CODE_F10, // SDLK_F10		= 291,
+	KEY_SCAN_CODE_F11, // SDLK_F11		= 292,
+	KEY_SCAN_CODE_F12, // SDLK_F12		= 293,
+	0, // SDLK_F13		= 294,
+	0, // SDLK_F14		= 295,
+	0, // SDLK_F15		= 296,
+	0, // 297
+	0, // 298
+	0, // 299
+        /*@}*/
+
+	/** @name Key state modifier keys */
+        /*@{*/
+	KEY_SCAN_CODE_NUM_LOCK, // SDLK_NUMLOCK		= 300,
+	KEY_SCAN_CODE_CAPS_LOCK, // SDLK_CAPSLOCK		= 301,
+	KEY_SCAN_CODE_SCROLL_LOCK, // SDLK_SCROLLOCK		= 302,
+	KEY_SCAN_CODE_RIGHT_SHIFT, // SDLK_RSHIFT		= 303,
+	KEY_SCAN_CODE_LEFT_SHIFT, // SDLK_LSHIFT		= 304,
+	KEY_SCAN_CODE_RIGHT_CTRL, // SDLK_RCTRL		= 305,
+	KEY_SCAN_CODE_LEFT_CTRL, // SDLK_LCTRL		= 306,
+	KEY_SCAN_CODE_ALT, // SDLK_RALT		= 307,
+	KEY_SCAN_CODE_ALT, // SDLK_LALT		= 308,
+	0, // SDLK_RMETA		= 309,
+	0, // SDLK_LMETA		= 310,
+	0, // SDLK_LSUPER		= 311,		/**< Left "Windows" key */
+	0, // SDLK_RSUPER		= 312,		/**< Right "Windows" key */
+	0, // SDLK_MODE		= 313,		/**< "Alt Gr" key */
+	0, // SDLK_COMPOSE		= 314,		/**< Multi-key compose key */
+        /*@}*/
+
+	/** @name Miscellaneous function keys */
+        /*@{*/
+	0, // SDLK_HELP		= 315,
+	0, // SDLK_PRINT		= 316,
+	0, // SDLK_SYSREQ		= 317,
+	0, // SDLK_BREAK		= 318,
+	0, // SDLK_MENU		= 319,
+	0, // SDLK_POWER		= 320,		/**< Power Macintosh power key */
+	0, // SDLK_EURO		= 321,		/**< Some european keyboards */
+	0, // SDLK_UNDO		= 322,		/**< Atari keyboard has Undo */
+
+};
+
 #include <direct.h>
 #define KEY_IS_DOWN 0x80
 #define KEY_IS_CHANGED 0x01
-static T_byte8 G_lastKeyState[256] ;
+static T_byte8 G_lastKeyState[SDLK_LAST] ;
 T_void KeyboardUpdate(E_Boolean updateBuffers)
 {
     //T_byte8 keys[256] ;
@@ -1413,6 +1772,8 @@ T_void KeyboardUpdate(E_Boolean updateBuffers)
     E_Boolean changed ;
     E_Boolean newValue ;
 
+    DebugRoutine("KeyboardUpdate");
+    DebugCheck(sizeof(G_sdlToScancode)==SDLK_LAST);
     time = TickerGet() ;
     //GetKeyboardState(keys) ;
     keys = SDL_GetKeyState(NULL);
@@ -1422,10 +1783,15 @@ T_void KeyboardUpdate(E_Boolean updateBuffers)
 //        keys[scanCode] &= KEY_IS_DOWN ;
 
     if (updateBuffers)  {
-        for (i=1; i<256; i++)  {
+        for (i=1; i<SDLK_LAST; i++)  {
+            // Skip keys we don't know how to process
+            if (G_sdlToScancode[i] == 0)
+                continue;
+
             changed = (keys[i] != G_lastKeyState[i])?TRUE:FALSE ;
-            //scanCode = MapVirtualKey(i, 0) ;
-            scanCode = i;
+
+            //scanCode = MapVirtualKey(i, 0) ; // old windows version
+            scanCode = G_sdlToScancode[i];
 
             /* Record the state of the keypress */
             newValue = (keys[i])?TRUE:FALSE ;
@@ -1433,9 +1799,10 @@ T_void KeyboardUpdate(E_Boolean updateBuffers)
 
             /* Find keys that have changed */
             if (changed)  {
+printf("scancode %d = %d\n", scanCode, newValue);
                 G_keyTable[scanCode] = newValue ;
                 /* Store the key in the scan key buffer */
-                G_scanKeyBuffer[G_scanKeyEnd] = scanCode ; /* | ((G_keyTable[scanCode]==FALSE)?0:0x100) ; */
+                G_scanKeyBuffer[G_scanKeyEnd] = scanCode | ((G_keyTable[scanCode])?0:0x100) ;
                 next = (G_scanKeyEnd+1) & (MAX_SCAN_KEY_BUFFER-1) ;
                 if (next != G_scanKeyStart)
                     G_scanKeyEnd = next ;
@@ -1459,11 +1826,15 @@ T_void KeyboardUpdate(E_Boolean updateBuffers)
                     /* Where are we going to roll over to next */
                     next = (G_asciiEnd+1)&31 ;
 
-                    /* If back at start, don't do */
-                    if (next != G_asciiStart)  {
-                        /* Store in the buffer */
-                        G_asciiBuffer[G_asciiEnd] = c ;
-                        G_asciiEnd = next ;
+                    // Must be non-zero
+                    if (c) {
+                        /* If back at start, don't do */
+                        if (next != G_asciiStart)  {
+printf("  buffer key %d, %d (%c), i=%d\n", scanCode, c, c, i);
+                            /* Store in the buffer */
+                            G_asciiBuffer[G_asciiEnd] = c ;
+                            G_asciiEnd = next ;
+                        }
                     }
                 }
 
@@ -1482,6 +1853,7 @@ T_void KeyboardUpdate(E_Boolean updateBuffers)
         }
     }
     memcpy(G_lastKeyState, keys, sizeof(G_lastKeyState)) ;
+    DebugEnd();
 }
 #endif
 

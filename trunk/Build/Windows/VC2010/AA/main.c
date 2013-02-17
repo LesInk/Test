@@ -90,7 +90,7 @@ void WindowsUpdateEvents(void)
     }
 }
 
-void _cdecl WindowsUpdate(char *p_screen, unsigned char *palette)
+void WindowsUpdate(char *p_screen, unsigned char *palette)
 {
     SDL_Color colors[256];
     int i;
@@ -104,7 +104,7 @@ void _cdecl WindowsUpdate(char *p_screen, unsigned char *palette)
         // 10 ms between frames (top out at 100 ms)
     } else {
         lastTick = tick;
-printf("Update: %d (%d)\n", clock(), TickerGet());
+//printf("Update: %d (%d)\n", clock(), TickerGet());
 
     // Setup the color palette for this update
     for (i=0; i<256; i++) {

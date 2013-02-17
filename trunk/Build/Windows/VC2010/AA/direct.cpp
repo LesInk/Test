@@ -1,8 +1,5 @@
 #include "standard.h"
-#include "cgscreen.hpp" 
 
-static CGraphicsScreen *G_screen = NULL ;
-extern HWND G_windowHandle ;
 
 #ifdef __cplusplus
 extern "C" {
