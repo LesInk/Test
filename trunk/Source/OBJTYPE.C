@@ -568,11 +568,11 @@ T_void ObjTypeDestroy(T_objTypeInstance objTypeInst)
 #endif
     }
 
-    /* Now we can free the instance block. */
-    MemFree(p_objType) ;
 #ifndef NDEBUG
     memset(p_objType, 0x11, sizeof(T_objTypeInstanceStruct)) ;
 #endif
+    /* Now we can free the instance block. */
+    MemFree(p_objType) ;
 
     DebugEnd() ;
 }
