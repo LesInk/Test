@@ -5,6 +5,8 @@
 
 #include <SDL.h>
 
+#define CAP_SPEED_TO_100_FPS    1
+
 static int G_done = FALSE;
 static SDL_Surface* screen;
 static SDL_Surface* surface;
@@ -97,12 +99,17 @@ void WindowsUpdate(char *p_screen, unsigned char *palette)
     unsigned char *src = (char *)surface->pixels;
     unsigned char *dst = (char *)largesurface->pixels;
     unsigned char *line;
+    static int lastFPS = 0;
+    static int fps = 0;
     int x, y;
     T_word32 tick = clock();
     static T_word32 lastTick = 0xFFFFEEEE;
-    if ((tick-lastTick)<10) {
+#if CAP_SPEED_TO_100_FPS
+        if ((tick-lastTick)<10) {
         // 10 ms between frames (top out at 100 ms)
-    } else {
+    } else
+#endif
+    {
         lastTick = tick;
 //printf("Update: %d (%d)\n", clock(), TickerGet());
 
@@ -133,10 +140,19 @@ void WindowsUpdate(char *p_screen, unsigned char *palette)
         printf("Failed blit: %s\n", SDL_GetError());
     }
     SDL_UpdateRect(screen, 0, 0, 0, 0);
+    fps++;
+
+    if ((tick-lastFPS) >= 1000) {
+        lastFPS += 1000;
+        printf("FPS: %d\n", fps);
+        fps = 0;
+    }
     WindowsUpdateEvents();
     WindowsUpdateMouse();
     KeyboardUpdate(TRUE) ;
+#if CAP_SPEED_TO_100_FPS
     Sleep(1);
+#endif
     }
 }
 

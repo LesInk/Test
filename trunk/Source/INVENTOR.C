@@ -5399,10 +5399,12 @@ E_Boolean InventoryWeaponIsBow (T_void)
     DebugRoutine ("InventoryWeaponIsBow");
 
     p_obj=InventoryCheckObjectInReadyHand();
-    if (ObjectIsWeapon(p_obj) &&
-        ObjectGetBasicType(p_obj)==OBJECT_TYPE_XBOW)
-    {
-        isBow=TRUE;
+    if (p_obj) {
+        if (ObjectIsWeapon(p_obj) &&
+            ObjectGetBasicType(p_obj)==OBJECT_TYPE_XBOW)
+        {
+            isBow=TRUE;
+        }
     }
 
     DebugEnd();

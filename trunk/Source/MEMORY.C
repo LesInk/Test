@@ -2,8 +2,14 @@
 /*    FILE:  MEMORY.C                                                       */
 /****************************************************************************/
 
-//#define _MEM_CHECK_FULL_
-//#define _MEM_RECORD_ROUTINES_
+#ifndef NDEBUG
+#ifdef WIN32
+#define _MEM_CHECK_FULL_
+#define _MEM_RECORD_ROUTINES_
+#define COMPILE_OPTION_OUTPUT_ALLOCATION
+#endif
+#endif
+
 #include <malloc.h>
 #include "standard.h"
 
@@ -23,7 +29,7 @@ struct T_memBlockHeader_tag {
     /* DEBUG! */
 #ifdef _MEM_RECORD_ROUTINES_
     T_byte8 *routine ;   /* Calling routine and line number. */
-    T_word16 line ;
+    long line ;
 #endif
     T_word32 size ;
 } ;
@@ -123,14 +129,15 @@ T_void *MemAlloc(T_word32 size)
     T_word16 next ;
     const char *p_name ;
     long line ;
+int nsize;
 
     DebugRoutine("MemAlloc") ;
 
 DebugGetCaller(&p_name, &line) ;
 //printf("|%s,%ld\.0\n", p_name, size) ;
 #ifdef COMPILE_OPTION_OUTPUT_ALLOCATION
-printf("!A %d %s\n", size, DebugGetCallerFile()+7) ;
-printf("!A %d %s:%-20.20s\n", size, DebugGetCallerFile()+7, DebugGetCallerName()) ;
+//printf("!A %d %s\n", size, DebugGetCallerFile()) ;
+printf("!A %d %s:%s ", size, DebugGetCallerFile(), DebugGetCallerName()) ;
 #endif
     /* Allocate memory and room for our tag. */
     do {
@@ -226,6 +233,9 @@ printf("!A %d %s:%-20.20s\n", size, DebugGetCallerFile()+7, DebugGetCallerName()
         MemDumpDiscarded() ;
         exit(-1);
     }
+#endif
+#ifdef COMPILE_OPTION_OUTPUT_ALLOCATION
+printf("(@0x%08X)\n", p_memory) ;
 #endif
     return p_memory ;
 }
@@ -324,8 +334,8 @@ T_void MemFree(T_void *p_data)
     /* Note that the total is now less. */
     G_sizeAllocated -= sizeof(T_memBlockHeader) + p_header->size ;
 #ifdef COMPILE_OPTION_OUTPUT_ALLOCATION
-printf("!F %d %s\n", p_header->size, DebugGetCallerFile()+7) ;
-printf("!F %d %s:%-20.20s\n", p_header->size, DebugGetCallerFile()+7, DebugGetCallerName()) ;
+printf("!F %d %s (@0x%08X)\n", p_header->size, DebugGetCallerFile(), p_bytes) ;
+printf("!F %d %s:%s\n", p_header->size, DebugGetCallerFile(), DebugGetCallerName()) ;
 #endif
 
 #ifndef NDEBUG
@@ -696,8 +706,8 @@ printf("End of list\n\n") ;
         /* Note that the total is now less. */
         G_sizeAllocated -= sizeof(T_memBlockHeader) + p_header->size ;
 #ifdef COMPILE_OPTION_OUTPUT_ALLOCATION
-printf("!F %d %s\n", p_header->size, DebugGetCallerFile()+7) ;
-printf("!F %d %s:%-20.20s\n", p_header->size, DebugGetCallerFile()+7, DebugGetCallerName()) ;
+printf("!F %d %s\n", p_header->size, DebugGetCallerFile()) ;
+printf("!F %d %s:%s\n", p_header->size, DebugGetCallerFile(), DebugGetCallerName()) ;
 #endif
 
 #ifndef NDEBUG

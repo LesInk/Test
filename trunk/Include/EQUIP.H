@@ -156,7 +156,7 @@ typedef enum
 typedef struct
 {
     /* equipment type of item */
-    E_equipObjectTypes type;
+    T_byte8 /*E_equipObjectTypes*/ type;
 
     /* equipment sub-type of item */
     T_byte8 subtype;
@@ -165,12 +165,12 @@ typedef struct
     T_byte8 numstackable;
 
     /* effect enums */
-    E_effectTriggerType  effectTriggerOn[MAX_ITEM_EFFECTS];
-    E_effectType         effectType[MAX_ITEM_EFFECTS];
+    T_byte8 /*E_effectTriggerType*/  effectTriggerOn[MAX_ITEM_EFFECTS];
+    T_byte8 /*E_effectType */        effectType[MAX_ITEM_EFFECTS];
     T_word16             effectData[MAX_ITEM_EFFECTS][3];
 
     /* object destroy after action enum */
-    E_effectTriggerType objectDestroyOn;
+    T_byte8 /*E_effectTriggerType*/ objectDestroyOn;
 
     /* useable by class bitflags */
     T_word16 useable;

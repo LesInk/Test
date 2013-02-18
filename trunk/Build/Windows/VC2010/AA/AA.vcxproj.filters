@@ -366,9 +366,6 @@
     <ClCompile Include="direct.cpp">
       <Filter>Source Files\Win32</Filter>
     </ClCompile>
-    <ClCompile Include="debugcpp.cpp">
-      <Filter>Source Files\Win32</Filter>
-    </ClCompile>
     <ClCompile Include="misc.c">
       <Filter>Source Files\Win32</Filter>
     </ClCompile>
@@ -924,9 +921,6 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="options.hpp">
-      <Filter>Source Files\Win32</Filter>
-    </ClInclude>
-    <ClInclude Include="debug.hpp">
       <Filter>Source Files\Win32</Filter>
     </ClInclude>
   </ItemGroup>
