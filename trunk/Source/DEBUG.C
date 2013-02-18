@@ -4,6 +4,8 @@
 
 #include "standard.h"
 
+#ifndef NDEBUG
+
 #define DEBUG_NO_TIME 0
 #define MAX_TIME_SLOTS  100
 
@@ -493,6 +495,8 @@ T_void DebugCheckVectorTable(T_void)
     }
 }
 #endif
+
+#endif // !NDEBUG
 
 /****************************************************************************/
 /*    END OF FILE:  DEBUG.C                                                 */
