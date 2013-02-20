@@ -922,10 +922,10 @@ T_void FormGenericControl (E_Boolean *exitflag)
 	do {
 		delta=TickerGet();
 		/* update color every 4 ticks */
-		if (delta-lastupdate>4)
+		if ((delta-lastupdate)>0)
 		{
-			ColorUpdate(delta);
-			lastupdate=TickerGet();
+			lastupdate=delta;
+			ColorUpdate(delta-lastupdate);
 		}
 
 		/* update events */
