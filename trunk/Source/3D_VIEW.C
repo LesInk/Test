@@ -8285,6 +8285,17 @@ T_word16 View3dFindSide(T_sword16 x, T_sword16 y)
     return View3dGetSide(line, x, y) ;
 }
 
+#if defined(WATCOM)
+#pragma aux  DrawObjectColumnAsm   parm	[EBX] [ECX] [EDX] [ESI] [EDI]
+#endif
+T_void DrawObjectColumnAsm(
+           T_byte8 *p_shade, // ebx
+           T_word32 count, // ecx
+           T_sword32 textureStep, // edx
+           T_sword32 textureOffset, // esi
+           T_byte8 *p_pixel) ; // edi
+
+
 #ifdef NO_ASSEMBLY
 T_void DrawObjectColumnAsm(
            T_byte8 *p_shade,
@@ -8293,6 +8304,28 @@ T_void DrawObjectColumnAsm(
            T_sword32 textureOffset,
            T_byte8 *p_pixel)
 {
+    T_word32 x;
+    T_byte8 c;
+
+    while (count) {
+        x = ((textureOffset>>16) & 0xFFFF);
+        if (x >= G_objColumnStart)
+            break;
+        p_pixel += 320;
+        textureOffset += textureStep;
+        count--;
+    }
+    while (count) {
+        x = (textureOffset>>16) & 0xFFFF;
+        if (x > G_objColumnEnd)
+            break;
+        c = G_CurrentTexturePos[x];
+        if (c)
+            *p_pixel = p_shade[c];
+        p_pixel += 320;
+        textureOffset += textureStep;
+        count--;
+    }
 }
 
 T_void DrawTranslucentObjectColumnAsm(
@@ -8302,6 +8335,28 @@ T_void DrawTranslucentObjectColumnAsm(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_word32 x;
+    T_byte8 c;
+
+    while (count) {
+        x = ((textureOffset>>16) & 0xFFFF);
+        if (x >= G_objColumnStart)
+            break;
+        p_pixel += 320;
+        textureOffset += textureStep;
+        count--;
+    }
+    while (count) {
+        x = (textureOffset>>16) & 0xFFFF;
+        if (x > G_objColumnEnd)
+            break;
+        c = G_CurrentTexturePos[x];
+        if (c)
+            *p_pixel = G_translucentTable[p_shade[c]][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+        count--;
+    }
 }
 
 T_void DrawTextureColumnAsm1(
@@ -8311,6 +8366,12 @@ T_void DrawTextureColumnAsm1(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+    c = p_shade[G_CurrentTexturePos[0]];
+    while (count--) {
+        *p_pixel = c;
+        p_pixel += 320;
+    }
 }
 
 T_void DrawTextureColumnAsm2(
@@ -8320,6 +8381,11 @@ T_void DrawTextureColumnAsm2(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0x01]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureColumnAsm4(
@@ -8329,6 +8395,11 @@ T_void DrawTextureColumnAsm4(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0x03]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureColumnAsm8(
@@ -8338,6 +8409,11 @@ T_void DrawTextureColumnAsm8(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0x07]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureColumnAsm16(
@@ -8347,6 +8423,11 @@ T_void DrawTextureColumnAsm16(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0x0F]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureColumnAsm32(
@@ -8356,6 +8437,11 @@ T_void DrawTextureColumnAsm32(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0x1F]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureColumnAsm64(
@@ -8365,6 +8451,11 @@ T_void DrawTextureColumnAsm64(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0x3F]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureColumnAsm128(
@@ -8374,6 +8465,11 @@ T_void DrawTextureColumnAsm128(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0x7F]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureColumnAsm256(
@@ -8383,6 +8479,11 @@ T_void DrawTextureColumnAsm256(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    while (count--) {
+        *p_pixel = p_shade[G_CurrentTexturePos[(textureOffset>>16)&0xFF]];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm1(
@@ -8392,6 +8493,16 @@ T_void DrawTransparentColumnAsm1(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c = G_CurrentTexturePos[0];
+
+    if (c) {
+        c = p_shade[c];
+        while (count--) {
+            *(p_pixel) = c;
+            p_pixel+=320;
+            textureOffset += textureStep;
+        }
+    }
 }
 
 T_void DrawTransparentColumnAsm2(
@@ -8401,6 +8512,15 @@ T_void DrawTransparentColumnAsm2(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0x01];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm4(
@@ -8410,6 +8530,15 @@ T_void DrawTransparentColumnAsm4(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0x03];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm8(
@@ -8419,6 +8548,15 @@ T_void DrawTransparentColumnAsm8(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0x07];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm16(
@@ -8428,6 +8566,15 @@ T_void DrawTransparentColumnAsm16(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0x0F];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm32(
@@ -8437,6 +8584,15 @@ T_void DrawTransparentColumnAsm32(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0x1F];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm64(
@@ -8446,6 +8602,15 @@ T_void DrawTransparentColumnAsm64(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0x3F];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm128(
@@ -8455,6 +8620,15 @@ T_void DrawTransparentColumnAsm128(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0x7F];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTransparentColumnAsm256(
@@ -8464,6 +8638,15 @@ T_void DrawTransparentColumnAsm256(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset>>16) & 0xFF];
+        if (c)
+            *(p_pixel) = p_shade[c];
+        p_pixel+=320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm1(
@@ -8473,6 +8656,16 @@ T_void DrawTranslucentColumnAsm1(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    c = G_CurrentTexturePos[0];
+    if (c) {
+        while (count--) {
+            *p_pixel = G_translucentTable[c][*p_pixel];
+            p_pixel += 320;
+            textureOffset += textureStep;
+        }
+    }
 }
 
 T_void DrawTranslucentColumnAsm2(
@@ -8482,6 +8675,15 @@ T_void DrawTranslucentColumnAsm2(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0x01];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm4(
@@ -8491,6 +8693,15 @@ T_void DrawTranslucentColumnAsm4(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0x03];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm8(
@@ -8500,6 +8711,15 @@ T_void DrawTranslucentColumnAsm8(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0x07];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm16(
@@ -8509,6 +8729,15 @@ T_void DrawTranslucentColumnAsm16(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0x0F];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm32(
@@ -8518,6 +8747,15 @@ T_void DrawTranslucentColumnAsm32(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0x1F];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm64(
@@ -8527,6 +8765,15 @@ T_void DrawTranslucentColumnAsm64(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0x3F];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm128(
@@ -8536,6 +8783,15 @@ T_void DrawTranslucentColumnAsm128(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0x7F];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTranslucentColumnAsm256(
@@ -8545,15 +8801,15 @@ T_void DrawTranslucentColumnAsm256(
            T_sword32 textureOffset,
            T_byte8 *p_pixel) 
 {
-}
+    T_byte8 c;
 
-T_void DrawTextureRowAsm(
-           T_byte8 *p_shade,
-           T_word32 count,
-           T_sword32 xOffset,
-           T_sword32 yOffset,
-           T_byte8 *p_pixel) 
-{
+    while (count--) {
+        c = G_CurrentTexturePos[(textureOffset >> 16) & 0xFF];
+        if (c)
+            *p_pixel = G_translucentTable[c][*p_pixel];
+        p_pixel += 320;
+        textureOffset += textureStep;
+    }
 }
 
 T_void DrawTextureRowAsm1(
@@ -8563,6 +8819,13 @@ T_void DrawTextureRowAsm1(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(xOffset >> 16) & G_textureAndX]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm2(
@@ -8572,6 +8835,13 @@ T_void DrawTextureRowAsm2(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 1) | ((yOffset >> 16) & 0x01)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm4(
@@ -8581,6 +8851,13 @@ T_void DrawTextureRowAsm4(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 2) | ((yOffset >> 16) & 0x03)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm8(
@@ -8590,6 +8867,13 @@ T_void DrawTextureRowAsm8(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 3) | ((yOffset >> 16) & 0x07)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm16(
@@ -8599,6 +8883,13 @@ T_void DrawTextureRowAsm16(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 4) | ((yOffset >> 16) & 0x0F)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm32(
@@ -8608,6 +8899,13 @@ T_void DrawTextureRowAsm32(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 5) | ((yOffset >> 16) & 0x1F)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm64(
@@ -8617,6 +8915,13 @@ T_void DrawTextureRowAsm64(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 6) | ((yOffset >> 16) & 0x3F)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm128(
@@ -8626,6 +8931,13 @@ T_void DrawTextureRowAsm128(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 7) | ((yOffset >> 16) & 0x7F)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTextureRowAsm256(
@@ -8635,24 +8947,13 @@ T_void DrawTextureRowAsm256(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
-}
+    T_byte8 c;
 
-T_void DrawTransColumnAsm(
-           T_byte8 *p_shade,
-           T_word32 count,
-           T_sword32 textureStep,
-           T_sword32 textureOffset,
-           T_byte8 *p_pixel) 
-{
-}
-
-T_void DrawTransRowAsm(
-           T_byte8 *p_shade,
-           T_word32 count,
-           T_sword32 xOffset,
-           T_sword32 yOffset,
-           T_byte8 *p_pixel) 
-{
+    while (count--) {
+        *(p_pixel++) = p_shade[G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 8) | ((yOffset >> 16) & 0xFF)]];
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm1(
@@ -8662,6 +8963,16 @@ T_void DrawTransRowAsm1(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(xOffset >> 16) & G_textureAndX];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm2(
@@ -8671,6 +8982,16 @@ T_void DrawTransRowAsm2(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 1) | ((yOffset >> 16) & 0x01)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm4(
@@ -8680,6 +9001,16 @@ T_void DrawTransRowAsm4(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 2) | ((yOffset >> 16) & 0x03)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm8(
@@ -8689,6 +9020,16 @@ T_void DrawTransRowAsm8(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 3) | ((yOffset >> 16) & 0x07)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm16(
@@ -8698,6 +9039,16 @@ T_void DrawTransRowAsm16(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 4) | ((yOffset >> 16) & 0x0F)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm32(
@@ -8707,6 +9058,16 @@ T_void DrawTransRowAsm32(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 5) | ((yOffset >> 16) & 0x1F)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm64(
@@ -8716,6 +9077,16 @@ T_void DrawTransRowAsm64(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 6) | ((yOffset >> 16) & 0x3F)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm128(
@@ -8725,6 +9096,16 @@ T_void DrawTransRowAsm128(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 7) | ((yOffset >> 16) & 0x7F)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 
 T_void DrawTransRowAsm256(
@@ -8734,6 +9115,16 @@ T_void DrawTransRowAsm256(
            T_sword32 yOffset,
            T_byte8 *p_pixel) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = G_CurrentTexturePos[(((xOffset >> 16) & G_textureAndX) << 8) | ((yOffset >> 16) & 0xFF)];
+        if (c)
+            *p_pixel  = p_shade[c];
+        p_pixel++;
+        xOffset += G_textureStepX;
+        yOffset += G_textureStepY;
+    }
 }
 #endif
 

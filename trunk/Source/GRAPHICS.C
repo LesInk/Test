@@ -3952,6 +3952,8 @@ T_void DrawTranslucentAsm(
            T_byte8 *p_destination,
            T_word32 count)
 {
+    while (count--)
+        *(p_destination++) = G_translucentTable[*(p_source)++][*p_destination];
 }
 
 T_void DrawTranslucentSeeThroughAsm(
@@ -3959,6 +3961,14 @@ T_void DrawTranslucentSeeThroughAsm(
            T_byte8 *p_destination,
            T_word32 count) 
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = *(p_source)++;
+        if (c)
+            *p_destination = G_translucentTable[c][*p_destination];
+        p_destination++;
+    }
 }
 
 T_void DrawSeeThroughAsm(
@@ -3966,6 +3976,14 @@ T_void DrawSeeThroughAsm(
            T_byte8 *p_destination,
            T_word32 count)
 {
+    T_byte8 c;
+
+    while (count--) {
+        c = *(p_source)++;
+        if (c)
+            *p_destination = c;
+        p_destination++;
+    }
 }
 
 T_void ShadeMemAsm(
@@ -3974,6 +3992,8 @@ T_void ShadeMemAsm(
           T_word32 count,
           T_byte8 *p_transTable)
 {
+    while (count--)
+        *(p_destination++) = p_transTable[*(p_source)++];
 }
 
 #endif
