@@ -5,7 +5,7 @@
 
 #include <SDL.h>
 
-#define CAP_SPEED_TO_100_FPS    1
+#define CAP_SPEED_TO_FPS       0
 
 static int G_done = FALSE;
 static SDL_Surface* screen;
@@ -24,6 +24,11 @@ static SDL_Rect destrect = {
         640, 480
     };
 extern T_void KeyboardUpdate(E_Boolean updateBuffers);
+
+void SleepMS(T_word32 aMS)
+{
+    Sleep(aMS);
+}
 
 void WindowsUpdateMouse(void)
 {
@@ -55,8 +60,8 @@ void WindowsUpdateEvents(void)
             case SDL_KEYDOWN:
                 if ( event.key.keysym.sym == SDLK_ESCAPE )  {
                     G_done = TRUE; 
-                } else if (event.key.keysym.sym == SDLK_f) {
-#if 0
+                } else if (event.key.keysym.sym == SDLK_F10) {
+#if 1
                     flags = screen->flags; /* Save the current flags in case toggling fails */
                     screen = SDL_SetVideoMode(0, 0, 0, screen->flags ^ SDL_FULLSCREEN); /*Toggles FullScreen Mode */
                     if(screen == NULL) screen = SDL_SetVideoMode(0, 0, 0, flags); /* If toggle FullScreen failed, then switch back */
@@ -92,6 +97,49 @@ void WindowsUpdateEvents(void)
     }
 }
 
+#define Copy2x(aDest, aSrc) \
+        *(aDest++) = *aSrc; \
+        *(aDest++) = *(aSrc++);
+
+#define oldCopy2x_4times(aDest, aSrc) \
+    Copy2x(aDest, aSrc) \
+    Copy2x(aDest, aSrc) \
+    Copy2x(aDest, aSrc) \
+    Copy2x(aDest, aSrc)
+
+#define Copy2x_4times(aDest, aSrc) \
+    v = *((T_word32 *)aSrc); \
+    aSrc += 4; \
+    aDest[0] = ((T_byte8 *)&v)[0]; \
+    aDest[1] = ((T_byte8 *)&v)[0]; \
+    aDest[2] = ((T_byte8 *)&v)[1]; \
+    aDest[3] = ((T_byte8 *)&v)[1]; \
+    aDest[4] = ((T_byte8 *)&v)[2]; \
+    aDest[5] = ((T_byte8 *)&v)[2]; \
+    aDest[6] = ((T_byte8 *)&v)[3]; \
+    aDest[7] = ((T_byte8 *)&v)[3]; \
+    aDest += 8;
+
+#define Copy2x_20times(aDest, aSrc) \
+    Copy2x_4times(aDest, aSrc) \
+    Copy2x_4times(aDest, aSrc) \
+    Copy2x_4times(aDest, aSrc) \
+    Copy2x_4times(aDest, aSrc) \
+    Copy2x_4times(aDest, aSrc)
+
+#define Copy2x_100times(aDest, aSrc) \
+    Copy2x_20times(aDest, aSrc) \
+    Copy2x_20times(aDest, aSrc) \
+    Copy2x_20times(aDest, aSrc) \
+    Copy2x_20times(aDest, aSrc) \
+    Copy2x_20times(aDest, aSrc)
+
+#define Copy2x_320times(aDest, aSrc) \
+    Copy2x_100times(aDest, aSrc) \
+    Copy2x_100times(aDest, aSrc) \
+    Copy2x_100times(aDest, aSrc) \
+    Copy2x_20times(aDest, aSrc)
+
 void WindowsUpdate(char *p_screen, unsigned char *palette)
 {
     SDL_Color colors[256];
@@ -104,8 +152,12 @@ void WindowsUpdate(char *p_screen, unsigned char *palette)
     int x, y;
     T_word32 tick = clock();
     static T_word32 lastTick = 0xFFFFEEEE;
-#if CAP_SPEED_TO_100_FPS
-        if ((tick-lastTick)<10) {
+    static double movingAverage = 0;
+    T_word32 v;
+    T_word32 frac;
+
+#if CAP_SPEED_TO_FPS
+        if ((tick-lastTick)<(1000/CAP_SPEED_TO_FPS)) {
         // 10 ms between frames (top out at 100 ms)
     } else
 #endif
@@ -122,18 +174,24 @@ void WindowsUpdate(char *p_screen, unsigned char *palette)
     //SDL_SetColors(surface, colors, 0, 256);
     SDL_SetColors(largesurface, colors, 0, 256);
 
-    // Blit the current surface
-    for (y=0; y<240; y++) {
-        line = src;
-        for (x=0; x<320; x++) {
-            *(dst++) = *src;
-            *(dst++) = *(src++);
+    // Blit the current surface from 320x200 to 640x480
+    line = src;
+    for (y=0, frac=0; y<200; y++, line+=320) {
+//        for (x=0; x<320; x++) {
+//            *(dst++) = *src;
+//            *(dst++) = *(src++);
+//        }
+        while (frac < 400) {
+            src = line;
+            Copy2x_320times(dst, src);
+            frac += 200;
         }
-        src = line;
-        for (x=0; x<320; x++) {
-            *(dst++) = *src;
-            *(dst++) = *(src++);
-        }
+        frac -= 400;
+//        for (x=0; x<320; x++) {
+//            *(dst++) = *src;
+//            *(dst++) = *(src++);
+//        }
+//        Copy2x_320times(dst, src);
     }
 
     if (SDL_BlitSurface(largesurface, &largesrcrect, screen, &destrect)) {
@@ -143,8 +201,11 @@ void WindowsUpdate(char *p_screen, unsigned char *palette)
     fps++;
 
     if ((tick-lastFPS) >= 1000) {
+        if (movingAverage < 1.0)
+            movingAverage = fps;
+        movingAverage = ((double)fps)*0.05+movingAverage*0.95;
         lastFPS += 1000;
-        printf("FPS: %d\n", fps);
+        printf("FPS: %d, %f\n", fps, movingAverage);
         fps = 0;
     }
     WindowsUpdateEvents();
@@ -176,7 +237,7 @@ int SDL_main(int argc, char *argv[])
 
     atexit(SDL_Quit);
 
-    screen = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE|SDL_DOUBLEBUF);
+    screen = SDL_SetVideoMode(640, 400, 32, SDL_HWSURFACE|SDL_DOUBLEBUF);
     SDL_ShowCursor( SDL_DISABLE ); 
 
     if(screen == NULL)
