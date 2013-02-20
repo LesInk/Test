@@ -203,7 +203,7 @@ T_void ColorAddGlobal (T_sword16 red, T_sword16 green, T_sword16 blue)
 /*                                                                          */
 /****************************************************************************/
 
-T_void ColorSetGlobal (T_byte8 red, T_byte8 green, T_byte8 blue)
+T_void ColorSetGlobal (T_sbyte8 red, T_sbyte8 green, T_sbyte8 blue)
 {
 	DebugRoutine ("ColorSetGlobal");
 
@@ -308,7 +308,7 @@ T_void ColorAddFilt (T_sbyte8 red, T_sbyte8 green, T_sbyte8 blue)
 /*    JDA  06/06/95  Created                                                */
 /*                                                                          */
 /****************************************************************************/
-T_void ColorSetFilt (T_byte8 red, T_byte8 green, T_byte8 blue)
+T_void ColorSetFilt (T_sbyte8 red, T_sbyte8 green, T_sbyte8 blue)
 {
 	DebugRoutine ("ColorSetFilt");
 
@@ -409,7 +409,7 @@ T_void ColorUpdate (T_word16 delta)
 	T_byte8 tempcolors[768];
 	T_palette p;
 	T_word16 i;
-	T_word16 tempr,tempg,tempb;
+	T_sword16 tempr,tempg,tempb;
 	static T_sword32 glowupdatetime=0;
     static T_word32 lastTime = 0 ;
 
