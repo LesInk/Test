@@ -145,7 +145,7 @@ typedef struct _T_playerStats
 
    E_Boolean           playerisalive;
 
-   E_statsClassType    ClassType;
+   T_byte8 /*E_statsClassType*/    ClassType;
    T_byte8             Attributes[NUM_ATTRIBUTES];
    T_sword16           AttributeMods[NUM_ATTRIBUTES];
    T_sword16           Coins[EQUIP_TOTAL_COIN_TYPES];
@@ -162,7 +162,7 @@ typedef struct _T_playerStats
    T_word32            Experience;
    T_word32            ExpNeeded;
 
-   E_spellsSpellSystemType SpellSystem;
+   T_byte8 /*E_spellsSpellSystemType*/ SpellSystem;
    T_byte8             ActiveRunes[9];
 
    E_Boolean           HouseOwned[NUM_HOUSES];
