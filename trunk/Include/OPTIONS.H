@@ -133,8 +133,8 @@
 //#include <windows.h>
 //#include <direct.h>
 #include <sdl.h>
-// Delay in a number of ticks (70th of a second)
-#define delay(x) SDL_Delay((x)*14)
+// Delay in a number of milliseconds to delay
+#define delay(x) SDL_Delay(x)
 /* The mouse driver is handled not in the mouse calls, but in the file 'winmouse.c' */
 #define OUTSIDE_MOUSE_DRIVER
 /* Remove C++ debug checks */
