@@ -129,7 +129,10 @@
     <ClCompile Include="..\..\..\..\Source\3D_COLLI.C" />
     <ClCompile Include="..\..\..\..\Source\3D_IO.C" />
     <ClCompile Include="..\..\..\..\Source\3D_TRIG.C" />
-    <ClCompile Include="..\..\..\..\Source\3D_VIEW.C" />
+    <ClCompile Include="..\..\..\..\Source\3D_VIEW.C">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MaxSpeed</Optimization>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Speed</FavorSizeOrSpeed>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Source\ACCOUNT.C" />
     <ClCompile Include="..\..\..\..\Source\ACTIVITY.C" />
     <ClCompile Include="..\..\..\..\Source\AREASND.C" />
@@ -240,7 +243,7 @@
     <ClCompile Include="..\..\..\..\Source\VM.C" />
     <ClCompile Include="direct.cpp" />
     <ClCompile Include="main.c">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MaxSpeed</Optimization>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
     </ClCompile>
     <ClCompile Include="misc.c" />
   </ItemGroup>

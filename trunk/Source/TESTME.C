@@ -8,6 +8,8 @@
 //#undef TRUE
 //#undef FALSE
 
+#define CAP_TICK_RATE   1
+
 extern T_void PacketReceiveData(T_void *p_data, T_byte8 size) ;
 
 T_void IClientLoginAck(
@@ -265,7 +267,9 @@ T_void main(T_word16 argc, char *argv[])
     T_palette *p_palette ;
     T_resource res ;
     T_directTalkHandle handle ;
-//    void (__interrupt __far *oldbreak)(); /* interrupt function pointer */
+static T_word32 lastTick=0;
+extern void SleepMS(T_word32 sleepMS);
+    //    void (__interrupt __far *oldbreak)(); /* interrupt function pointer */
 
 #ifdef WIN32
     /* Redirect the standard output to a file */
@@ -377,15 +381,20 @@ T_void main(T_word16 argc, char *argv[])
 
     SMMainInit() ;
     while (!SMMainIsDone())  {
-        TICKER_TIME_ROUTINE_START() ;
-        DebugCompare("main") ;
-        UpdateCmdqueue() ;
-        DebugCompare("main") ;
-        UpdateOften() ;
-        DebugCompare("main") ;
-        SMMainUpdate() ;
-        DebugCompare("main") ;
-        TICKER_TIME_ROUTINE_ENDM("main", 500) ;
+        if ((TickerGet() - lastTick) < CAP_TICK_RATE) {
+            SleepMS(1);
+        } else {
+            lastTick = TickerGet();
+            TICKER_TIME_ROUTINE_START() ;
+            DebugCompare("main") ;
+            UpdateCmdqueue() ;
+            DebugCompare("main") ;
+            UpdateOften() ;
+            DebugCompare("main") ;
+            SMMainUpdate() ;
+            DebugCompare("main") ;
+            TICKER_TIME_ROUTINE_ENDM("main", 500) ;
+        }
     }
 
     SMMainFinish() ;
