@@ -588,7 +588,8 @@ T_void TickerInc(T_void)
 
 
 #ifdef WIN32
-#include <time.h>
+//#include <time.h>
+#include <SDL.h>
 static T_word32 G_lastMillisecondCount ;
 static T_word32 G_tickMilli ;
 static T_word32 G_tickCount ;
@@ -602,7 +603,7 @@ T_void TickerOn(T_void)
 
     /* Note that the ticker is now on. */
     F_tickerOn = TRUE ;
-    G_lastMillisecondCount = clock() ;
+    G_lastMillisecondCount = SDL_GetTicks(); // clock() ;
     G_tickMilli = 0 ;
 
     DebugEnd() ;
@@ -622,7 +623,7 @@ T_void TickerUpdate(T_void)
 {
     T_word32 time ;
 
-    time = clock() ;
+    time = SDL_GetTicks(); // clock() ;
     G_tickMilli += time - G_lastMillisecondCount ;
     G_lastMillisecondCount = time ;
 
