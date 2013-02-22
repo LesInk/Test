@@ -26,9 +26,12 @@
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include&quot;"/>
 									<listOptionValue builtIn="false" value="c:/Apps/Watcom/H"/>
 									<listOptionValue builtIn="false" value="c:/Apps/Watcom/H/NT"/>
+									<listOptionValue builtIn="false" value="&quot;C:\lshields\AA\AA\Lib\SDL-1.2.15\include&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.msvc.cl.option.macros.411031571" name="Defines (/D)" superClass="org.eclipse.cdt.msvc.cl.option.macros" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WIN32=1"/>
+									<listOptionValue builtIn="false" value="DECLSPEC"/>
+									<listOptionValue builtIn="false" value="SDLCALL"/>
 								</option>
 								<inputType id="org.eclipse.cdt.msvc.cl.inputType.c.2042005943" superClass="org.eclipse.cdt.msvc.cl.inputType.c"/>
 							</tool>
@@ -36,9 +39,13 @@
 							<tool id="org.eclipse.cdt.msvc.rc.dll.debug.746823256" name="Resource Compiler (rc)" superClass="org.eclipse.cdt.msvc.rc.dll.debug">
 								<option id="org.eclipse.cdt.msvc.rc.option.includes.33941510" name="Include Path (/I)" superClass="org.eclipse.cdt.msvc.rc.option.includes" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\lshields\AA\AA\Lib\SDL-1.2.15\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Apps\Rowley Associates Limited\CrossWorks for ARM 2.1\include&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.msvc.rc.option.defines.1474897156" name="Defines (/D)" superClass="org.eclipse.cdt.msvc.rc.option.defines" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WIN32=1"/>
+									<listOptionValue builtIn="false" value="DECLSPEC"/>
+									<listOptionValue builtIn="false" value="SDLCALL"/>
 								</option>
 								<inputType id="org.eclipse.cdt.msvc.rc.inputType.1451222322" superClass="org.eclipse.cdt.msvc.rc.inputType"/>
 							</tool>
@@ -76,6 +83,14 @@
 							<tool id="org.eclipse.cdt.msvc.cl.c.dll.debug.1647208243" name="C Compiler (cl)" superClass="org.eclipse.cdt.msvc.cl.c.dll.debug">
 								<option id="org.eclipse.cdt.msvc.cl.option.macros.1549553550" name="Defines (/D)" superClass="org.eclipse.cdt.msvc.cl.option.macros" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WIN32=1"/>
+									<listOptionValue builtIn="false" value="DECLSPEC"/>
+									<listOptionValue builtIn="false" value="SDLCALL"/>
+								</option>
+								<option id="org.eclipse.cdt.msvc.cl.option.includes.2049750129" name="Include Path (/I)" superClass="org.eclipse.cdt.msvc.cl.option.includes" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\lshields\AA\AA\Lib\SDL-1.2.15\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AA/Include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Apps\Rowley Associates Limited\CrossWorks for ARM 2.1\include&quot;"/>
 								</option>
 								<inputType id="org.eclipse.cdt.msvc.cl.inputType.c.987930433" superClass="org.eclipse.cdt.msvc.cl.inputType.c"/>
 							</tool>
@@ -83,6 +98,13 @@
 							<tool id="org.eclipse.cdt.msvc.rc.dll.debug.956609261" name="Resource Compiler (rc)" superClass="org.eclipse.cdt.msvc.rc.dll.debug">
 								<option id="org.eclipse.cdt.msvc.rc.option.defines.557321154" name="Defines (/D)" superClass="org.eclipse.cdt.msvc.rc.option.defines" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WIN32=1"/>
+									<listOptionValue builtIn="false" value="DECLSPEC"/>
+									<listOptionValue builtIn="false" value="SDLCALL"/>
+								</option>
+								<option id="org.eclipse.cdt.msvc.rc.option.includes.934006974" name="Include Path (/I)" superClass="org.eclipse.cdt.msvc.rc.option.includes" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\lshields\AA\AA\Lib\SDL-1.2.15\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Apps\Rowley Associates Limited\CrossWorks for ARM 2.1\include&quot;"/>
 								</option>
 								<inputType id="org.eclipse.cdt.msvc.rc.inputType.1211300437" superClass="org.eclipse.cdt.msvc.rc.inputType"/>
 							</tool>
