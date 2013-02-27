@@ -5,7 +5,7 @@
 
 #include <SDL.h>
 
-#define CAP_SPEED_TO_FPS       0
+#define CAP_SPEED_TO_FPS       70 // 0
 
 static int G_done = FALSE;
 static SDL_Surface* screen;
@@ -251,7 +251,7 @@ int SDL_main(int argc, char *argv[])
         printf("Could not create overlay: %s\n", SDL_GetError());
         return 1;
     }
-    largesurface = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 8, 0, 0, 0, 0);
+    largesurface = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 400, 8, 0, 0, 0, 0);
     if (largesurface == NULL) {
         printf("Could not create overlay: %s\n", SDL_GetError());
         return 1;

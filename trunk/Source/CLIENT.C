@@ -1619,6 +1619,7 @@ T_void ClientUpdate(T_void)
             ViewUpdatePlayer() ;
             PlayerSetCameraView() ;
             ViewDraw() ;
+
   		    KeyboardUpdateEvents() ;
 
             if (G_clientMode != CLIENT_MODE_GAME)  {
@@ -1709,6 +1710,7 @@ T_void ClientUpdate(T_void)
                     timeHeld = KeyMapGetHeld(KEYMAP_TURN_RIGHT) ;
                 }
 		    } else {
+#if 0
                 timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
                 if (shift)
                     timeHeld <<= 1 ;
@@ -1719,6 +1721,14 @@ T_void ClientUpdate(T_void)
                     timeHeld <<= 1 ;
                 if (delta != 0)
                     PlayerTurnRight((timeHeld<<8)/delta) ;
+#else
+                if (KeyMapGetScan(KEYMAP_TURN_LEFT)) {
+                    PlayerTurnLeft((shift)?512:256) ;
+                }
+                if (KeyMapGetScan(KEYMAP_TURN_RIGHT)) {
+                    PlayerTurnRight((shift)?512:256) ;
+                }
+#endif
 		    }
             if (!G_msgOn)  {
 				if (KeyMapGetScan(KEYMAP_LOOK_DOWN)==TRUE)  {
@@ -3109,7 +3119,7 @@ static T_void IClientUpdateAndDrawFramesPerSecond(
     static T_word16 syncPerSec = 0 ;
     T_word32 time ;
     char buffer[20] ;
-
+extern T_word16 G_numSoundsPlaying;
     /* Update the frames per second. */
     time = TickerGet() ;
     if (nextfps <= time)  {
@@ -3128,7 +3138,8 @@ static T_void IClientUpdateAndDrawFramesPerSecond(
         GrSetCursorPosition(left+4, bottom-10) ;
         if ((TickerGet()&31)>15)  {
             GrDrawShadowedText(buffer, COLOR_YELLOW, COLOR_BLACK) ;
-            itoa(syncPerSec, buffer, 10) ;
+//            itoa(syncPerSec, buffer, 10) ;
+itoa(G_numSoundsPlaying, buffer, 10) ;
             GrDrawShadowedText("/", COLOR_YELLOW, COLOR_BLACK) ;
             GrDrawShadowedText(buffer, COLOR_YELLOW, COLOR_BLACK) ;
         }

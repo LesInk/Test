@@ -957,7 +957,7 @@ static T_void ICheckAllocated(T_word16 noteNum)
                 fflush(stdout) ;
                 DebugCheck(FALSE) ;
             }
-            if (p_header->size > 1000000L)  {
+            if (p_header->size > 100000000L)  {
                 printf("Bad block size (%ld) for block header %p, note %d\n",
                     p_header->size, p_header, noteNum) ;
                 printf("Entry %d of %d\n", pos, G_numBlocks) ;
