@@ -270,7 +270,9 @@ T_void ColorizeMemAsm(
           T_word32 count,
           T_byte8 *p_transTable)
 {
-    // TODO: Make the fast C version of this one
+    do {
+        *(p_destination++) = p_transTable[*(p_source++)];
+    } while (--count);
 }
 #endif
 
