@@ -1115,6 +1115,7 @@ E_Boolean TownUICompletedMapLevel(T_word16 mapLevel)
     T_word16 mapNum ;
     T_word16 nummaps ;
     E_Boolean goToTown = FALSE ;
+    T_byte8 *p_map;
 
     /* determine which quest we are doing */
     currentQuest=StatsGetCurrentQuestNumber();
@@ -1124,7 +1125,6 @@ E_Boolean TownUICompletedMapLevel(T_word16 mapLevel)
     sprintf (stmp,"MAPDESC\\QUEST%d.INI",currentQuest);
     /* If one player, put up a message explaining your end. */
     if (G_isOnePlayer)  {
-
         idata=INIFileOpen(stmp);
 
         nummaps = atoi(INIFileGet(idata, "main", "nummaps"));
@@ -1132,7 +1132,11 @@ E_Boolean TownUICompletedMapLevel(T_word16 mapLevel)
         stmp[0] = '\0' ;
         for (i=0; i<nummaps; i++)  {
             sprintf(section, "map%d", i) ;
-            mapNum = atoi(INIFileGet(idata, section, "mapnumber")) ;
+            p_map = INIFileGet(idata, section, "mapnumber");
+            if (p_map)
+                mapNum = atoi(p_map) ;
+            else
+                mapNum = 0;
             if (mapNum == mapLevel)  {
                 INIFileGetString(idata,section,"description",stmp,8192);
                 break ;

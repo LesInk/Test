@@ -71,7 +71,7 @@
       <BrowseInformation>true</BrowseInformation>
       <ShowIncludes>false</ShowIncludes>
       <DisableSpecificWarnings>4200;4100</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>

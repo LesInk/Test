@@ -1057,7 +1057,7 @@ static T_void EffectAddPlayerEffect (T_word16 data1,
     EffectRemovePlayerEffect (p_owner);
 
     /* make a new effect */
-    size=sizeof(T_inventoryStruct);
+    size=sizeof(T_playerEffectStruct);
     p_effect=(T_playerEffectStruct *)MemAlloc(size);
 
     p_effect->type=(E_playerEffectType)type;

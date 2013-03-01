@@ -1782,7 +1782,7 @@ T_void SoundSetBackgroundMusic(T_byte8 *filename)
             sprintf(realFilename, "AAMUSIC\\%s.MUS", filename);
             file = FileOpen(realFilename, FILE_MODE_READ) ;
             if (file != FILE_BAD) {
-                length = FileGetSize(realFilename) ;
+                length = FileGetSize(realFilename)/2;
                 G_backgroundMusic = MemAlloc(length);
                 DebugCheck(G_backgroundMusic != 0);
                 MemCheck(8204);
@@ -1800,7 +1800,8 @@ T_void SoundSetBackgroundMusic(T_byte8 *filename)
                     memset(p_sample, 0, sizeof(*p_sample)) ;
                     p_sample->inUse = TRUE; // we are about to use this one
                     p_sample->data = p_buffer->p_sample;
-                    p_sample->length = p_buffer->size;
+                    // 16-bit music uses half the samples
+                    p_sample->length = p_buffer->size/2;
 
                     p_sample->is16Bit = TRUE ;
                     p_sample->sampleRate = 22050 ;
@@ -1856,6 +1857,8 @@ T_sword16 SoundPlayByName(T_byte8 *filename, T_word16 volume)
                 p_sample->length = p_buffer->size;
 
                 if (G_is16BitSound)  {
+                    // 16-bit has half the samples
+                    p_sample->length /= 2;
                     p_sample->is16Bit = TRUE ;
                     if (G_allowFreqShift)
                         p_sample->sampleRate = 22050 + (rand() & 2047) - 1000 ;
@@ -1975,6 +1978,8 @@ T_sword16 SoundPlayLoopByNumber(T_word16 soundNum, T_word16 volume)
                 p_sample->length = p_buffer->size;
 
                 if (G_is16BitSound)  {
+                    // 16-bit samples have half as many samples
+                    p_sample->length /= 2;
                     p_sample->is16Bit = TRUE ;
                     if (G_allowFreqShift)
                         p_sample->sampleRate = 22050 + (rand() & 2047) - 1000 ;
@@ -2216,6 +2221,8 @@ T_sword16 SoundPlayByNameWithDetails(
                 p_sample->length = p_buffer->size;
 
                 if (bits == 16)  {
+                    // 16-bit samples have half as many samples
+                    p_sample->length /= 2;
                     p_sample->is16Bit = TRUE ;
                     p_sample->isUnsigned = FALSE;
                 } else {

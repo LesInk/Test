@@ -1090,10 +1090,9 @@ T_void ControlDisplayControlPage (T_void)
             /* display the line */
             TxtboxAppendString (windowID,tempstr);
         }
+        /* close file */
+        fclose (fp);
     }
-
-    /* close file */
-    fclose (fp);
 
     /* move cursor to top */
     TxtboxCursTop (windowID);

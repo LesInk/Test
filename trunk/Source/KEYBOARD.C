@@ -1679,7 +1679,7 @@ const uint8_t G_sdlToScancode[] = {
 	KEY_SCAN_CODE_KEYPAD_6, // SDLK_KP6		= 262,
 	KEY_SCAN_CODE_KEYPAD_7, // SDLK_KP7		= 263,
 	KEY_SCAN_CODE_KEYPAD_8, // SDLK_KP8		= 264,
-	KEY_SCAN_CODE_KEYPAD_0, // SDLK_KP9		= 265,
+	KEY_SCAN_CODE_KEYPAD_9, // SDLK_KP9		= 265,
 	KEY_SCAN_CODE_KEYPAD_PERIOD, // SDLK_KP_PERIOD		= 266,
 	KEY_SCAN_CODE_KEYPAD_SLASH, // SDLK_KP_DIVIDE		= 267,
 	KEY_SCAN_CODE_KEYPAD_STAR, // SDLK_KP_MULTIPLY	= 268,
@@ -1807,9 +1807,9 @@ printf("scancode %d = %d\n", scanCode, newValue);
                 if (next != G_scanKeyStart)
                     G_scanKeyEnd = next ;
 
-                /* If a release and an ascii character, store that in the */
+                /* If a press and an ascii character, store that in the */
                 /* keyboard buffer. */
-                if ((G_keyTable[scanCode] == FALSE) && 
+                if ((G_keyTable[scanCode] == TRUE) && 
                     (IGetAdjustedKey(KEY_SCAN_CODE_ALT) == FALSE) &&
                     (G_keyTable[KEY_SCAN_CODE_RIGHT_CTRL]==FALSE) &&
                     (G_keyTable[KEY_SCAN_CODE_LEFT_CTRL]==FALSE))  {

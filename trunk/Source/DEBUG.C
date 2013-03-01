@@ -3,30 +3,34 @@
 /****************************************************************************/
 
 #include "standard.h"
-
+#if defined(_DEBUG) && defined(WIN32)
+#include <crtdbg.h>
+#endif
 #ifndef NDEBUG
 
 #define DEBUG_NO_TIME 0
 #define MAX_TIME_SLOTS  100
+#define HEAP_CHECK_ON_ENTER_TOO     0
+#define HEAP_CHECK_LESS_OFTEN       100 // number of times to skip between checks
 
 //#define COMPILE_OPTION_DEBUG_CHECK_VECTOR_TABLE
 
 /* The calling stack is a list of pointers to routine names defined
    else where. */
-static const char *G_CallStack[DEBUG_MAX_STACK_DEPTH] ;
-static const char *G_CallStackFile[DEBUG_MAX_STACK_DEPTH] ;
-static T_word16 G_CallStackLine[DEBUG_MAX_STACK_DEPTH] ;
-static T_word32 G_CallStackTime[DEBUG_MAX_STACK_DEPTH] ;
-static T_word16 G_CallStackTimeSlot[DEBUG_MAX_STACK_DEPTH] ;
-static T_word32 G_TimeSlots[MAX_TIME_SLOTS] ;
+const char *G_CallStack[DEBUG_MAX_STACK_DEPTH] ;
+const char *G_CallStackFile[DEBUG_MAX_STACK_DEPTH] ;
+T_word16 G_CallStackLine[DEBUG_MAX_STACK_DEPTH] ;
+T_word32 G_CallStackTime[DEBUG_MAX_STACK_DEPTH] ;
+T_word16 G_CallStackTimeSlot[DEBUG_MAX_STACK_DEPTH] ;
+T_word32 G_TimeSlots[MAX_TIME_SLOTS] ;
 
 /* The following tells where the last access to the calling stack has
    been made. */
 static T_word16 G_StackPosition = 0 ;
 
 /* Are we checking the heap after each routine? */
-static E_Boolean G_heapCheck = FALSE ;
-//static E_Boolean G_heapCheck = TRUE ;
+//static E_Boolean G_heapCheck = FALSE ;
+static E_Boolean G_heapCheck = TRUE ;
 
 static E_Boolean G_stop = FALSE ;
 
@@ -109,6 +113,15 @@ T_void DebugAddRoutine(
 #endif
         G_StackPosition++ ;
     }
+
+#if HEAP_CHECK_ON_ENTER_TOO
+    if (G_heapCheck == TRUE) {
+        MemCheck(998) ;
+#if defined(_DEBUG) && defined(WIN32)
+        _ASSERTE( _CrtCheckMemory( ) );
+#endif
+    }
+#endif
 }
 
 /****************************************************************************/
@@ -247,6 +260,9 @@ T_void DebugFail(const char *p_msg, const char *p_file, long line)
 
 T_void DebugRemoveRoutine(T_void)
 {
+#if HEAP_CHECK_LESS_OFTEN
+    static int lessOften = 0;
+#endif
 #ifdef COMPILE_OPTION_DEBUG_CHECK_VECTOR_TABLE
     DebugCheckVectorTable() ;
 #endif
@@ -255,8 +271,21 @@ T_void DebugRemoveRoutine(T_void)
         DebugCheck(FALSE) ;
     }
 
-    if (G_heapCheck == TRUE)
+    if (G_heapCheck == TRUE) {
+#if HEAP_CHECK_LESS_OFTEN
+        if (lessOften > 0) {
+            lessOften--;
+        } else {
+            lessOften = HEAP_CHECK_LESS_OFTEN;
+#endif
         MemCheck(999) ;
+#if defined(_DEBUG) && defined(WIN32)
+        _ASSERTE( _CrtCheckMemory( ) );
+#endif
+#if HEAP_CHECK_LESS_OFTEN
+        }   
+#endif
+    }
 
     /* First see if we are allowed to pop of from the stack. */
     DebugCheck(G_StackPosition > 0) ;

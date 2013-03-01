@@ -2,7 +2,9 @@
 #include "direct.h"
 #include <Windows.h>
 #include "DITALK.H"
-
+#ifdef _DEBUG
+   #include <crtdbg.h>
+#endif
 #include <SDL.h>
 
 #define CAP_SPEED_TO_FPS       70 // 0
@@ -205,7 +207,7 @@ void WindowsUpdate(char *p_screen, unsigned char *palette)
             movingAverage = fps;
         movingAverage = ((double)fps)*0.05+movingAverage*0.95;
         lastFPS += 1000;
-        printf("FPS: %d, %f\n", fps, movingAverage);
+        printf("%02d:%02d:%02d.%03d FPS: %d, %f\n", tick/3600000, (tick/60000) % 60, (tick/1000) % 60, tick%1000, fps, movingAverage);
         fps = 0;
     }
     WindowsUpdateEvents();
@@ -269,7 +271,13 @@ int SDL_main(int argc, char *argv[])
         }
     }
 
-    game_main(argc, argv);
+    {
+    int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+        tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
+    _CrtSetDbgFlag( tmpFlag );
+
+        game_main(argc, argv);
+    }
 
     return 0;
 }

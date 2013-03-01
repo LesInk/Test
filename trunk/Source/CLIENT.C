@@ -2183,6 +2183,19 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                             MessageAdd("Creatures on you") ;
                             CreaturesAllOnOneTarget(ObjectGetServerId(PlayerGetObject())-100) ;
                         }
+#if defined(_DEBUG)
+                        else if (strncmp(G_message, "@heap", 5) == 0)
+                        {
+                            sscanf(G_message+5,"%d", &x) ;
+                            if (x) {
+                                MessageAdd("Heap Check On");
+                                DebugHeapOn();
+                            } else {
+                                MessageAdd("Heap Check Off");
+                                DebugHeapOff();
+                            }
+                        }
+#endif
                         else if (strncmp(G_message, "@fps", 4) == 0)
                         {
                             if (G_fpsOn)  {
@@ -2568,7 +2581,7 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
             if (KeyboardGetScanCode(KEY_SCAN_CODE_F1)==TRUE)
             {
 
-                if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)
+                if (KeyboardGetScanCode(KEY_SCAN_CODE_RIGHT_SHIFT)==TRUE)
                 {
                     /* enter god mode */
 #ifdef COMPILE_OPTION_ALLOW_GOD_MODE
