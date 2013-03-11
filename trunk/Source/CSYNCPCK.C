@@ -929,6 +929,8 @@ static T_void IClientSyncDoPlayerAction(
                 /* Declare this as no longer an adventure */
                 ClientSetAdventureNumber(0) ;
 
+                MouseRelativeModeOff();
+
                 /* Jump out of the system. */
                 ClientSetNextPlace(20004, 0) ;
 

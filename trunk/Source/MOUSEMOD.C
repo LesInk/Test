@@ -89,6 +89,12 @@ static E_Boolean G_allowUpdate = TRUE ;
 
 static T_doubleLinkList G_eventStack = DOUBLE_LINK_LIST_BAD ;
 
+/* Relative mode registers */
+static E_Boolean G_relativeMode = FALSE;
+static T_word16 G_mousePreRelativeX;
+static T_word16 G_mousePreRelativeY;
+static T_word16 G_relativeSensitivity = 70;
+
 /****************************************************************************/
 /*  Routine:  MouseInitialize                                               */
 /****************************************************************************/
@@ -539,6 +545,9 @@ T_void MouseMoveTo(T_word16 x, T_word16 y)
     G_mouseLastY = y ;
 
     DebugEnd() ;
+#else
+    extern void OutsideMouseDriverSet(T_word16 xPos, T_word16 yPos);
+    OutsideMouseDriverSet(x, y);
 #endif
 }
 
@@ -857,101 +866,103 @@ T_void MouseUpdateEvents(T_void)
     DebugRoutine("MouseUpdateEvents") ;
     DebugCheck(F_MouseIsInitialized == TRUE) ;
 
-    /* No matter what we do, we might as well get the button status */
-    /* and the mouse x & y locations. */
-    buttonStatus = IMouseGetButtonStatus() ;
-    IMouseGetMousePosition(&newX, &newY) ;
+    if (!MouseIsRelativeMode()) {
+        /* No matter what we do, we might as well get the button status */
+        /* and the mouse x & y locations. */
+        buttonStatus = IMouseGetButtonStatus() ;
+        IMouseGetMousePosition(&newX, &newY) ;
 
-    /* Let the current state of the mouse determine our actions */
-    switch(G_mouseState)  {
-        case MOUSE_STATE_IDLE:
-            /* Check to see if we have moved. */
-            if ((newX != G_mouseLastX) || (newY != G_mouseLastY))  {
-                /* We have.  Send mouse move event if there is a mouse */
-                /* handler and events are not blocked and if the option */
-                /* for receiving move events are there. */
-                if (F_mouseBlockEvents == FALSE)
-                    if (F_mouseEventsHandled &
-                            MOUSE_EVENT_OPTION_HANDLE_MOVE != 0)
-                        P_mouseEventHandler(
-                            MOUSE_EVENT_MOVE,
-                            newX,
-                            newY,
-                            buttonStatus) ;
-            } else if (buttonStatus != 0)  {
-                /* Check to see if the button is pressed */
-                /* We are changing state, send out a mouse start event. */
-                /* But make sure it is not being blocked. */
-                if (P_mouseEventHandler != NULL)
-                    if (F_mouseBlockEvents == FALSE)
-                        if (F_mouseEventsHandled &
-                                MOUSE_EVENT_OPTION_HANDLE_START != 0)
-                            P_mouseEventHandler(
-                                MOUSE_EVENT_START,
-                                newX,
-                                newY,
-                                buttonStatus) ;
-
-                /* Go to the button held state. */
-                G_mouseState = MOUSE_STATE_HELD ;
-            } else {
-                /* None of the above, try sending a MOUSE_EVENT_IDLE. */
-                if (F_mouseBlockEvents == FALSE)
-                    if (F_mouseEventsHandled &
-                            MOUSE_EVENT_OPTION_HANDLE_IDLE != 0)
-                        P_mouseEventHandler(
-                            MOUSE_EVENT_IDLE,
-                            newX,
-                            newY,
-                            buttonStatus) ;
-            }
-            break ;
-        case MOUSE_STATE_HELD:
-            if (buttonStatus == 0)  {
-                /* Check to see if the button is pressed */
-                /* We are changing state, send out a mouse end event. */
-                /* But make sure it is not being blocked. */
-                if (P_mouseEventHandler != NULL)
-                    if (F_mouseBlockEvents == FALSE)
-                        if (F_mouseEventsHandled &
-                                MOUSE_EVENT_OPTION_HANDLE_END != 0)
-                            P_mouseEventHandler(
-                                MOUSE_EVENT_END,
-                                newX,
-                                newY,
-                                buttonStatus) ;
-
-                /* Go to the mouse idle state. */
-                G_mouseState = MOUSE_STATE_IDLE ;
-            } else if ((newX != G_mouseLastX) || (newY != G_mouseLastY))  {
+        /* Let the current state of the mouse determine our actions */
+        switch(G_mouseState)  {
+            case MOUSE_STATE_IDLE:
                 /* Check to see if we have moved. */
-                /* We have.  Send mouse move event if there is a mouse */
-                /* handler and events are not blocked and if the option */
-                /* for receiving drag events are there. */
-                if (F_mouseBlockEvents == FALSE)
-                    if (F_mouseEventsHandled &
-                            MOUSE_EVENT_OPTION_HANDLE_DRAG != 0)
-                        P_mouseEventHandler(
-                            MOUSE_EVENT_DRAG,
-                            newX,
-                            newY,
-                            buttonStatus) ;
-            } else {
-                /* None of the above, try sending a MOUSE_EVENT_HELD. */
-                if (F_mouseBlockEvents == FALSE)
-                    if (F_mouseEventsHandled &
-                            MOUSE_EVENT_OPTION_HANDLE_HELD != 0)
-                        P_mouseEventHandler(
-                            MOUSE_EVENT_HELD,
-                            newX,
-                            newY,
-                            buttonStatus) ;
-            }
-            break ;
-    } ;
+                if ((newX != G_mouseLastX) || (newY != G_mouseLastY))  {
+                    /* We have.  Send mouse move event if there is a mouse */
+                    /* handler and events are not blocked and if the option */
+                    /* for receiving move events are there. */
+                    if (F_mouseBlockEvents == FALSE)
+                        if (F_mouseEventsHandled &
+                                MOUSE_EVENT_OPTION_HANDLE_MOVE != 0)
+                            P_mouseEventHandler(
+                                MOUSE_EVENT_MOVE,
+                                newX,
+                                newY,
+                                buttonStatus) ;
+                } else if (buttonStatus != 0)  {
+                    /* Check to see if the button is pressed */
+                    /* We are changing state, send out a mouse start event. */
+                    /* But make sure it is not being blocked. */
+                    if (P_mouseEventHandler != NULL)
+                        if (F_mouseBlockEvents == FALSE)
+                            if (F_mouseEventsHandled &
+                                    MOUSE_EVENT_OPTION_HANDLE_START != 0)
+                                P_mouseEventHandler(
+                                    MOUSE_EVENT_START,
+                                    newX,
+                                    newY,
+                                    buttonStatus) ;
 
-    G_mouseLastX = newX ;
-    G_mouseLastY = newY ;
+                    /* Go to the button held state. */
+                    G_mouseState = MOUSE_STATE_HELD ;
+                } else {
+                    /* None of the above, try sending a MOUSE_EVENT_IDLE. */
+                    if (F_mouseBlockEvents == FALSE)
+                        if (F_mouseEventsHandled &
+                                MOUSE_EVENT_OPTION_HANDLE_IDLE != 0)
+                            P_mouseEventHandler(
+                                MOUSE_EVENT_IDLE,
+                                newX,
+                                newY,
+                                buttonStatus) ;
+                }
+                break ;
+            case MOUSE_STATE_HELD:
+                if (buttonStatus == 0)  {
+                    /* Check to see if the button is pressed */
+                    /* We are changing state, send out a mouse end event. */
+                    /* But make sure it is not being blocked. */
+                    if (P_mouseEventHandler != NULL)
+                        if (F_mouseBlockEvents == FALSE)
+                            if (F_mouseEventsHandled &
+                                    MOUSE_EVENT_OPTION_HANDLE_END != 0)
+                                P_mouseEventHandler(
+                                    MOUSE_EVENT_END,
+                                    newX,
+                                    newY,
+                                    buttonStatus) ;
+
+                    /* Go to the mouse idle state. */
+                    G_mouseState = MOUSE_STATE_IDLE ;
+                } else if ((newX != G_mouseLastX) || (newY != G_mouseLastY))  {
+                    /* Check to see if we have moved. */
+                    /* We have.  Send mouse move event if there is a mouse */
+                    /* handler and events are not blocked and if the option */
+                    /* for receiving drag events are there. */
+                    if (F_mouseBlockEvents == FALSE)
+                        if (F_mouseEventsHandled &
+                                MOUSE_EVENT_OPTION_HANDLE_DRAG != 0)
+                            P_mouseEventHandler(
+                                MOUSE_EVENT_DRAG,
+                                newX,
+                                newY,
+                                buttonStatus) ;
+                } else {
+                    /* None of the above, try sending a MOUSE_EVENT_HELD. */
+                    if (F_mouseBlockEvents == FALSE)
+                        if (F_mouseEventsHandled &
+                                MOUSE_EVENT_OPTION_HANDLE_HELD != 0)
+                            P_mouseEventHandler(
+                                MOUSE_EVENT_HELD,
+                                newX,
+                                newY,
+                                buttonStatus) ;
+                }
+                break ;
+        } ;
+
+        G_mouseLastX = newX ;
+        G_mouseLastY = newY ;
+    }
 
     DebugEnd() ;
 }
@@ -1378,7 +1389,8 @@ T_void MouseDraw(T_void)
     DebugRoutine("MouseDraw") ;
 //    DebugCheck(G_bitmap != NULL) ;
 
-    if (G_bitmap)  {
+    // Draw if we have a bitmap AND we are not in relative mouse mode
+    if ((G_bitmap) && (MouseIsRelativeMode() == FALSE))  {
         IMouseGetUpperLeft(&mx, &my) ;
 
         /* First, save what is behind the mouse. */
@@ -1951,6 +1963,89 @@ T_void MousePushEventHandler(T_mouseEventHandler mouseEventHandler)
     MouseSetEventHandler(mouseEventHandler) ;
 
     DebugEnd() ;
+}
+
+T_void MouseRelativeModeOn(T_void)
+{
+    DebugRoutine("MouseRelativeModeOn");
+
+    if (!G_relativeMode) {
+        G_relativeMode = TRUE;
+        // Remember where the mouse is located (we'll return there when we exit)
+        IMouseGetMousePosition(&G_mousePreRelativeX, &G_mousePreRelativeY);
+
+        // Center the mouse
+        MouseMoveTo(SCREEN_SIZE_X/2, SCREEN_SIZE_Y/2);
+    }
+
+    DebugEnd();
+}
+
+T_void MouseRelativeModeOff(T_void)
+{
+    DebugRoutine("MouseRelativeModeOff");
+
+    if (G_relativeMode) {
+        // Restore the original mouse location
+        MouseMoveTo(G_mousePreRelativeX, G_mousePreRelativeY);
+
+        // End relative mouse movement
+        G_relativeMode = FALSE;
+    }
+
+    DebugEnd();
+}
+
+E_Boolean MouseIsRelativeMode(T_void)
+{
+    return G_relativeMode;
+}
+
+T_void MouseSetRelativeSensitivity(T_word16 sensitivity)
+{
+    DebugRoutine("MouseSetRelativeSensitivity");
+    DebugCheck(sensitivity > 0);
+    DebugCheck(sensitivity < 100); // arbitrary maximum for now
+
+    G_relativeSensitivity = sensitivity;
+
+    DebugEnd();
+}
+
+T_void MouseRelativeRead(T_sword16 *aDeltaX, T_sword16 *aDeltaY)
+{
+    T_word16 x, y;
+    DebugRoutine("MouseRelativeRead");
+
+    if (G_relativeMode) {
+        // Read the mouse position and then recenter the mouse
+        IMouseGetMousePosition(&x, &y);
+
+        // How far off did the mouse move from the middle?
+        *aDeltaX = ((T_sword16)(x - SCREEN_SIZE_X/2))*G_relativeSensitivity;
+        *aDeltaY = ((T_sword16)(y - SCREEN_SIZE_Y/2))*G_relativeSensitivity;
+
+        // Center the mouse
+        MouseMoveTo(SCREEN_SIZE_X/2, SCREEN_SIZE_Y/2);
+    } else {
+        // Not in relative mouse mode, just return 0's
+        *aDeltaX = *aDeltaY = 0;
+    }
+
+    DebugEnd();
+}
+
+T_buttonClick MouseGetButtonStatus(T_void)
+{
+    T_buttonClick buttonStatus;
+
+    DebugRoutine("MouseGetButtonStatus");
+
+    buttonStatus = IMouseGetButtonStatus() ;
+
+    DebugEnd();
+
+    return buttonStatus;
 }
 
 /****************************************************************************/

@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include <SDL.h>
+
 static T_buttonClick G_mouseButton = 0 ;
 static T_word16 G_mouseX = 0 ;
 static T_word16 G_mouseY = 0 ;
@@ -26,6 +28,11 @@ void OutsideMouseDriverGet(T_word16 *xPos, T_word16 *yPos)
 {
     *xPos = G_mouseX ;
     *yPos = G_mouseY ;
+}
+
+void OutsideMouseDriverSet(T_word16 xPos, T_word16 yPos)
+{
+    SDL_WarpMouse(xPos*2, yPos*2);
 }
 
 T_void DirectMouseSetButton(T_buttonClick click)

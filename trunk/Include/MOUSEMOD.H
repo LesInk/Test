@@ -109,6 +109,14 @@ T_void MousePushEventHandler(T_mouseEventHandler p_handler) ;
 
 T_void MousePopEventHandler(T_void) ;
 
+// Functions for turning on relative mode
+T_void MouseRelativeModeOn(T_void);
+T_void MouseRelativeModeOff(T_void);
+E_Boolean MouseIsRelativeMode(T_void);
+T_void MouseRelativeRead(T_sword16 *aDeltaX, T_sword16 *aDeltaY);
+
+T_buttonClick MouseGetButtonStatus(T_void);
+
 #endif
 
 /****************************************************************************/

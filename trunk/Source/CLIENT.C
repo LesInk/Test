@@ -6,6 +6,8 @@
 #include <ctype.h>
 #include <malloc.h>
 #include "memory.h"
+#if defined(WIN32)
+#endif
 
 #define PLAYER_ATTACK_HEIGHT      30
 #define PLAYER_ATTACK_DISTANCE    40
@@ -1602,6 +1604,7 @@ T_void ClientUpdate(T_void)
     E_Boolean shift ;
     T_sword16 x, y, newx, newy ;
     T_word32 delta ;
+    T_sword16 relx, rely;
     TICKER_TIME_ROUTINE_PREPARE() ;
 
     TICKER_TIME_ROUTINE_START() ;
@@ -1689,9 +1692,26 @@ T_void ClientUpdate(T_void)
 #endif
             playerMoveAngle = PlayerGetAngle() ;
 
-		    if ((KeyMapGetScan(KEYMAP_SIDESTEP) == TRUE) && (!ClientIsDead()))  {
+            if (MouseIsRelativeMode()) {
+                // If in relative mouse mode, we turn using the mouse
+                MouseRelativeRead(&relx, &rely);
+
+                // If in relative mouse mode, we turn using the mouse
+                if (relx < 0) {
+                    PlayerTurnLeft(-relx) ;
+                } else if (relx > 0) {
+                    PlayerTurnRight(relx) ;
+                }
+
+                // Look up or down
+                if (rely >= 0) {
+                    View3dSetUpDownAngle(View3dGetUpDownAngle() - (3*rely*delta)/100) ;
+                } else if (rely < 0) {
+                    View3dSetUpDownAngle(View3dGetUpDownAngle() + (3*(-rely)*delta)/100) ;
+                }
+
 		        if ((PlayerIsAboveGround()==FALSE) ||
-                      (EffectPlayerEffectIsActive(PLAYER_EFFECT_FLY)==TRUE))
+                        (EffectPlayerEffectIsActive(PLAYER_EFFECT_FLY)==TRUE))
                 {
                     timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
 		            if (timeHeld)  {
@@ -1709,38 +1729,48 @@ T_void ClientUpdate(T_void)
                     timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
                     timeHeld = KeyMapGetHeld(KEYMAP_TURN_RIGHT) ;
                 }
-		    } else {
-#if 0
-                timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
-                if (shift)
-                    timeHeld <<= 1 ;
-                if (delta != 0)
-                    PlayerTurnLeft((timeHeld<<8)/delta) ;
-                timeHeld = KeyMapGetHeld(KEYMAP_TURN_RIGHT) ;
-                if (shift)
-                    timeHeld <<= 1 ;
-                if (delta != 0)
-                    PlayerTurnRight((timeHeld<<8)/delta) ;
-#else
-                if (KeyMapGetScan(KEYMAP_TURN_LEFT)) {
-                    PlayerTurnLeft((shift)?512:256) ;
+            } else {
+		        if ((KeyMapGetScan(KEYMAP_SIDESTEP) == TRUE) && (!ClientIsDead()))  {
+		            if ((PlayerIsAboveGround()==FALSE) ||
+                          (EffectPlayerEffectIsActive(PLAYER_EFFECT_FLY)==TRUE))
+                    {
+                        timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
+		                if (timeHeld)  {
+                            timeHeld += (timeHeld>>1) ;
+	                        PlayerAccelDirection(playerMoveAngle+INT_ANGLE_90, timeHeld) ;
+		                }
+
+                        timeHeld = KeyMapGetHeld(KEYMAP_TURN_RIGHT) ;
+		                if (timeHeld)  {
+                            timeHeld += (timeHeld>>1) ;
+			                PlayerAccelDirection(playerMoveAngle-INT_ANGLE_90, timeHeld) ;
+		                }
+		            } else {
+                        /* Clear the keys */
+                        timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
+                        timeHeld = KeyMapGetHeld(KEYMAP_TURN_RIGHT) ;
+                    }
+                } else {
+                    // If NOT in relative mouse mode, we turn with the keyboard
+                    if (KeyMapGetScan(KEYMAP_TURN_LEFT)) {
+                        PlayerTurnLeft((shift)?512:256) ;
+                    }
+                    if (KeyMapGetScan(KEYMAP_TURN_RIGHT)) {
+                        PlayerTurnRight((shift)?512:256) ;
+                    }
+		        }
+                if (!G_msgOn)  {
+				    if (KeyMapGetScan(KEYMAP_LOOK_DOWN)==TRUE)  {
+                            /* Look down */
+					        View3dSetUpDownAngle(View3dGetUpDownAngle() - 3*delta) ;
+				    }
+				    if (KeyMapGetScan(KEYMAP_LOOK_UP)==TRUE)  {
+                            /* Look up */
+					        View3dSetUpDownAngle(View3dGetUpDownAngle() + 3*delta) ;
+				    }
+                    if (KeyMapGetScan(KEYMAP_READJUST_VIEW)==TRUE)
+                        View3dSetUpDownAngle(0) ;
                 }
-                if (KeyMapGetScan(KEYMAP_TURN_RIGHT)) {
-                    PlayerTurnRight((shift)?512:256) ;
-                }
-#endif
-		    }
-            if (!G_msgOn)  {
-				if (KeyMapGetScan(KEYMAP_LOOK_DOWN)==TRUE)  {
-                     /* Look down */
-					 View3dSetUpDownAngle(View3dGetUpDownAngle() - 3*delta) ;
-				}
-				if (KeyMapGetScan(KEYMAP_LOOK_UP)==TRUE)  {
-                     /* Look up */
-					 View3dSetUpDownAngle(View3dGetUpDownAngle() + 3*delta) ;
-				}
-                if (KeyMapGetScan(KEYMAP_READJUST_VIEW)==TRUE)
-                    View3dSetUpDownAngle(0) ;
             }
   		    if ((PlayerIsAboveGround()==FALSE) ||
                 (EffectPlayerEffectIsActive(PLAYER_EFFECT_FLY)==TRUE))
@@ -1781,7 +1811,14 @@ T_void ClientUpdate(T_void)
                 }
             }
 
-            MouseUpdateEvents();
+            if (MouseIsRelativeMode()) {
+                if (MouseGetButtonStatus() & MOUSE_BUTTON_LEFT) {
+                    if (InventoryCanUseItemInReadyHand())
+                        InventoryUseItemInReadyHand(NULL);
+                }
+            } else {
+                MouseUpdateEvents();
+            }
 
             /* Get our new location (after we hit walls and such) */
             newx = PlayerGetX16() ;
@@ -1851,6 +1888,8 @@ T_void ClientUpdate(T_void)
                     MessageClear() ;
                     ClientGotoPlace(0, 0) ;
                 } else {
+                    MouseRelativeModeOff();
+
                     ClientGotoPlace(20004, 0) ;
                 }
             }
@@ -2287,6 +2326,16 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
 
 
             case KEYBOARD_EVENT_PRESS:
+            if (scankey == KEY_SCAN_CODE_Q) {
+                // Toggle relative mouse mode
+                if (MouseIsRelativeMode()) {
+                    // Turn off the mouse
+                    MouseRelativeModeOff();
+                } else {
+                    // Turn on the mouse
+                    MouseRelativeModeOn();
+                }
+            }
 #ifndef NDEBUG
             if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)  {
                 if ((KeyboardGetScanCode(KEY_SCAN_CODE_F6)==TRUE))  {
@@ -2313,6 +2362,7 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                     /* Declare this as no longer an adventure */
                     ClientSetAdventureNumber(0) ;
                     /* Return to guild. */
+                    MouseRelativeModeOff();
                     ClientSetNextPlace(20004, 0) ;
                 } else {
                     MessageAdd("Hit again to abort level...") ;
@@ -2566,13 +2616,15 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
         switch (event)
         {
             case KEYBOARD_EVENT_HELD:
-            /* use item in inventory */
-            if (scankey == KeyMap(KEYMAP_USE))
-            {
-                if (InventoryCanUseItemInReadyHand())
-                InventoryUseItemInReadyHand(temp);
-            }
-            break;
+                if (!MouseIsRelativeMode()) {
+                    /* use item in inventory */
+                    if (scankey == KeyMap(KEYMAP_USE))
+                    {
+                        if (InventoryCanUseItemInReadyHand())
+                            InventoryUseItemInReadyHand(temp);
+                    }
+                }
+                break;
 
             case KEYBOARD_EVENT_BUFFERED:
             break;
@@ -4412,6 +4464,9 @@ T_void ClientForceGotoPlace(
         ClientSetMode(CLIENT_MODE_UNKNOWN) ;
 
         if (placeNumber == 0)  {
+            // End mouse relative mode if still active
+            MouseRelativeModeOff();
+
             SMCPlayGameSetFlag(SMCPLAY_GAME_FLAG_END_GAME, TRUE) ;
         } else {
             /* Get rid of the UI for the bottom of the screen (if any). */
@@ -4447,6 +4502,8 @@ T_void ClientForceGotoPlace(
                 /* We have by passed to go to the town. */
                 if (goToTown == TRUE)  {
                     G_adventureNumber = 0 ;
+
+                    MouseRelativeModeOff();
 
                     ClientSetCurrentPlace(HARD_FORM_TOWN+HARDFORM_GOTO_PLACE_OFFSET) ;
                     ClientSetCurrentStartLocation(0) ;

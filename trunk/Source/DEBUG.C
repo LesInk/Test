@@ -29,8 +29,8 @@ T_word32 G_TimeSlots[MAX_TIME_SLOTS] ;
 static T_word16 G_StackPosition = 0 ;
 
 /* Are we checking the heap after each routine? */
-//static E_Boolean G_heapCheck = FALSE ;
-static E_Boolean G_heapCheck = TRUE ;
+static E_Boolean G_heapCheck = FALSE ;
+//static E_Boolean G_heapCheck = TRUE ;
 
 static E_Boolean G_stop = FALSE ;
 

@@ -1359,6 +1359,8 @@ T_void SMMainPlayGameStart(
     /* Start up the play game state. */
     SMCPlayGameInitialize() ;
 
+    MouseRelativeModeOff();
+
     /* Go to the first allowable place. */
     ClientGotoPlace(20004, 0) ;
 //    ClientGotoPlace(1, 0) ;

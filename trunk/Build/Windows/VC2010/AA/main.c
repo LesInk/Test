@@ -272,9 +272,11 @@ int SDL_main(int argc, char *argv[])
     }
 
     {
+#ifndef NDEBUG
     int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
         tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
     _CrtSetDbgFlag( tmpFlag );
+#endif
 
         game_main(argc, argv);
     }

@@ -434,6 +434,9 @@
     <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDL.lib" />
     <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDLmain.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
