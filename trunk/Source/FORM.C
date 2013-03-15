@@ -997,7 +997,7 @@ T_void FormPush(T_void)
     DebugRoutine("FormPush");
 
     /* Make sure we have a list. */
-    if (G_formStack == DOUBLE_LINK_LIST_BAD )
+    if (G_formStack == DOUBLE_LINK_LIST_BAD)
         G_formStack = DoubleLinkListCreate();
 
     /* Create a list of form objects to put on the stack. */
