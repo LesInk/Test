@@ -1734,7 +1734,7 @@ T_void ClientUpdate(T_void)
 		            if ((PlayerIsAboveGround()==FALSE) ||
                           (EffectPlayerEffectIsActive(PLAYER_EFFECT_FLY)==TRUE))
                     {
-                        timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
+		                timeHeld = KeyMapGetHeld(KEYMAP_TURN_LEFT) ;
 		                if (timeHeld)  {
                             timeHeld += (timeHeld>>1) ;
 	                        PlayerAccelDirection(playerMoveAngle+INT_ANGLE_90, timeHeld) ;
@@ -2335,6 +2335,12 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                     // Turn on the mouse
                     MouseRelativeModeOn();
                 }
+            }
+            if (scankey == KEY_SCAN_CODE_GRAVE) {
+                if (BannerFormIsOpen(BANNER_FORM_ESC_MENU))
+                    BannerCloseForm();
+                else
+                    BannerOpenForm(BANNER_FORM_ESC_MENU);
             }
 #ifndef NDEBUG
             if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)  {

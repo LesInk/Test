@@ -352,6 +352,7 @@ T_void TextSetText (T_textID textID, T_byte8 *string)
 	p_text->data=MemAlloc (sizeof(T_byte8)*strlen(string)+1);
 	if (p_text->data!=NULL) strcpy (p_text->data,string);
 	/* get the graphic ID for the text object */
+    p_text->p_graphicID = MemAlloc(sizeof(T_graphicStruct));
 	p_graphic=(T_graphicStruct*)p_text->p_graphicID;
 
 	/* lock in the font */

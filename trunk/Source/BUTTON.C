@@ -168,7 +168,7 @@ static T_buttonID ButtonInit (T_word16 lx,
 
 
 
-T_void ButtonSetSelectPic (T_buttonID buttonID, T_byte8 *picname)
+T_void ButtonSetSelectPic (T_buttonID buttonID, char *picname)
 {
    T_buttonStruct *p_button;
 
@@ -1125,6 +1125,10 @@ T_void ButtonSetFont (T_buttonID buttonID, T_byte8 *fntname)
 	p_button=(T_buttonStruct *)buttonID;
     DebugCheck (p_button->tag==BUTTON_TAG);
 	p_text=(T_textStruct *)p_button->textID;
+    if (!p_text) {
+        p_text = malloc(sizeof(*p_text));
+        p_button->textID = p_text;
+    }
 	res = ResourceOpen ("sample.res");
 	p_text->font=ResourceFind (res,fntname);
 	ResourceClose (res);

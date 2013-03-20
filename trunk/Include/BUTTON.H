@@ -45,7 +45,7 @@ T_buttonID ButtonCreate (T_word16 lx,
 					  T_buttonHandler p_cbroutine,
 					  T_buttonHandler p_cbroutine2);
 
-T_void ButtonSetSelectPic (T_buttonID buttonID, T_byte8 *picname);
+T_void ButtonSetSelectPic (T_buttonID buttonID, char *picname);
 
 T_void ButtonDelete (T_buttonID buttonID);
 T_void ButtonCleanUp (T_void);

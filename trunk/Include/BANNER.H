@@ -30,6 +30,7 @@ typedef enum
     BANNER_FORM_JOURNAL,
     BANNER_FORM_LOOK,
     BANNER_FORM_CONTROL,
+    BANNER_FORM_ESC_MENU,
     BANNER_FORM_UNKNOWN,
 } E_bannerFormType;
 

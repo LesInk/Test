@@ -512,6 +512,10 @@ T_void MapUnload(T_void)
         /* Note that a map is no longer in memory. */
         G_mapLoaded = FALSE ;
 
+// LED 2/28/2013 -- Had a crash here when UpdateMapEnd called EfxFinish, it tried to 
+// call EfxDestroy which called ObjectMarkForDestroy -- but the object was already destroyed!
+// by ObjectsUnload?  What efx was in use?  Looks like I got hurt as I was exiting the level
+// at the same time!  (EfxUpdateBloodSplat on updateCallback of p_efx (T_efxStruct *))
         UpdateMapEnd() ;
 
         ClientSyncFinish() ;

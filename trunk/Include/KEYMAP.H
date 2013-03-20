@@ -7,7 +7,11 @@ extern T_byte8 G_keyMap[256] ;
 #define KeyMap(v)    (G_keyMap[v])
 
 #define KeyMapGetScan(v)  (KeyboardGetScanCode(G_keyMap[v]))
-#define KeyMapGetHeld(v)  (KeyboardGetHeldTimeAndClear(G_keyMap[v]))
+#if _WIN32
+    #define KeyMapGetHeld(v)  ((KeyboardGetScanCode(G_keyMap[v]))?delta:0)
+#else
+    #define KeyMapGetHeld(v)  (KeyboardGetHeldTimeAndClear(G_keyMap[v]))
+#endif
 
 #define KEYMAP_FORWARD                      0
 #define KEYMAP_BACKWARD                     1

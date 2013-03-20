@@ -6,7 +6,7 @@
 #define _DBLLINK_H_
 
 typedef T_void *T_doubleLinkList ;
-#define DOUBLE_LINK_LIST_BAD NULL
+#define DOUBLE_LINK_LIST_BAD 0 /* NULL */
 
 typedef T_void *T_doubleLinkListElement ;
 #define DOUBLE_LINK_LIST_ELEMENT_BAD NULL
