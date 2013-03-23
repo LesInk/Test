@@ -5,6 +5,9 @@
 #ifndef _3D_VIEW_H_
 #define _3D_VIEW_H_
 
+#include "GENERAL.H"
+#include "VIEWFILE.H"
+
 /*
 #define VIEW3D_WIDTH 300
 #define VIEW3D_HEIGHT 140

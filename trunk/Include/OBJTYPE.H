@@ -5,14 +5,34 @@
 #ifndef _OBJTYPE_H_
 #define _OBJTYPE_H_
 
-typedef T_void *T_objTypeInstance ;
+/** !!! **/
+//#include "viewfile.h"
+#include "OBJTYPE.H"
 
+/*---------------------------------------------------------------------------
+ * Constants:
+ *--------------------------------------------------------------------------*/
 #define OBJECT_TYPE_INSTANCE_BAD NULL
 
-/** !!! **/
-#include "viewfile.h"
+/*---------------------------------------------------------------------------
+ * Types:
+ *--------------------------------------------------------------------------*/
+typedef enum {
+    ORIENTATION_NORMAL,
+    ORIENTATION_REVERSE,
+    ORIENTATION_UNKNOWN
+} T_orientation ;
 
-T_objTypeInstance ObjTypeCreate(T_word16 objTypeNum, T_3dObject *p_obj) ;
+//typedef void *T_3dObject; /* Unknown here */
+
+struct T_3dObject_;
+typedef T_void *T_objTypeInstance ;
+
+/*---------------------------------------------------------------------------
+ * Prototypes:
+ *--------------------------------------------------------------------------*/
+
+T_objTypeInstance ObjTypeCreate(T_word16 objTypeNum, struct T_3dObject_ *p_obj) ;
 
 T_void ObjTypeDestroy(T_objTypeInstance objTypeInst) ;
 
@@ -24,11 +44,6 @@ T_word16 ObjTypeGetRadius(T_objTypeInstance objTypeInst) ;
 
 T_word16 ObjTypeGetAttributes(T_objTypeInstance objTypeInst) ;
 
-/*
-T_void *ObjTypeGetPicture(
-           T_objTypeInstance objTypeInst,
-           T_word16 angle) ;
-*/
 T_void *ObjTypeGetPicture(
            T_objTypeInstance objTypeInst,
            T_word16 angle,

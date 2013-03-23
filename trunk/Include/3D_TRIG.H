@@ -5,6 +5,9 @@
 #ifndef _3D_TRIG_H_
 #define _3D_TRIG_H_
 
+#include "3D_VIEW.H"
+#include "GENERAL.H"
+
 #define MATH_MAX_DISTANCE           10000
 #define MATH_MAX_ANGLE              1024
 #define MATH_ANGLE_ACCURACY         64

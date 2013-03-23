@@ -5,6 +5,8 @@
 #ifndef _DEBUG_H_
 #  define _DEBUG_H_
 
+#include "OPTIONS.H"
+
 #  define DEBUG_MAX_STACK_DEPTH 60
 
 T_void DebugAddRoutine(

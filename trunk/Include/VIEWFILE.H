@@ -5,6 +5,12 @@
 #ifndef _VIEWFILE_H_
 #define _VIEWFILE_H_
 
+#include "DBLLINK.H"
+#include "OBJMOVE.H"
+#include "OBJTYPE.H"
+#include "RESOURCE.H"
+#include "SCRIPT.H"
+
 #define MAX_OBJECT_SECTORS 20
 
 typedef enum {
@@ -19,12 +25,6 @@ typedef enum {
 } T_bodyPartLocation ;
 
 #define MAX_BODY_PARTS     BODY_PART_LOCATION_UNKNOWN
-
-typedef enum {
-    ORIENTATION_NORMAL,
-    ORIENTATION_REVERSE,
-    ORIENTATION_UNKNOWN
-} T_orientation ;
 
 typedef struct  {
     T_byte8 signature[4]     PACK;

@@ -5,6 +5,8 @@
 #ifndef _DBLLINK_H_
 #define _DBLLINK_H_
 
+#include "GENERAL.H"
+
 typedef T_void *T_doubleLinkList ;
 #define DOUBLE_LINK_LIST_BAD 0 /* NULL */
 
