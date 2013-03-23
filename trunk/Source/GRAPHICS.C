@@ -2,7 +2,12 @@
 /*    FILE:  GRAPHICS.C                                                     */
 /****************************************************************************/
 
-#include "standard.h"
+#include <stdio.h>
+#include "3D_TRIG.H"
+#include "DEBUG.H"
+#include "DBLLINK.H"
+#include "GRAPHICS.H"
+#include "MEMORY.H"
 
 #define MAX_PAGES 4
 
@@ -337,6 +342,28 @@ T_void GrDrawPixel(T_word16 x, T_word16 y, T_color color)
 
     /* Draw a dot on the active screen at the (x,y) location. */
     G_ActiveScreen[(y<<8) + (y<<6) + x] = color ;
+
+    DebugEnd() ;
+}
+
+T_void GrDrawTranslucentPixel(T_word16 x, T_word16 y, T_color color)
+{
+    T_byte8 *p_destination;
+
+    DebugRoutine("GrDrawTranslucentPixel") ;
+    DebugCheck(x < 320) ;
+    DebugCheck(y < 200) ;
+
+    GrInvalidateRect(
+        x,
+        y,
+        x,
+        y) ;
+
+    p_destination = G_ActiveScreen + (y<<8) + (y<<6) + x;
+
+    /* Draw a dot on the active screen at the (x,y) location. */
+    *p_destination = G_translucentTable[color][*p_destination];
 
     DebugEnd() ;
 }
@@ -1454,7 +1481,7 @@ static T_void ITransferScreen(T_void)
         p_to += SCREEN_SIZE_X ;
     }
 
-    TICKER_TIME_ROUTINE_ENDM("ITranserScreen", 1000)
+    TICKER_TIME_ROUTINE_ENDM("ITranserScreen", 1000);
     IResetLeftsAndRights() ;
 }
 

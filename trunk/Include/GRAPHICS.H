@@ -5,6 +5,9 @@
 #ifndef _GRAPHICS_H_
 #define _GRAPHICS_H_
 
+#include "general.h"
+#include "COLORIZE.H"
+
 typedef T_byte8 *T_screen ;
 
 typedef T_byte8 T_color ;
@@ -68,6 +71,8 @@ T_void GrScreenSet(T_screen screen) ;
 T_screen GrScreenGet(T_void) ;
 
 T_void GrDrawPixel(T_word16 x, T_word16 y, T_color color) ;
+
+T_void GrDrawTranslucentPixel(T_word16 x, T_word16 y, T_color color);
 
 T_void GrDrawVerticalLine(
            T_word16 x,
