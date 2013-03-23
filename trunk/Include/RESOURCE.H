@@ -5,6 +5,9 @@
 #ifndef _RESOURCE_H_
 #define _RESOURCE_H_
 
+#include <stdio.h>
+#include "GENERAL.H"
+
 #define RESOURCE_BAD NULL
 #define RESOURCE_FILE_BAD ((T_word16)0xFFFF)
 

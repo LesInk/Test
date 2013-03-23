@@ -5,6 +5,7 @@
 #ifndef _DEBUG_H_
 #  define _DEBUG_H_
 
+#include "GENERAL.H"
 #include "OPTIONS.H"
 
 #  define DEBUG_MAX_STACK_DEPTH 60

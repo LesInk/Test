@@ -1,9 +1,11 @@
 /****************************************************************************/
 /*    FILE:  3D_COLLI.H                                                     */
 /****************************************************************************/
-
 #ifndef _3D_COLLI_H_
 #define _3D_COLLI_H_
+
+#include "GENERAL.H"
+#include "VIEWFILE.H"
 
 #define WALL_LIST_ITEM_UPPER       0x01  /* ---- ---1 */
 #define WALL_LIST_ITEM_LOWER       0x02  /* ---- --1- */

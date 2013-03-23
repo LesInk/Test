@@ -5,6 +5,9 @@
 #ifndef _GRAPHIC_H_
 #define _GRAPHIC_H_
 
+#include "GENERAL.H"
+#include "RESOURCE.H"
+
 #define MAX_GRAPHICS 200
 
 typedef T_void *T_graphicID;

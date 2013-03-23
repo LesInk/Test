@@ -1,6 +1,9 @@
 
 #ifndef _GENERAL_H_
 #define _GENERAL_H_
+
+#include "OPTIONS.H"
+
 /* General typedefs declared  */
 /** This file now supports either Watcom C32 OR Linux GCC. -- AMT, 8/2/95 **/
 
@@ -65,5 +68,7 @@ typedef union {
         T_byte8 highest ;
     } w8888 ;
 } T_word32as8888 ;
+
+#include "DEBUG.H"
 
 #endif

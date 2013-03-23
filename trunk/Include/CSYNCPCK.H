@@ -1,9 +1,15 @@
 /****************************************************************************/
 /*    FILE:  CSYNCPCK.H                                                      */
 /****************************************************************************/
-
 #ifndef _CSYNCPCK_H_
 #define _CSYNCPCK_H_
+
+#include "DITALK.H"
+#include "GENERAL.H"
+#include "GROUP.H"
+#include "PACKET.H"
+#include "SYNCPACK.H"
+#include "VIEWFILE.H"
 
 T_void ClientSyncPacketProcess(T_syncronizePacket *p_sync) ;
 

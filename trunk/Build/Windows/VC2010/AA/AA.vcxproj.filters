@@ -919,6 +919,9 @@
     <ClInclude Include="options.hpp">
       <Filter>Source Files\Win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Include\GROUP.H">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDL.lib">

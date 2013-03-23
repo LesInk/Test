@@ -5,6 +5,11 @@
 #ifndef _BANNER_H_
 #define _BANNER_H_
 
+#include "BUTTON.H"
+#include "EQUIP.H"
+#include "FORM.H"
+#include "GENERAL.H"
+
 #define BANNER_BASE_COLOR 77
 #define BANNER_BUTTON_INV 0
 #define BANNER_BUTTON_EQP 1

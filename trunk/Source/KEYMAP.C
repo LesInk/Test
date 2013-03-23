@@ -2,7 +2,9 @@
 /*    FILE:  KEYMAP.C                                                       */
 /****************************************************************************/
 
-#include "standard.h"
+#include "GENERAL.H"
+#include "KEYMAP.H"
+#include "KEYSCAN.H"
 
 /* Global variables. */
 T_byte8 G_keyMap[256] ;               /* Array of keyscan codes */
@@ -35,10 +37,15 @@ T_void KeyMapInitialize(T_iniFile iniFile)
     T_word16 i, j ;
     T_byte8 *buffer ;
     T_word16 c ;
+    T_word16 len;
 
     DebugRoutine("KeyMapInitialize") ;
     DebugCheck(G_init == FALSE) ;
     G_init = TRUE ;
+
+    // Setup default keys in case .ini file is missing or incorrect
+    memset(G_keyMap, 0, sizeof(G_keyMap));
+    G_keyMap[KEYMAP_ACTIVATE_OR_TAKE] = KEY_SCAN_CODE_E;
 
     buffer = INIFileGet(iniFile, "keyboard", "keys1") ;
     if (buffer)  {
@@ -50,10 +57,13 @@ T_void KeyMapInitialize(T_iniFile iniFile)
     }
     buffer = INIFileGet(iniFile, "keyboard", "keys2") ;
     if (buffer)  {
+        len = strlen(buffer);
         for (j=0; i<68; i++)  {
-            sscanf(buffer+j, "%02X", &c) ;
-            G_keyMap[i] = c ;
-            j+=2 ;
+            if (j < len) {
+                sscanf(buffer+j, "%02X", &c) ;
+                G_keyMap[i] = c ;
+                j+=2 ;
+            }
         }
     }
 

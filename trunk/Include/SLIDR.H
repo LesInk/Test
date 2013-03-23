@@ -1,9 +1,12 @@
 /****************************************************************************/
 /*    FILE:  SLIDR.H                                                        */
 /****************************************************************************/
-
 #ifndef _SLIDR_H_
 #define _SLIDR_H_
+
+#include "GENERAL.H"
+#include "GRAPHIC.H"
+#include "MOUSEMOD.H"
 
 #define MAX_SLIDERS 10
 #define SLIDER_LINE1_COLOR 213

@@ -5,6 +5,10 @@
 #ifndef _Txtbox_H_
 #define _Txtbox_H_
 
+#include "GENERAL.H"
+#include "BUTTON.H"
+#include "GRAPHIC.H"
+
 #define MAX_TxtboxES 50
 
 typedef T_void *T_TxtboxID;

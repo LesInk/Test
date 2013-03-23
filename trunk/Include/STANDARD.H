@@ -52,23 +52,7 @@
 #  include "memory.h"
 #  include "file.h"
 #  include "comm.h"
-#ifdef WIN32
-	#define far
-	#define near
-	#define huge
-	#define __interrupt
-	#define __far
-	#define __near
-	#define COMPILE_OPTION_DIRECT_TALK_IS_DOS32
-#else
-	#define COMPILE_OPTION_DIRECT_TALK_IS_DOS32
-#endif
 #  include "ditalk.h"
-
-#define GAME_GROUP_ID_BAD            0
-typedef T_directTalkUniqueAddress T_gameGroupID ;
-
-#define CompareGameGroupIDs(a, b) (((memcmp(&(a), &(b), sizeof(a)))==0)?TRUE:FALSE)
 
 #  include "resource.h"
 #  include "colorize.h"
@@ -203,40 +187,6 @@ typedef T_directTalkUniqueAddress T_gameGroupID ;
 #  include "csyncpck.h"
 #include "peophere.h"
 #  include "syncmem.h"
-
-/** Player object characteristics. **/
-#define PLAYER_OBJECT_HEIGHT  60
-#define PLAYER_OBJECT_RADIUS  20
-#define PLAYER_GRAB_DISTANCE  (10 * PLAYER_OBJECT_RADIUS)
-
-/** Object type constants. **/
-#define OBJECT_TYPE_TOMATO   12
-#define OBJECT_TYPE_APPLE    19
-#define OBJECT_TYPE_TORCH    27
-#define OBJECT_TYPE_XBOW     28
-#define OBJECT_TYPE_SWORD    29
-
-#define OBJECT_TYPE_FIREBALL 31
-
-/** Miscellaneous constants. **/
-#define VIEW_WATER_DIP_LEVEL 20
-#define SECTOR_SHIFT_X_FLAG  4
-#define SECTOR_SHIFT_Y_FLAG  8
-#define SECTOR_DIP_FLAG      16
-#define SECTOR_ANIMATE_FLOOR_FLAG 32
-#define DISTANCE_TO_PICKUP   24
-#define PLAYER_TALLNESS      50
-
-#define STORE_ID_START       20000
-
-#define SPECIAL_OBJECTS_START 1500
-#define SPECIAL_OBJECTS_END   1999
-
-#define RandomNumber() SyncTimeGet()
-
-#ifndef NULL
-#define NULL 0
-#endif
 
 #endif
 

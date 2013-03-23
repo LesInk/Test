@@ -5,6 +5,9 @@
 #ifndef _MOUSEMOD_H_
 #define _MOUSEMOD_H_
 
+#include "GENERAL.H"
+#include "GRAPHICS.H"
+
 typedef enum {
     MOUSE_EVENT_START,
     MOUSE_EVENT_END,

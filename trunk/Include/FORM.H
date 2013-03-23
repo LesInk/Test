@@ -5,6 +5,11 @@
 #ifndef _FORM_H_
 #define _FORM_H_
 
+#include "GENERAL.H"
+#include "SLIDR.H"
+#include "TXTBOX.H"
+#include "TXTFLD.H"
+
 /*
 #define MAX_FORM_BUTTONS  100
 #define MAX_FORM_FIELDS   50

@@ -2,7 +2,11 @@
 /*    FILE:  Txtbox.C                                                       */
 /****************************************************************************/
 
-#include "standard.h"
+#include "FORM.H"
+#include "MEMORY.H"
+#include "MESSAGE.H"
+#include "KEYSCAN.H"
+#include "TXTBOX.H"
 
 static T_TxtboxID G_TxtboxArray[MAX_TxtboxES];
 static T_word16 G_currentTextBox = 0;

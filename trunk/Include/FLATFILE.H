@@ -1,6 +1,10 @@
 /****************************************************************************/
 /*    FILE:  FLATFILE.H                                                     */
 /****************************************************************************/
+#ifndef _FLATFILE_H_
+#define _FLATFILE_H_
+
+#include "GENERAL.H"
 
 typedef T_void *T_flatFile ;
 #define FLATFILE_BAD NULL
@@ -38,6 +42,8 @@ T_void FlatFileRefresh(T_flatFile flatFile) ;
 T_void *FlatFileGetOptionalHeader(T_flatFile flatFile) ;
 
 T_void FlatFileMarkDirty(T_flatFile flatFile) ;
+
+#endif // _FLATFILE_H_
 
 /****************************************************************************/
 /*    END OF FILE: FLATFILE.H                                               */

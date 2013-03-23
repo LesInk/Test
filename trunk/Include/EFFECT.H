@@ -1,10 +1,13 @@
-
 /****************************************************************************/
 /*    FILE:  EFFECT.H                                                       */
 /****************************************************************************/
 
 #ifndef _EFFECT_H_
 #define _EFFECT_H_
+
+#include "DBLLINK.H"
+#include "GENERAL.H"
+#include "RESOURCE.H"
 
 #define MAX_ITEM_EFFECTS 8
 #define MAX_EFFECT_POWER 28000

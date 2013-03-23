@@ -1,6 +1,10 @@
 /****************************************************************************/
 /*    FILE:  KEYMAP.H                                                       */
 /****************************************************************************/
+#ifndef _KEYMAP_H_
+#define _KEYMAP_H_
+
+#include "INIFILE.H"
 
 extern T_byte8 G_keyMap[256] ;
 
@@ -76,9 +80,13 @@ extern T_byte8 G_keyMap[256] ;
 #define KEYMAP_TIME_OF_DAY                  57
 
 #define KEYMAP_GAMMA_CORRECT                58
+#define KEYMAP_UNKNOWN_EXTRA                59
+#define KEYMAP_ACTIVATE_OR_TAKE             60
 
 T_void KeyMapInitialize(T_iniFile iniFile);
 T_void KeyMapFinish(T_void);
+
+#endif /* _KEYMAP_H_ */
 
 /****************************************************************************/
 /*    END OF FILE:  KEYMAP.H                                                */

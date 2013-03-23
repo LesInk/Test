@@ -1,9 +1,12 @@
 /****************************************************************************/
 /*    FILE:  PACKET.H                                                       */
 /****************************************************************************/
-
 #ifndef _PACKET_H_
 #define _PACKET_H_
+
+#include "GENERAL.H"
+#include "GROUP.H"
+#include "VIEWFILE.H"
 
 #define MAX_SIZE_PASSWORD 12
 

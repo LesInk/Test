@@ -1,9 +1,15 @@
 /****************************************************************************/
 /*    FILE:  CLIENT.H                                                         */
 /****************************************************************************/
-
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
+
+#include "EFFECT.H"
+#include "GENERAL.H"
+#include "KEYBOARD.H"
+#include "PACKET.H"
+#include "STORE.H"
+#include "STOREDB.H"
 
 #define SERVER_ID_NONE        0
 #define PLACE_NOWHERE         0xFFFFFFFF
@@ -48,10 +54,11 @@ E_Boolean ClientIsActive(T_void);
 
 T_void ClientUpdate(T_void);
 
-T_void ClientCheckMouse(E_mouseEvent event,
-                         T_word16 x,
-                         T_word16 y,
-                         E_Boolean button);
+T_void ClientCheckMouse(
+        E_mouseEvent event,
+        T_word16 x,
+        T_word16 y,
+        E_Boolean button);
 
 T_void ClientLogoff(T_void);
 
@@ -66,10 +73,10 @@ T_word16 ClientGetTalkDistance(T_word16 talkMode);
 T_word16 ClientGetLoginId(void);
 
 T_void ClientCreateGlobalAreaSound(
-           T_sword16 x,
-           T_sword16 y,
-           T_word16 radius,
-           T_word16 soundID);
+        T_sword16 x,
+        T_sword16 y,
+        T_word16 radius,
+        T_word16 soundID);
 
 T_void ClientGotoPlace(T_word32 locationNumber, T_word16 startLocation);
 
@@ -81,31 +88,27 @@ T_void ClientInit(T_void);
 T_void ClientFinish(T_void);
 
 T_void ClientObjectShootObject(
-           T_word16 objectType,
-           T_word16 sourceObject,
-           T_word16 angle,
-           T_word16 velocity);
+        T_word16 objectType,
+        T_word16 sourceObject,
+        T_word16 angle,
+        T_word16 velocity);
 
 T_void ClientThrowObject(
-           T_3dObject *p_obj,
-           T_sword16 throwspeed,
-           T_word16 angle);
+        T_3dObject *p_obj,
+        T_sword16 throwspeed,
+        T_word16 angle);
 
 T_void ClientCreateProjectile(
-           E_effectMissileType type,
-           T_word16 duration,
-           T_word16 power);
+        E_effectMissileType type,
+        T_word16 duration,
+        T_word16 power);
 
 T_void ClientAttack(T_void);
 
 /* Acknowledgements: */
-T_void ClientAttackSent(
-           T_word32 extraData,
-           T_packetEitherShortOrLong *p_packet);
+T_void ClientAttackSent(T_word32 extraData, T_packetEitherShortOrLong *p_packet);
 
-T_void ClientSentAction(
-           T_word32 extraData,
-           T_packetEitherShortOrLong *p_packet);
+T_void ClientSentAction(T_word32 extraData, T_packetEitherShortOrLong *p_packet);
 
 /* Accessor functions: */
 T_word16 ClientGetSpeechLoudness(T_void);
@@ -169,10 +172,10 @@ E_changePasswordStatus ClientGetChangePasswordStatus(T_void);
 T_void ClientSetChangePasswordStatus(E_changePasswordStatus status);
 
 T_void *ClientFetchDataBlock(
-            T_word16 dataBlockType,
-            T_word32 extraData,
-            T_word32 *p_size,
-            E_Boolean *doMemFree);
+        T_word16 dataBlockType,
+        T_word32 extraData,
+        T_word32 *p_size,
+        E_Boolean *doMemFree);
 
 T_storeRemoveResult ClientGetStoreRemoveResult(T_void);
 
@@ -190,9 +193,7 @@ T_void ClientSetConnectionType(E_clientConnectionType type);
 
 T_void ClientStartPlayer(T_word16 objectId, T_word16 loginId);
 
-T_void ClientForceGotoPlace(
-           T_word16 placeNumber,
-           T_byte8 startLocation);
+T_void ClientForceGotoPlace(T_word16 placeNumber, T_byte8 startLocation);
 
 T_void ClientSetNextPlace(T_word16 nextPlace, T_byte8 nextStart);
 
@@ -202,11 +203,11 @@ typedef T_byte8 E_bloodEffect;
 #define BLOOD_EFFECT_NONE         2
 
 T_void ClientMakeObjectGoSplat(
-           T_3dObject *p_obj,
-           T_word16 amount,
-           E_effectDamageType damageType,
-           E_effectDamageType defenseType,
-           E_bloodEffect bloodType);
+        T_3dObject *p_obj,
+        T_word16 amount,
+        E_effectDamageType damageType,
+        E_effectDamageType defenseType,
+        E_bloodEffect bloodType);
 
 T_void ClientSetClientSyncStatus(T_byte8 *p_msg);
 
@@ -216,7 +217,6 @@ E_Boolean ClientIsInGame(T_void);
 E_Boolean ClientIsInView(T_void);
 /* returns TRUE if the player is a god */
 E_Boolean ClientIsGod(T_void);
-
 
 T_void ClientResetPauseGame(T_void);
 T_void ClientTogglePause(T_void);

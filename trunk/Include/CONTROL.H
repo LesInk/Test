@@ -30,16 +30,6 @@ typedef enum
 } E_controlMousePointerType;
 
 
-typedef struct
-{
-   E_controlMouseModes mode;    /* current mouse mode */
-   T_buttonID buttonpushed;     /* Is a button being pushed? */
-   T_word16 hotx, hoty;         /* Hot spot of mouse. */
-   T_resource mouseRes;         /* Current pointer resource */
-   T_bitmap *bitmap;            /* Current pointer bitmap **/
-   E_controlMousePointerType type;
-} T_controlMouseStruct ;
-
 /* function prototypes */
 T_void ControlInitForGamePlay(T_void);
 T_void ControlInitForJustUI(T_void);
@@ -50,6 +40,7 @@ T_void ControlPointerReset (T_void);
 T_sword16 ControlGetLookAngle (T_void);
 T_sword16 ControlGetLookOffset(T_void) ;
 T_void ControlDisplayControlPage (T_void);
+T_void ControlColorizeLookString (T_byte8 *string);
 
 #endif
 

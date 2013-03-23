@@ -5,6 +5,9 @@
 #ifndef _PICS_H_
 #define _PICS_H_
 
+#include "GENERAL.H"
+#include "RESOURCE.H"
+
 #define PICTURE_RESOURCE_FILENAME "PICS.RES"
 
 T_void PicturesInitialize(T_void) ;

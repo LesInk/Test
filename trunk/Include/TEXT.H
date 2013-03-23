@@ -5,6 +5,10 @@
 #ifndef _TEXT_H_
 #define _TEXT_H_
 
+#include "GENERAL.H"
+#include "GRAPHIC.H"
+#include "RESOURCE.H"
+
 #define MAX_TEXTS 50
 
 typedef T_void *T_textID;

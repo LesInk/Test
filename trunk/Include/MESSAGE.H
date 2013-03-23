@@ -5,6 +5,9 @@
 #ifndef _MESSAGE_H_
 #define _MESSAGE_H_
 
+#include "GENERAL.H"
+#include "GRAPHICS.H"
+
 #define MAX_EXTENDED_COLORS 40
 #define OUTPUT_BOX_X1 6
 #define OUTPUT_BOX_Y1 139
@@ -31,6 +34,12 @@ int MessagePrintf( char *fmt, ... ) ;
 
 T_void MessageSetAlternateOutputOn(T_void);
 T_void MessageSetAlternateOutputOff(T_void);
+
+T_void MessageDrawLine(
+        T_word16 x_pos,
+        T_word16 y_pos,
+        T_byte8 *line,
+        T_color color);
 
 
 #endif

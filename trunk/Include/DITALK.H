@@ -5,9 +5,10 @@
 /* to a dos32 application.  Handshaking and all is handled through these    */
 /* routines.                                                                */
 /****************************************************************************/
-
 #ifndef _DITALK_H_
 #define _DITALK_H_
+
+#include "GENERAL.H"
 
 typedef T_void (*T_directTalkReceiveCallback)(
                     T_void *p_data,

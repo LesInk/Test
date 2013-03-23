@@ -5,6 +5,13 @@
 #ifndef _BUTTON_H_
 #define _BUTTON_H_
 
+#include "BUTTON.H"
+#include "GENERAL.H"
+#include "GRAPHIC.H"
+#include "KEYBOARD.H"
+#include "MOUSEMOD.H"
+#include "TEXT.H"
+
 #define MAX_BUTTONS 100
 
 typedef T_void *T_buttonID;

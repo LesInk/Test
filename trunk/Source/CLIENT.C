@@ -1,14 +1,26 @@
 /****************************************************************************/
 /*    FILE:  CLIENT.C                                                       */
 /****************************************************************************/
-
-#include "standard.h"
 #include <ctype.h>
 #include <malloc.h>
-#include "memory.h"
-#if defined(WIN32)
-#endif
+#include "3D_COLLI.H"
+#include "CLIENT.H"
+#include "CLI_RECV.H"
+#include "CMDQUEUE.H"
+#include "CSYNCPCK.H"
+#include "EFX.H"
+#include "FILETRAN.H"
+#include "GENERAL.H"
+#include "MEMORY.H"
+#include "MEMTRANS.H"
+#include "OBJECT.H"
+#include "PACKETDT.H"
+#include "PLAYER.H"
+#include "VIEW.H"
 
+/*---------------------------------------------------------------------------
+ * Constants:
+ *--------------------------------------------------------------------------*/
 #define PLAYER_ATTACK_HEIGHT      30
 #define PLAYER_ATTACK_DISTANCE    40
 #define PLAYER_ATTACK_RADIUS      10
@@ -16,6 +28,14 @@
 #define CLIENT_NUM_TALK_MODES 3
 #define TIME_BETWEEN_STEALS      140   /* 2 seconds */
 #define TIME_BETWEEN_PICK_LOCKS  140   /* 2 seconds */
+
+/*---------------------------------------------------------------------------
+ * Types:
+ *--------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------
+ * Globals:
+ *--------------------------------------------------------------------------*/
 T_word32 G_syncCount = 0 ;
 
 /* General flag noting if we are initilized. */
@@ -66,6 +86,8 @@ static T_byte8 G_message[MAX_MESSAGE_LEN+2] ;
 static T_word16 G_msgPos = 0 ;
 static E_Boolean G_msgOn = FALSE ;
 static E_Boolean G_deadState = FALSE ;
+
+static T_3dObject *G_lastDrawTargetItem;
 
 /* Flag telling if attack is completed. */
 static E_Boolean G_attackComplete = TRUE ;
@@ -299,6 +321,9 @@ T_void ClientInit(T_void)
     ViewSetOverlayHandler(ClientHandleOverlay) ;
     OverlaySetAnimation(0) ;  /* FIST */
     OverlaySetCallback (ClientOverlayDone); //JDA
+
+    // No target yet
+    G_lastDrawTargetItem = NULL;
 
     MemoryTransferSetCallback(ClientReceivedMemoryBlock) ;
 
@@ -1008,6 +1033,55 @@ static void IDrawCrosshairs(T_word16 left, T_word16 top, T_word16 right, T_word1
     GrDrawTranslucentPixel(x, y+2, crossHairColor) ;
 }
 
+static T_3dObject *IDrawTargetItem(T_word16 x, T_word16 y, T_word16 drawX, T_word16 drawY)
+{
+    T_3dObject *p_obj = NULL;
+    T_3dObject *targetObj = NULL;
+    T_word16 objtype;
+    T_byte8 stmp[32];
+    T_resource res;
+    T_byte8 *desc1;
+    T_byte8 *desc2;
+    T_word32 size;
+
+    p_obj = ViewGetXYTarget(x, y);
+    if (p_obj) {
+        /* Turn body parts into their respective head. */
+        if (ObjectIsBodyPart(p_obj))
+            p_obj = ObjectFindBodyPartHead(p_obj) ;
+        objtype=ObjectGetType(p_obj);
+        if (ObjectIsGrabable(p_obj)) {
+            if (StatsPlayerHasIdentified(objtype)) {
+                // Get identified name
+                sprintf((char *)stmp,"OBJDESC2/DES%05d.TXT",objtype);
+            } else {
+                // Get unidentified name
+                sprintf((char *)stmp,"OBJDESC/DES%05d.TXT",objtype);
+            }
+            if (PictureExist(stmp)) {
+                desc1 = PictureLockData(stmp, &res);
+                size = ResourceGetSize(res);
+                desc2=(T_byte8 *)MemAlloc(size+64);
+                memcpy(desc2, desc1, size);
+                desc2[size] = '\0';
+
+                TextCleanString(desc2);
+                ControlColorizeLookString(desc2);
+
+                // TODO: This is hard code to the key E
+                MessageDrawLine(drawX, drawY, (T_byte8 *)"E :", 31);
+                MessageDrawLine(drawX+12, drawY, desc2, 31 /* white */);
+                targetObj = p_obj;
+
+                MemFree(desc2);
+                PictureUnlockAndUnfind(res);
+            }
+        }
+    }
+
+    return targetObj;
+}
+
 
 /****************************************************************************/
 /*  Routine:  ClientHandleOverlay                                           */
@@ -1070,6 +1144,8 @@ T_void ClientHandleOverlay(
     T_byte8 stmp2[10];
     /* TESTING */
     T_word16 i, n, sector ;
+    E_Boolean foundCrosshairTarget;
+    E_Boolean isGrabDrawn = FALSE;
 
     DebugRoutine("ClientHandleOverlay") ;
     DebugCheck(bottom < SCREEN_SIZE_Y) ;
@@ -1089,8 +1165,13 @@ T_void ClientHandleOverlay(
     OverlayUpdate() ;
 
     /* Draw crosshairs */
-    if (MouseIsRelativeMode())
+    if (MouseIsRelativeMode()) {
         IDrawCrosshairs(left, top, right, bottom);
+
+        G_lastDrawTargetItem = IDrawTargetItem((left+right)/2, (top+bottom)/2, left+4, bottom-7);
+    } else {
+        G_lastDrawTargetItem = NULL;
+    }
 
     /* Check if we are in message mode. */
     if (G_msgOn == TRUE)  {
@@ -1110,7 +1191,7 @@ T_void ClientHandleOverlay(
     MessageDraw(left+2, top+2, 10, COLOR_WHITE) ;
 
     /* if a bow is being used, draw ammo counter */
-    if (InventoryWeaponIsBow())
+    if ((InventoryWeaponIsBow()) && (!isGrabDrawn))
     {
         ammotype=BannerGetSelectedAmmoType();
         if (ammotype==BOLT_TYPE_UNKNOWN) ammotype=BOLT_TYPE_NORMAL;
@@ -2489,6 +2570,16 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                      IClientAttemptOpeningForwardWall() ;
 			    }
 
+                /* Grab item if relative mode */
+                // TODO: Need to be able to remap key!
+                if ((MouseIsRelativeMode()) && (G_lastDrawTargetItem)) {
+                    if (KeyMapGetScan(KEYMAP_ACTIVATE_OR_TAKE)) {
+                        if (InventoryCanTakeItem(G_lastDrawTargetItem)) {
+                            ClientRequestTake(G_lastDrawTargetItem);
+                        }
+                    }
+                }
+
                 /* Messages are off, update screen buttons */
                 ButtonKeyControl (event,scankey);  //JDA
             }
@@ -2653,13 +2744,11 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
         /*******************************/
         /* normal (non god mode) Stuff */
         /*******************************/
-        switch (event)
-        {
+        switch (event) {
             case KEYBOARD_EVENT_HELD:
                 if (!MouseIsRelativeMode()) {
                     /* use item in inventory */
-                    if (scankey == KeyMap(KEYMAP_USE))
-                    {
+                    if (scankey == KeyMap(KEYMAP_USE)) {
                         if (InventoryCanUseItemInReadyHand())
                             InventoryUseItemInReadyHand(temp);
                     }
@@ -2667,99 +2756,79 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                 break;
 
             case KEYBOARD_EVENT_BUFFERED:
-            break;
+                break;
 
             case KEYBOARD_EVENT_PRESS:
-            if (KeyboardGetScanCode(KEY_SCAN_CODE_F1)==TRUE)
-            {
-
-                if (KeyboardGetScanCode(KEY_SCAN_CODE_RIGHT_SHIFT)==TRUE)
-                {
-                    /* enter god mode */
-#ifdef COMPILE_OPTION_ALLOW_GOD_MODE
-#ifndef NDEBUG
-                    StatsToggleGodMode();
-#endif
-#endif
-                }
-                else
-                {
-                    if (BannerFormIsOpen(BANNER_FORM_CONTROL))
-                    {
-                        BannerCloseForm();
-                    }
-                    else
-                    {
-                        /* open help page */
-                        BannerOpenForm(BANNER_FORM_CONTROL);
-                    }
-                }
-            }
-
-            if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)
-            {
-                if (scankey==KEY_SCAN_CODE_J)
-                {
-                    if (ClientGetCurrentPlace()!=20005)
-                    {
-                        for (i=0;i<23;i++)
-                        {
-                            if (StatsPlayerHasNotePage(i))
-                            {
-                                removedNotes=TRUE;
-                                StatsRemovePlayerNotePage (i);
-                            }
-                        }
-                        for (i=30;i<34;i++)
-                        {
-                            if (StatsPlayerHasNotePage(i))
-                            {
-                                removedNotes=TRUE;
-                                StatsRemovePlayerNotePage (i);
-                            }
+                if (KeyboardGetScanCode(KEY_SCAN_CODE_F1)==TRUE) {
+                    if (KeyboardGetScanCode(KEY_SCAN_CODE_RIGHT_SHIFT)==TRUE) {
+                        /* enter god mode */
+    #ifdef COMPILE_OPTION_ALLOW_GOD_MODE
+    #ifndef NDEBUG
+                        StatsToggleGodMode();
+    #endif
+    #endif
+                    } else {
+                        if (BannerFormIsOpen(BANNER_FORM_CONTROL)) {
+                            BannerCloseForm();
+                        } else {
+                            /* open help page */
+                            BannerOpenForm(BANNER_FORM_CONTROL);
                         }
                     }
-                    if (removedNotes==TRUE)
-                    {
-                        MessageAdd ("^007 Journal help pages removed");
+                }
+
+                if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE) {
+                    if (scankey==KEY_SCAN_CODE_J) {
+                        if (ClientGetCurrentPlace()!=20005) {
+                            for (i=0;i<23;i++) {
+                                if (StatsPlayerHasNotePage(i)) {
+                                    removedNotes=TRUE;
+                                    StatsRemovePlayerNotePage (i);
+                                }
+                            }
+                            for (i=30;i<34;i++) {
+                                if (StatsPlayerHasNotePage(i)) {
+                                    removedNotes=TRUE;
+                                    StatsRemovePlayerNotePage (i);
+                                }
+                            }
+                        }
+                        if (removedNotes==TRUE) {
+                            MessageAdd ("^007 Journal help pages removed");
+                        }
                     }
                 }
-            }
 
 
-            if (G_msgOn==FALSE)
-            {
-                /* flag to backspace spells */
-                if (KeyMapGetScan(KEYMAP_ABORT_SPELL)==TRUE)
-                {
-                    SpellsBackspace(NULL);
-                }
+                if (G_msgOn==FALSE) {
+                    /* flag to backspace spells */
+                    if (KeyMapGetScan(KEYMAP_ABORT_SPELL)==TRUE)
+                        SpellsBackspace(NULL);
 
-                if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)
-                {
-                    if (KeyMapGetScan(KEYMAP_GAMMA_CORRECT) == TRUE)  {
-                        MessagePrintf("Gamma level %d",
-                            ColorGammaAdjust()) ;
+                    if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE) {
+                        if (KeyMapGetScan(KEYMAP_GAMMA_CORRECT) == TRUE) {
+                            MessagePrintf("Gamma level %d",
+                                ColorGammaAdjust()) ;
+                        }
                     }
                 }
-            }
 
-            /* Check for canned sayings on the function keys */
-            for (i=KEYMAP_CANNED_MESSAGE_1; i<=KEYMAP_CANNED_MESSAGE_12; i++)  {
-                if (KeyMapGetScan(i) == TRUE)  {
-                    ComwinSayNth(i-KEYMAP_CANNED_MESSAGE_1) ;
+                /* Check for canned sayings on the function keys */
+                for (i=KEYMAP_CANNED_MESSAGE_1; i<=KEYMAP_CANNED_MESSAGE_12; i++)  {
+                    if (KeyMapGetScan(i) == TRUE)  {
+                        ComwinSayNth(i-KEYMAP_CANNED_MESSAGE_1) ;
+                    }
                 }
-            }
 
-            break;
+                break;
 
             case KEYBOARD_EVENT_RELEASE:
-  	        /* update screen buttons on the keyboard events */
-			ButtonKeyControl (event,scankey);  //JDA
-            break;
+                /* update screen buttons on the keyboard events */
+                ButtonKeyControl (event,scankey);  //JDA
+                break;
 
             default:
-            break;
+                break;
         }
     }
     DebugEnd() ;

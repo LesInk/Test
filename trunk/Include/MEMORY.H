@@ -1,9 +1,10 @@
 /****************************************************************************/
 /*    FILE:  MEMORY.H                                                       */
 /****************************************************************************/
-
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
+
+#include "GENERAL.H"
 
 typedef T_void (*T_memDiscardCallbackFunc)(T_void *p_block) ;
 

@@ -2,8 +2,13 @@
 /*    FILE:  MESSAGE.C                                                      */
 /****************************************************************************/
 
-#include "standard.h"
+//#include "standard.h"
 #include <stdarg.h>
+#include "DEBUG.H"
+#include "GENERAL.H"
+#include "MESSAGE.H"
+#include "PICS.H"
+#include "TXTBOX.H"
 
 #define MAX_NUM_MESSAGES 50
 #define MAX_SIZE_MESSAGE 70
@@ -12,7 +17,7 @@
 static E_Boolean G_alternateOutput=FALSE;
 static T_TxtboxID G_altOutputBox = NULL;
 
-T_byte8 G_extendedColors[MAX_EXTENDED_COLORS]=
+T_byte8 G_extendedColors[MAX_EXTENDED_COLORS] =
   {0,   /* 000 = black */
    31,  /* 001 = white */
    16,  /* 002 = gray */
@@ -54,6 +59,7 @@ T_byte8 G_extendedColors[MAX_EXTENDED_COLORS]=
    208, /* platinum color= 38*/
    99 /* copper color  = 39*/
 };
+
 /* Here is a place to store the messages. */
 static T_byte8 G_Messages[MAX_NUM_MESSAGES][MAX_SIZE_MESSAGE+1] ;
 
@@ -167,6 +173,48 @@ T_void MessageScrollDown(T_void)
     DebugEnd() ;
 }
 
+T_void MessageDrawLine(
+        T_word16 x_pos,
+        T_word16 y_pos,
+        T_byte8 *line,
+        T_color color)
+{
+    T_word16 j;
+    T_word16 len;
+    char c;
+    T_byte8 val;
+
+    len = strlen((char *)line);
+    for (j = 0; j < len; j++) {
+        c = line[j];
+        if (c == '^') {
+            /* skip caret */
+            j++;
+
+            /* get color value */
+            val = 0;
+            val += ((line[j++] - '0') * 100);
+            if (j < len)
+                val += ((line[j++] - '0') * 10);
+            if (j < len)
+                val += ((line[j] - '0'));
+
+            DebugCheck(val < MAX_EXTENDED_COLORS);
+            if (val >= MAX_EXTENDED_COLORS)
+                val = MAX_EXTENDED_COLORS - 1;
+
+            /* change color */
+            color = G_extendedColors[val];
+        } else {
+            GrSetCursorPosition(x_pos + 1, y_pos + 1);
+            GrDrawCharacter(c, 0);
+            GrSetCursorPosition(x_pos, y_pos);
+            GrDrawCharacter(c, color);
+            x_pos += GrGetCharacterWidth(c);
+        }
+    }
+}
+
 /****************************************************************************/
 /*  Routine:  MessageDraw                                                   */
 /****************************************************************************/
@@ -220,18 +268,14 @@ T_void MessageDraw(
            T_word16 interleave,
            T_color color)
 {
-    T_word16 i,j ;
+    T_word16 i ;
     T_word16 current ;
     T_word16 y_pos;
     T_word16 x_pos;
-    T_word16 len;
-    T_byte8 val;
     T_byte8 ncolor;
-    T_byte8 *temp;
     T_resourceFile res;
     T_resource font;
     T_bitfont *p_font;
-    char c;
 
     DebugRoutine("MessageDraw") ;
 
@@ -251,35 +295,7 @@ T_void MessageDraw(
         /* draw each character, checking for embedded color controls */
         x_pos=0;
         ncolor=G_extendedColors[7];
-        temp=P_Messages[current];
-        len=strlen(temp);
-
-        for (j=0;j<len;j++)
-        {
-            c=temp[j];
-            if (c=='^')
-            {
-                /* skip caret */
-                j++;
-                /* get color value */
-                val=0;
-                val+=((temp[j++]-'0')*100);
-                if (j < len) val+=((temp[j++]-'0')*10);
-                if (j < len) val+=((temp[j]-'0'));
-                DebugCheck (val < MAX_EXTENDED_COLORS);
-                if (val >= MAX_EXTENDED_COLORS) val=MAX_EXTENDED_COLORS-1;
-                /* change color */
-                ncolor=G_extendedColors[val];
-            }
-            else
-            {
-                GrSetCursorPosition (x+x_pos+1,y_pos+1);
-                GrDrawCharacter (c,0);
-                GrSetCursorPosition (x+x_pos,y_pos);
-                GrDrawCharacter (c,ncolor);
-                x_pos+=GrGetCharacterWidth(c);
-            }
-        }
+        MessageDrawLine(x_pos, y_pos, P_Messages[current], ncolor);
     }
 
 #if 0

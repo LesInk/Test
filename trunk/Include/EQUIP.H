@@ -4,6 +4,9 @@
 #ifndef _EQUIP_H_
 #define _EQUIP_H_
 
+#include "GENERAL.H"
+#include "EFFECT.H"
+
 #define EQUIP_NUMBER_OF_LOCATIONS 15
 #define EQUIP_TOTAL_COIN_TYPES 4
 #define EQUIP_TOTAL_BOLT_TYPES 7

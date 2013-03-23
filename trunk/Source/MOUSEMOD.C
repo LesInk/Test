@@ -1,8 +1,10 @@
 /****************************************************************************/
 /*    FILE:  MOUSEMOD.C                                                     */
 /****************************************************************************/
-
-#include "standard.h"
+#include "DBLLINK.H"
+#include "GENERAL.H"
+#include "MOUSEMOD.H"
+#include "PICS.H"
 
 #ifdef WIN32
 #include "direct.h"

@@ -1,12 +1,14 @@
 /****************************************************************************/
 /*    FILE:  STOREDB.H                                                      */
 /****************************************************************************/
+#ifndef _STORE_DB_H_
+#define _STORE_DB_H_
 
 /* The database in this module is a database of all the stores. */
 /* Each store is an independent record. */
 
-#ifndef _STORE_DB_H_
-#define _STORE_DB_H_
+#include "FLATFILE.H"
+#include "GENERAL.H"
 
 #define MAX_STORES   64
 

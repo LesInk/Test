@@ -292,6 +292,7 @@
     <ClInclude Include="..\..\..\..\Include\GENERAL.H" />
     <ClInclude Include="..\..\..\..\Include\GRAPHIC.H" />
     <ClInclude Include="..\..\..\..\Include\GRAPHICS.H" />
+    <ClInclude Include="..\..\..\..\Include\GROUP.H" />
     <ClInclude Include="..\..\..\..\Include\GUILDUI.H" />
     <ClInclude Include="..\..\..\..\Include\HARDFORM.H" />
     <ClInclude Include="..\..\..\..\Include\HASH32.H" />
