@@ -990,6 +990,25 @@ T_void ClientCheckScrolling(T_void)
     DebugEnd() ;
 }
 
+static void IDrawCrosshairs(T_word16 left, T_word16 top, T_word16 right, T_word16 bottom)
+{
+    /* Find center x and y */
+    T_word16 x = (left+right)/2;
+    T_word16 y = (top+bottom)/2;
+    const T_byte8 crossHairColor = 31; /* almost white */
+
+    GrDrawTranslucentPixel(x-2, y, crossHairColor) ;
+    GrDrawTranslucentPixel(x-1, y, crossHairColor) ;
+    GrDrawTranslucentPixel(x+1, y, crossHairColor) ;
+    GrDrawTranslucentPixel(x+2, y, crossHairColor) ;
+
+    GrDrawTranslucentPixel(x, y-2, crossHairColor) ;
+    GrDrawTranslucentPixel(x, y-1, crossHairColor) ;
+    GrDrawTranslucentPixel(x, y+1, crossHairColor) ;
+    GrDrawTranslucentPixel(x, y+2, crossHairColor) ;
+}
+
+
 /****************************************************************************/
 /*  Routine:  ClientHandleOverlay                                           */
 /****************************************************************************/
@@ -1068,6 +1087,10 @@ T_void ClientHandleOverlay(
     /* Draw the current weapon on the screen. */
     OverlayDraw(left, top, right, bottom, -VIEW3D_CLIP_LEFT, 0) ;
     OverlayUpdate() ;
+
+    /* Draw crosshairs */
+    if (MouseIsRelativeMode())
+        IDrawCrosshairs(left, top, right, bottom);
 
     /* Check if we are in message mode. */
     if (G_msgOn == TRUE)  {
@@ -1812,11 +1835,18 @@ T_void ClientUpdate(T_void)
             }
 
             if (MouseIsRelativeMode()) {
+                // Look mode
                 if (MouseGetButtonStatus() & MOUSE_BUTTON_LEFT) {
+                    // Player clicked left mouse button.  Use item in hand
                     if (InventoryCanUseItemInReadyHand())
                         InventoryUseItemInReadyHand(NULL);
                 }
+                if (MouseGetButtonStatus() & MOUSE_BUTTON_RIGHT) {
+                    // Try to cast the active spell
+                    SpellsCastSpell(0 /* not used */);
+                }
             } else {
+                // Cursor mode
                 MouseUpdateEvents();
             }
 
@@ -2526,22 +2556,23 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                 break;
 
                 case KEYBOARD_EVENT_PRESS:
-                if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)  {
-                    if (scankey == KEY_SCAN_CODE_J)
-                    {
-                        G_activeStats->Bolts[0] = 80 ;
-                        G_activeStats->Bolts[1] = 80 ;
-                        G_activeStats->Bolts[2] = 80 ;
-                        G_activeStats->Bolts[3] = 80 ;
-                        G_activeStats->Bolts[4] = 80 ;
-                        G_activeStats->Bolts[5] = 80 ;
-                        G_activeStats->Bolts[6] = 80 ;
+                    /* Pressing ALT-J in god mode gives the player 80 bolts of each type */
+                    if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE)  {
+                        if (scankey == KEY_SCAN_CODE_J)
+                        {
+                            G_activeStats->Bolts[0] = 80 ;
+                            G_activeStats->Bolts[1] = 80 ;
+                            G_activeStats->Bolts[2] = 80 ;
+                            G_activeStats->Bolts[3] = 80 ;
+                            G_activeStats->Bolts[4] = 80 ;
+                            G_activeStats->Bolts[5] = 80 ;
+                            G_activeStats->Bolts[6] = 80 ;
+                        }
                     }
-                }
 
-                if (G_msgOn==FALSE)
-                {
+                if (G_msgOn==FALSE) {
 #ifndef NDEBUG
+                    /* Pressing 'M' in Release version shows memory allocated, max, and free */
                     if (scankey == KEY_SCAN_CODE_M)
                     {
                         sprintf(buffer, "%ld alloc'd, %ld max, %ld free",
@@ -2551,12 +2582,15 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                         MessageAdd(buffer) ;
 				    }
 #endif
-                    if (scankey == KEY_SCAN_CODE_E)
-                    {
-                        StatsChangePlayerExperience (10000);
+                    /* Pressing ALT-E gives the player 10,000 XP */
+                    if (scankey == KEY_SCAN_CODE_E) {
+					     if (KeyboardGetScanCode(KEY_SCAN_CODE_ALT)==TRUE) {
+                            StatsChangePlayerExperience (10000);
+                         }
                     }
 
 #ifndef NDEBUG
+                    /* Pressing 'P' purges the memory of all discardable blocks */
 				    if (scankey == KEY_SCAN_CODE_P)
                     {
 				        MessageAdd("Purging free memory") ;
